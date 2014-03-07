@@ -28,7 +28,7 @@ FollowThru uses a standard set of Python libraries and frameworks common to web 
 
 Local system setup
 ------------------
-Ensure Python 2.7.*, PIP, and PostgreSQL are installed on your machine. Ruby and Fake S3 also recommended.
+Ensure Python 2.7.* and PIP.
 
  - Python: [Mac](http://docs.python-guide.org/en/latest/starting/install/osx/) (brew is suggested), [Linux](http://docs.python-guide.org/en/latest/starting/install/linux/), [Windows](http://www.python.org/)
  - PIP: [Mac](http://stackoverflow.com/questions/17271319/installing-pip-on-mac-os-x), [Linux](http://docs.python-guide.org/en/latest/starting/install/linux/), [Windows](http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows)
