@@ -28,10 +28,11 @@ FollowThru uses a standard set of Python libraries and frameworks common to web 
 
 Local system setup
 ------------------
-Ensure Python 2.7.* and PIP.
+Ensure Python 2.7.*, PIP, and MongoDB.
 
  - Python: [Mac](http://docs.python-guide.org/en/latest/starting/install/osx/) (brew is suggested), [Linux](http://docs.python-guide.org/en/latest/starting/install/linux/), [Windows](http://www.python.org/)
  - PIP: [Mac](http://stackoverflow.com/questions/17271319/installing-pip-on-mac-os-x), [Linux](http://docs.python-guide.org/en/latest/starting/install/linux/), [Windows](http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows)
+ - MongoDB: [All platforms](http://www.mongodb.org/downloads)
 
 
 Local virtual environment setup
