@@ -9,5 +9,6 @@ import admin_controller
 
 class AdminControllerTests(mox.MoxTestBase):
 
+    # TODO: Test real things
     def test_truth(self):
         self.assertTrue(True)
