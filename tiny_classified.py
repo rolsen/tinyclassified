@@ -14,6 +14,10 @@ import services
 app = flask.Flask(__name__)
 sslify = flask_sslify.SSLify(app)
 
+app.config.from_pyfile('flask_config.cfg', silent=False)
+
+db_adapter = services.db_service.DBAdapter(app)
+
 # Load configuration settings
 app.config.from_pyfile('flask_config.cfg', silent=False)
 
@@ -31,21 +35,31 @@ def attach_blueprints():
         url_prefix='/author'
     )
     app.register_blueprint(
-        controllers.login_controller.blueprint,
-        url_prefix='/login'
+        controllers.author_contact_controller.blueprint,
+        url_prefix='/author'
+    )
+    app.register_blueprint(
+        controllers.login_controller.blueprint
     )
 
 @app.route('/health')
 def show_health_report():
     return 'TODO: More health info. Anyway, server active.'
 
-attach_blueprints()
+@app.after_request
+def per_request_callbacks(response):
+    for func in getattr(flask.g, 'call_after_request', ()):
+        response = func(response)
+    return response
 
 def get_db_adapter():
     return db_adapter
 
+def get_config():
+    return app.config
+
 if __name__ == '__main__':
     app.config['DEBUG'] = True
+    attach_blueprints()
     mongo = PyMongo(app)
-    db_adapter = services.db_service.DBAdapter(app)
     app.run()

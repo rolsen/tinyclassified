@@ -10,6 +10,7 @@ import mox
 import tiny_classified
 
 import db_service
+import email_service
 import user_service
 
 TEST_EMAIL = 'test@example.com'
@@ -89,3 +90,39 @@ class UserServiceTests(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         user_service.delete(TEST_EMAIL)
+
+    def test_update_password_send_email(self):
+        test_user = copy.deepcopy(TEST_USER)
+        new_pass = 'dasecretword'
+
+        self.mox.StubOutWithMock(user_service, 'update')
+        user_service.update(test_user['email'], mox.IsA(dict))
+
+        self.mox.StubOutWithMock(email_service, 'send')
+        email_service.send(
+            [test_user['email']],
+            user_service.PASSWORD_EMAIL_SUBJECT,
+            mox.IsA(basestring)
+        )
+
+        self.mox.ReplayAll()
+
+        user_service.update_password(test_user, new_pass, True, False);
+
+    def test_update_password_send_email_with_password(self):
+        test_user = copy.deepcopy(TEST_USER)
+        new_pass = 'dasecretword'
+
+        self.mox.StubOutWithMock(user_service, 'update')
+        user_service.update(test_user['email'], mox.IsA(dict))
+
+        self.mox.StubOutWithMock(email_service, 'send')
+        email_service.send(
+            [test_user['email']],
+            user_service.PASSWORD_EMAIL_SUBJECT,
+            mox.Regex(r'.*%s.*' % new_pass)
+        )
+
+        self.mox.ReplayAll()
+
+        user_service.update_password(test_user, new_pass, True, True);

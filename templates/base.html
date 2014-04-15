@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% if not bare_page %}
+<html lang="en">
+    <head>
+        <title>TinyClassified: {{ title }}</title>
+        <!-- <link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/bootstrap.min.css"> -->
+        <link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/base.css">
+        {% block styles %}{% endblock %}
+    </head>
+    <body>
+{% endif %}
+        <div id="confirmation-message-display"></div>
+        {% if internal_page %}
+        <div id="header-bar">
+            <div class="row">
+                <div class="col-md-6" id="product-id">TinyClassified</div>
+                <div class="col-md-6" id="user-section">
+                    <!-- <div>Logged in as {{ user }}</div>
+                    <div><a href="/account/logout">Logout</a> / <a href="/account/change_password">Change Password</a></div> -->
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div id="content-area">
+            {% block content %}{% endblock %}
+        </div>
+
+        <script src="{{ base_url }}/static/js/lib/jquery-1.11.0.min.js"></script>
+        <script src="{{ base_url }}/static/js/lib/underscore-min.js"></script>
+        <script src="{{ base_url }}/static/js/lib/backbone-min.js"></script>
+        {% block scripts %}{% endblock %}
+{% if not bare_page %}
+    </body>
+</html>
+{% endif %}

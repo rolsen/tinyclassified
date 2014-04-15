@@ -2,3 +2,5 @@ Flask
 Flask-SSLify
 Flask-PyMongo
 mox
+markdown
+sendgrid==0.3.7

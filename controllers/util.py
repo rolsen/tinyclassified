@@ -9,7 +9,10 @@ import flask
 
 SESS_EMAIL = 'email'
 SESS_IS_ADMIN = 'is_admin'
-
+SESS_PASSWORD = 'password'
+SESS_VALIDATION_ERROR = 'validation error'
+SESS_CONFIRMATION_MSG = 'confirmation message'
+SESS_VALIDATION_SHOW_RESET = 'show reset'
 
 def check_active_requirement():
     """Check if the current user meets the requirement to be logged in.
@@ -69,3 +72,17 @@ def require_login(admin=False):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+
+# def after_this_request(func):
+#     """Performs a task/function after returning a response.
+
+#     Calls a given functions after the controller routing function returns.
+
+#     @param func: The function to perform.
+#     @type func: function
+#     """
+#     if not hasattr(flask.g, 'call_after_request'):
+#         flask.g.call_after_request = []
+#     flask.g.call_after_request.append(func)
+#     return func

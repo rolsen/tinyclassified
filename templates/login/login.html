@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="/static/css/login.css">
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/login.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="login-page" class="row">
+    <div id="top-padding"></div>
+    <div class="col-md-6">
+        <h1>TinyClassified</h1>
+        <div id="catchline">Small classified and listings.</div>
+    </div>
+    <div class="col-md-6">
+        <form id="login-form" role="form" method="POST">
+            <div class="form-group">
+                <label for="email-input">Email address</label>
+                <input name="email" type="email" class="form-control" id="email-input" placeholder="ex:test@example.com">
+            </div>
+            <div class="form-group">
+                <label for="password-input">Password</label>
+                <input name="password" type="password" class="form-control" id="password-input" placeholder="Password">
+            </div>
+            <div class="form-group form-button-holder">
+                <input type="submit" id="login-button" class="btn btn-primary" value="Login">
+            </div>
+        </form>
+        {% if error %}
+        <div id="error-display">{{error}} If you need to, you can <a href="/forgot_password">reset your password</a>.</div>
+        {% endif %}
+        {% if confirm %}
+        <div id="confirm-display">{{confirm}}</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

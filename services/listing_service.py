@@ -101,23 +101,45 @@ def read_by_slug(qualified_slug):
     return tiny_classified.get_db_adapter().get_listing_by_slug(qualified_slug)
 
 
-def update(qualified_slug, listing):
+def read_by_email(email):
+    """Get the listing corresponding to a listing author email address
+
+    @param email: A user / author email address or None if not found
+    @type email: str or None
+    """
+    db_adapter = tiny_classified.get_db_adapter()
+    listing_collection = db_adapter.get_listings_collection()
+    return listing_collection.find_one({'author_email': email})
+
+
+def read_contact_by_id(listing, contact_id):
+    """Get the contact of a listing, given the contact id.
+
+    @param listing: The listing to search for a contact
+    @type listing: dict
+    @param contact_id: The id of the contact to find
+    @type contact_id: int
+    @return: The contact of the listing or None
+    @rtype: dict or None
+    """
+    for contact in listing.get('contact_infos', []):
+        if contact.get('_id', None) == contact_id:
+            return contact
+            break
+    return None
+
+def update(listing):
     """Update the listing corresponding to a qualified listing slug.
 
-    @param qualified_slug: A qualified listing slug corresponding to a listing
-    @type qualified_slug: str
-    @raise ValueError: If the given slug is not fully qualified or if no listing
-        is found with the given slug.
+    @param listing: A listing that already has been saved to the database
+    @type listing: dict
+    @raise ValueError: If the given listing has not already been saved to the
+        database
     """
-    original_listing = read_by_slug(qualified_slug)
-
-    if not original_listing:
-        raise ValueError('No listing with slug: ' + qualified_slug)
+    if not listing.get('_id', None):
+        raise ValueError('Listing not yet saved to database')
 
     calculate_slugs(listing)
-
-    listing['_id'] = original_listing['_id']
-
     tiny_classified.get_db_adapter().upsert_listing(listing)
 
 
@@ -130,6 +152,21 @@ def delete_by_slug(qualified_slug):
     """
     ensure_qualified_slug(qualified_slug)
     tiny_classified.get_db_adapter().delete_listing_by_slug(qualified_slug)
+
+
+def delete(listing):
+    """Delete a listing from the database.
+
+    Deletes a listing from the database if that listing has been saved to the
+    database.
+
+    @param listing: The listing to delete.
+    @type listing: dict
+    """
+    listing_id = listing.get('_id', None)
+    if listing_id:
+        collection = tiny_classified.get_db_adapter().get_listing_collection()
+        collection.remove(listing_id)
 
 
 def create(listing):
@@ -163,3 +200,25 @@ def list_by_slug(slug):
     @rtype: list
     """
     return tiny_classified.get_db_adapter().list_listings_by_slug(slug)
+
+def create_default_listing_for_user(email):
+    """Create a listing for the user corresponding to the given email.
+
+    Create a listing for the user corresponding to the given email,
+    initializes the created listing with the user's email address, and saves
+    the new listing to the database.
+
+    @param email: An email address corresponding to a user
+    @type email: str
+    @return: The new listing
+    @rtype: dict
+    """
+    listing = {
+        'author_email': email,
+        'name': 'Listing for user %s' % email,
+        'slugs': [],
+        'about': 'About section',
+        'tags': []
+    }
+    tiny_classified.get_db_adapter().upsert_listing(listing)
+    return listing

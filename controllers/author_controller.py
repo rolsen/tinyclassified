@@ -21,45 +21,19 @@ blueprint = flask.Blueprint(
 @blueprint.route('/')
 @util.require_login()
 def show_user_ui():
-    return flask.render_template('author/controls.html')
+    """Render the chrome (UI constructs) for user / author controls.
 
+    @return {String} Rendered HTML template with the author control interface.
+    """
+    listing_view_templates = flask.render_template(
+        'author/listing_view.html'
+    )
+    contacts_view_templates = flask.render_template(
+        'author/contacts_view.html'
+    )
 
-@blueprint.route('/create', methods=['POST'])
-@util.require_login()
-def create_listing():
-    listing = json.loads(flask.request.form['listing'])
-    services.listing_service.create(listing)
-    return json.dumps(listing)
-
-
-@blueprint.route('/show/<path:listing_slug>')
-@util.require_login()
-def show_listing(listing_slug):
-    listings = services.listing_service.list_by_slug(listing_slug)
-    if not listings:
-        return '', 404
-
-    return json.dumps(listings)
-
-
-@blueprint.route('/update/<path:listing_slug>', methods=['PUT'])
-@util.require_login()
-def update_listing(listing_slug):
-    listing = json.loads(flask.request.form['listing'])
-    try:
-        services.listing_service.update(listing_slug, listing)
-    except ValueError:
-        return '', 404
-
-    return json.dumps(listing)
-
-
-@blueprint.route('/delete/<path:listing_slug>', methods=['POST'])
-@util.require_login()
-def delete_listing(listing_slug):
-    try:
-        services.listing_service.delete_by_slug(listing_slug)
-    except ValueError:
-        return '', 404
-
-    return ''
+    return flask.render_template(
+        'author/author_chrome.html',
+        listing_view_templates=listing_view_templates,
+        contacts_view_templates=contacts_view_templates
+    )
