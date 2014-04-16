@@ -106,12 +106,11 @@ def collect_index_dict(taglists):
     lists of listing tag subcategories.
 
     Example input:
-    tags0 = [{'altcat': ['altsubcat1', 'altsubcat2']}]
-    tags1 = [
+    taglists = [
+        {'altcat': ['altsubcat1', 'altsubcat2']}],
         {'altcat': ['altsubcat2', 'altsubcat3']},
         {'cat': ['subcat2', 'subcat3']}
     ]
-    taglists = [tags0, tags1]
 
     example output:
     {
@@ -126,14 +125,13 @@ def collect_index_dict(taglists):
     @rtype: dict
     """
     categories = {}
-    for tagset in taglists:
-        for tags in tagset:
-            for category, subcategories in tags.iteritems():
-                if categories.get(category, None) == None:
-                    categories[category] = []
-                for subcat in subcategories:
-                    if not subcat in categories[category]:
-                        categories[category].append(subcat)
+    for tags in taglists:
+        for category, subcategories in tags.iteritems():
+            if categories.get(category, None) == None:
+                categories[category] = []
+            for subcat in subcategories:
+                if not subcat in categories[category]:
+                    categories[category].append(subcat)
     return categories
 
 

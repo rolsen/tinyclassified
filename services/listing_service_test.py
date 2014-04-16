@@ -49,17 +49,15 @@ TEST_LISTING_ALT = {
 }
 TEST_LISTINGS = [TEST_LISTING, TEST_LISTING_ALT]
 
+TEST_TAGLIST = [
+    {'altcategory': ['altsubcat1', 'altsubcat2']},
+    {'altcategory': ['altsubcat2', 'altsubcat3']},
+    {'category': ['subcat2', 'subcat3']}
+]
 TEST_INDEX_CATEGORIES = {
     'altcategory': ['altsubcat1', 'altsubcat2', 'altsubcat3'],
     'category': ['subcat2', 'subcat3']
 }
-
-TEST_TAGS_1 = [{'altcategory': ['altsubcat1', 'altsubcat2']}]
-TEST_TAGS_2 = [
-    {'altcategory': ['altsubcat2', 'altsubcat3']},
-    {'category': ['subcat2', 'subcat3']}
-]
-TEST_TAGLIST = [TEST_TAGS_1, TEST_TAGS_2]
 
 class ListingServiceTests(mox.MoxTestBase):
 

@@ -1,4 +1,4 @@
-{% for category, subcategories in categories.iteritems() %}
+{% for category, subcategories in categories.iteritems()|sort %}
 <table id="index-table">
     <thead>
         <th colspan="2">
@@ -8,7 +8,7 @@
         </th>
     </thead>
     <tbody>
-    {% for dualsubcategory in subcategories|batch(2, '&nbsp;') %}
+    {% for dualsubcategory in subcategories|sort|batch(2, '&nbsp;') %}
         <tr>
             {% for subcategory in dualsubcategory %}
             <td>
