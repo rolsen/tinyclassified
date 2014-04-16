@@ -8,6 +8,8 @@ browsing listings.
 """
 import flask
 
+import tiny_classified
+
 import services
 
 # Create a Flask blueprint to split the Flask routes amoung multiple files.
@@ -19,16 +21,17 @@ blueprint = flask.Blueprint(
 
 
 @blueprint.route('/listings')
-def index_listings():
-    """List all listings.
+def index():
+    """List all listings tags.
 
-    @return: HTML with the listing index.
+    @return: HTML with the listing tags index.
     @rtype: str
     """
-    listings = services.listing_service.index()
+    tag_index_html = services.listing_service.index_tags_as_html()
     return flask.render_template(
-        'public/top_level_listing.html',
-        listings=listings
+        'public/public_index_chrome.html',
+        tag_index_html=tag_index_html,
+        base_url=tiny_classified.get_config()['BASE_URL'],
     )
 
 

@@ -40,6 +40,27 @@ TEST_LISTING = {
     'tags': TEST_TAGS_SIMPLE
 }
 
+TEST_LISTING_ALT = {
+    'author_email': 'alt@example.com',
+    'name': 'Alt Listing Name',
+    'slugs': ['cat1/subcat1/Alt Listing Name'],
+    'about': 'Alt about',
+    'tags': [{'altcat': ['altsubcat1', 'altsubcat2']}]
+}
+TEST_LISTINGS = [TEST_LISTING, TEST_LISTING_ALT]
+
+TEST_INDEX_CATEGORIES = {
+    'altcategory': ['altsubcat1', 'altsubcat2', 'altsubcat3'],
+    'category': ['subcat2', 'subcat3']
+}
+
+TEST_TAGS_1 = [{'altcategory': ['altsubcat1', 'altsubcat2']}]
+TEST_TAGS_2 = [
+    {'altcategory': ['altsubcat2', 'altsubcat3']},
+    {'category': ['subcat2', 'subcat3']}
+]
+TEST_TAGLIST = [TEST_TAGS_1, TEST_TAGS_2]
+
 class ListingServiceTests(mox.MoxTestBase):
 
     def test_make_string_safe_no_spaces(self):
@@ -159,6 +180,29 @@ class ListingServiceTests(mox.MoxTestBase):
     def test_check_is_qualified_slug_ok_with_dashes(self):
         result = listing_service.check_is_qualified_slug('cat-go/sub-ct/na-me')
         self.assertTrue(result)
+
+    def test_collect_index_dict(self):
+        actual_result = listing_service.collect_index_dict(TEST_TAGLIST)
+        self.assertEqual(TEST_INDEX_CATEGORIES, actual_result)
+
+    def test_index_tags_as_html(self):
+        self.mox.StubOutWithMock(listing_service, 'index_tags')
+        listing_service.index_tags().AndReturn(TEST_TAGLIST)
+
+        self.mox.StubOutWithMock(listing_service, 'collect_index_dict')
+        listing_service.collect_index_dict(TEST_TAGLIST).AndReturn(
+            TEST_INDEX_CATEGORIES)
+
+        self.mox.ReplayAll()
+
+        result = listing_service.index_tags_as_html()
+        self.assertTrue('altcategory' in result)
+        self.assertTrue('altsubcat1' in result)
+        self.assertTrue('altsubcat2' in result)
+        self.assertTrue('altsubcat3' in result)
+        self.assertTrue('category' in result)
+        self.assertTrue('subcat2' in result)
+        self.assertTrue('subcat3' in result)
 
     def test_read_by_slug_ensures_qualified(self):
         self.mox.StubOutWithMock(listing_service, 'ensure_qualified_slug')

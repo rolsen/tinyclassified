@@ -3,10 +3,17 @@
 @author: Rory Olsen (rolsen, Gleap LLC 2014)
 @license: GNU GPLv3
 """
+import jinja2
+import os
 import re
 
 import tiny_classified
 
+PUBLIC_TEMPLATE_DIR = os.path.join('templates', 'public')
+INDEX_TEMPLATE_PATH = os.path.join(
+    PUBLIC_TEMPLATE_DIR,
+    'listing_tags_index_inner.html'
+)
 
 def make_string_safe(string):
     """Convert / modify a string into a safe version for use in URLs.
@@ -81,13 +88,90 @@ def check_is_qualified_slug(slug):
     return isinstance(slug, basestring) and regex.match(slug)
 
 
-def index():
-    """List all listings.
+def index_tags():
+    """List all unique listings tags.
 
-    @return: listings
-    @rtype: iterable over dict
+    @return: listing tags
+    @rtype: iterable over str
     """
-    return tiny_classified.get_db_adapter().index_listings()
+    listings = tiny_classified.get_db_adapter().get_listings_collection()
+    return listings.distinct('tags')
+
+
+def collect_index_dict(taglists):
+    """Collect the unique categories and subcategories into a dict.
+
+    Compresses lists of listing tags into an intersection in the form of a dict.
+    Unique categories are the keys of the resultant dict, which have values of
+    lists of listing tag subcategories.
+
+    Example input:
+    tags0 = [{'altcat': ['altsubcat1', 'altsubcat2']}]
+    tags1 = [
+        {'altcat': ['altsubcat2', 'altsubcat3']},
+        {'cat': ['subcat2', 'subcat3']}
+    ]
+    taglists = [tags0, tags1]
+
+    example output:
+    {
+        'altcat': ['altsubcat1', 'altsubcat2', 'altsubcat3'],
+        'cat': ['subcat2', 'subcat3']
+    }
+
+    @param taglists: The lists of tags of listings.
+    @type taglists: iterable over iterable over dict
+    @return: Dict which has unique categories as the keys and lists of listing
+    tag subcategories as values.
+    @rtype: dict
+    """
+    categories = {}
+    for tagset in taglists:
+        for tags in tagset:
+            for category, subcategories in tags.iteritems():
+                if categories.get(category, None) == None:
+                    categories[category] = []
+                for subcat in subcategories:
+                    if not subcat in categories[category]:
+                        categories[category].append(subcat)
+    return categories
+
+
+def index_tags_as_html():
+    """List all unique listings tags formatted as an HTML document.
+
+    @return: List all unique listings tags formatted as an HTML document.
+    @rtype: str
+    """
+    tags = index_tags()
+    categories = collect_index_dict(tags)
+
+    template = None
+    with open(INDEX_TEMPLATE_PATH) as f:
+        template = jinja2.Template(f.read())
+
+    return template.render({
+        'categories': categories,
+        'listing_url_base': tiny_classified.get_config()['LISTING_URL_BASE']
+    })
+
+
+def read_by_slug_as_html():
+    """Get a listing of all listings formatted as HTML.
+
+    @return: Listing of all listings formatted as an HTML document.
+    @rtype: str
+    """
+    listings = index()
+
+    template = None
+    with open(INDEX_TEMPLATE_PATH) as f:
+        template = jinja2.Template(f.read())
+
+    return template.render({
+        'listings': listings,
+        'listing_url_base': util.get_app_config()['LISTING_URL_BASE']
+    })
 
 
 def read_by_slug(qualified_slug):
@@ -127,6 +211,7 @@ def read_contact_by_id(listing, contact_id):
             return contact
             break
     return None
+
 
 def update(listing):
     """Update the listing corresponding to a qualified listing slug.
@@ -200,6 +285,7 @@ def list_by_slug(slug):
     @rtype: list
     """
     return tiny_classified.get_db_adapter().list_listings_by_slug(slug)
+
 
 def create_default_listing_for_user(email):
     """Create a listing for the user corresponding to the given email.

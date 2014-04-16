@@ -87,6 +87,7 @@ def read(contact_id):
     result_dict[util.SESS_EMAIL] = email
     return json.dumps(result_dict)
 
+
 @blueprint.route('/contact', methods=['GET'])
 @util.require_login()
 def index():

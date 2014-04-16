@@ -35,13 +35,15 @@ class PublicControllerTests(mox.MoxTestBase):
         self.app = tiny_classified.app.test_client()
 
     def test_index_listings(self):
-        self.mox.StubOutWithMock(services.listing_service, 'index')
-        services.listing_service.index().AndReturn(TEST_LISTINGS)
+        test_html = 'listing tags html'
+        self.mox.StubOutWithMock(services.listing_service, 'index_tags_as_html')
+        services.listing_service.index_tags_as_html().AndReturn(test_html)
 
         self.mox.ReplayAll()
 
         result = self.app.get('/public/listings')
         self.assertEqual(200, result.status_code)
+        self.assertTrue(test_html in result.data)
 
     def test_index_listings_by_category_category(self):
         self.mox.StubOutWithMock(

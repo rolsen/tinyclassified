@@ -1,0 +1,27 @@
+{% for category, subcategories in categories.iteritems() %}
+<table id="index-table">
+    <thead>
+        <th colspan="2">
+            <a href="{{ listing_url_base }}/{{ category.replace(' ', '-') }}">
+                {{ category }}
+            </a>
+        </th>
+    </thead>
+    <tbody>
+    {% for dualsubcategory in subcategories|batch(2, '&nbsp;') %}
+        <tr>
+            {% for subcategory in dualsubcategory %}
+            <td>
+                {% if subcategory != '&nbsp;' %}
+                <a href="{{ listing_url_base }}/{{ subcategory.replace(' ', '-') }}">
+                    {{ subcategory }}
+                </a>
+                {% else %} {{ subcategory }} {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<br/>
+{% endfor %}

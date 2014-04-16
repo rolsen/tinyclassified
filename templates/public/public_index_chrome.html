@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/public_index.css">
+{% endblock %}
+
+{% block content %}
+<div>
+    <h3>Resource Directory</h3>
+</div>
+<div id="public-listing-index">
+    {{ tag_index_html|safe }}
+</div>
+{% endblock %}
