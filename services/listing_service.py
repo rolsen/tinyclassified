@@ -84,7 +84,7 @@ def check_is_qualified_slug(slug):
     @return: True if the slug is fully qualified, False if not
     @rtype: boolean
     """
-    regex = re.compile("^[\w-]+\/[\w-]+\/[\w-]+$")
+    regex = re.compile("^[\w-]+\/[\w-]+\/[\w@\.-]+$")
     return isinstance(slug, basestring) and regex.match(slug)
 
 
@@ -118,8 +118,8 @@ def collect_index_dict(taglists):
         'cat': ['subcat2', 'subcat3']
     }
 
-    @param taglists: The lists of tags of listings.
-    @type taglists: iterable over iterable over dict
+    @param taglists: The lists of listings tags to collect.
+    @type taglists: iterable over dict
     @return: Dict which has unique categories as the keys and lists of listing
     tag subcategories as values.
     @rtype: dict

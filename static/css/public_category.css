@@ -1,0 +1,13 @@
+table,th,td
+{
+  border:1px solid black;
+  border-collapse:collapse;
+}
+#subcategories-table
+{
+    width:150px;
+}
+#listings-table
+{
+  width:300px;
+}

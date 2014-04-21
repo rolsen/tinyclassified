@@ -3,6 +3,7 @@
 @author: Rory Olsen (rolsen, Gleap LLC 2014)
 @license: GNU GPLv3
 """
+import copy
 import mox
 
 import tiny_classified
@@ -10,10 +11,12 @@ import tiny_classified
 import services
 
 import public_controller
+import test_util
 
 TEST_LISTING_1 = {
     'author_email': 'test1@example.com',
     'name': 'TestName1',
+    'tags': [{'cat1':['subcat1']}],
     'slugs': ['/cat1/subcat1/TestName1'],
     'about': 'About test listing 1'
 }
@@ -21,11 +24,25 @@ TEST_LISTING_1 = {
 TEST_LISTING_2 = {
     'author_email': 'test2@example.com',
     'name': 'TestName2',
-    'slugs': ['/cat1/subcat1/TestName2', '/cat1/subcat1/TestName2'],
+    'tags': [{'cat1':['subcat1', 'subcat2']}],
+    'slugs': ['/cat1/subcat1/TestName2', '/cat1/subcat2/TestName2'],
     'about': 'About test listing 2'
 }
 
-TEST_LISTINGS = [TEST_LISTING_1, TEST_LISTING_2]
+TEST_LISTINGS = [
+    TEST_LISTING_1,
+    TEST_LISTING_2
+]
+
+TEST_TAGS = [
+    TEST_LISTING_1['tags'],
+    TEST_LISTING_2['tags']
+]
+
+TEST_COLLECTED_TAGS_CATEGORY = {
+    'cat1': ['subcat1', 'subcat2']
+}
+
 
 class PublicControllerTests(mox.MoxTestBase):
 
@@ -45,37 +62,85 @@ class PublicControllerTests(mox.MoxTestBase):
         self.assertEqual(200, result.status_code)
         self.assertTrue(test_html in result.data)
 
-    def test_index_listings_by_category_category(self):
+    def test_index_listings_by_slug_category(self):
+        test_cursor = test_util.TestCursor(TEST_LISTINGS)
+        category = 'cat1'
+
         self.mox.StubOutWithMock(
             services.listing_service,
             'list_by_slug'
         )
-        services.listing_service.list_by_slug('cat1').AndReturn(
-            TEST_LISTINGS
+        services.listing_service.list_by_slug(category).AndReturn(
+            test_cursor
+        )
+
+        self.mox.StubOutWithMock(
+            services.listing_service,
+            'check_is_qualified_slug'
+        )
+        services.listing_service.check_is_qualified_slug(category).AndReturn(
+            False
+        )
+
+        self.mox.StubOutWithMock(services.listing_service, 'collect_index_dict')
+        services.listing_service.collect_index_dict(TEST_TAGS).AndReturn(
+            TEST_COLLECTED_TAGS_CATEGORY
         )
 
         self.mox.ReplayAll()
 
         result = self.app.get('/public/listings/cat1')
         self.assertEqual(200, result.status_code)
+        self.assertEqual('tags', test_cursor.distinct_param)
 
-    def test_index_listings_by_category_category_and_subcategory(self):
+        # Test that expected URLs are in the HTML
+        res_html = result.get_data()
+        self.assertTrue('/cat1/subcat1' in res_html)
+        self.assertTrue('/cat1/subcat2' in res_html)
+        self.assertTrue('/cat1/subcat1/TestName1' in res_html)
+        self.assertTrue('/cat1/subcat1/TestName2' in res_html)
+
+    def test_index_listings_by_slug_category_and_subcategory(self):
+        test_cursor = test_util.TestCursor(TEST_LISTINGS)
+        url = 'cat1/subcat1'
+
         self.mox.StubOutWithMock(
             services.listing_service,
             'list_by_slug'
         )
-
-        url = 'cat1/subcat1'
         services.listing_service.list_by_slug(url).AndReturn(
-            TEST_LISTINGS
+            test_cursor
+        )
+
+        self.mox.StubOutWithMock(
+            services.listing_service,
+            'check_is_qualified_slug'
+        )
+        services.listing_service.check_is_qualified_slug(url).AndReturn(
+            False
+        )
+
+        self.mox.StubOutWithMock(services.listing_service, 'collect_index_dict')
+        services.listing_service.collect_index_dict(TEST_TAGS).AndReturn(
+            TEST_COLLECTED_TAGS_CATEGORY
         )
 
         self.mox.ReplayAll()
 
         result = self.app.get('/public/listings/' + url)
         self.assertEqual(200, result.status_code)
+        self.assertEqual('tags', test_cursor.distinct_param)
 
-    def test_index_listings_by_category_individual(self):
+        # Test that expected URLs are in the HTML
+        res_html = result.get_data()
+        self.assertTrue('/cat1"' in res_html) # The " makes sure it's the end
+        self.assertTrue('/cat1/subcat1/TestName1' in res_html)
+        self.assertTrue('/cat1/subcat1/TestName2' in res_html)
+
+        # Expected text
+        self.assertTrue('Clear Filters' in res_html)
+
+    def test_index_listings_by_slug_individual(self):
         self.mox.StubOutWithMock(
             services.listing_service,
             'list_by_slug'
@@ -83,7 +148,7 @@ class PublicControllerTests(mox.MoxTestBase):
 
         url = 'cat1/subcat1/TestName1'
         services.listing_service.list_by_slug(url).AndReturn(
-            TEST_LISTING_1
+            test_util.TestCursor([TEST_LISTING_1])
         )
 
         self.mox.ReplayAll()

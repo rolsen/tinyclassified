@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="/static/css/public_category.css">
+{% endblock %}
+
+{% block content %}
+<div>
+    <h3>{{ category }}</h3>
+</div>
+<div id="public-category-index">
+    {% if subcat_filter %}
+    <a href="{{ [listing_url_base, category]|join('/') }}">Clear Filters</a>
+    {% endif %}
+    <table id="subcategories-table">
+    <tr><th>Category</th></tr>
+    {% if subcat_filter %}
+        <tr>
+            <td>
+                <a href="{{ [listing_url_base, category]|join('/') }}">{{ subcategories }}</a><!-- This is a clear filter button -->
+            </td>
+        </tr>
+    {% else %}
+    {% for subcat in subcategories %}
+        <tr>
+            <td>
+                <a href="{{ [listing_url_base, category, subcat]|join('/') }}">{{ subcat }}</a>
+            </td>
+        </tr>
+    {% endfor %}
+    {% endif %}
+    </table>
+    <table id="listings-table">
+    {% for listing in listings %}
+        <tr>
+            <td>
+                <a href="{{ [listing_url_base, listing.slugs[0]]|join('/') }}">
+                    {{ listing.name }}
+                </a>
+            </td>
+            <td>
+                Categories: {% for category_dict in listing.tags %}{{ category_dict.get(category, [])|join(', ') }}{% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@
 @license: GNU GPLv3
 """
 import pymongo
+import re
 
 DATABASE_NAME = 'tiny_classified'
 

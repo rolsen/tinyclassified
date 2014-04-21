@@ -179,6 +179,11 @@ class ListingServiceTests(mox.MoxTestBase):
         result = listing_service.check_is_qualified_slug('cat-go/sub-ct/na-me')
         self.assertTrue(result)
 
+    def test_check_is_qualified_slug_ok_with_email_address(self):
+        result = listing_service.check_is_qualified_slug(
+            'cat-go/sub-ct/listing-for-name@somewhere.com')
+        self.assertTrue(result)
+
     def test_collect_index_dict(self):
         actual_result = listing_service.collect_index_dict(TEST_TAGLIST)
         self.assertEqual(TEST_INDEX_CATEGORIES, actual_result)

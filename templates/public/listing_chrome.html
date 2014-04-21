@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="/static/css/public_listing.css">
+{% endblock %}
+
+{% block content %}
+<div>
+    <h3>{{ category }}</h3>
+    <a href="{{ [listing_url_base, category]|join('/') }}">&#8592 Return to search</a>
+    <hr>
+</div>
+<div id="public-listing">
+    <h4>{{ listing.name }}</h4>
+    <hr>
+    <p>
+        1234 Listing St (stub)</br>
+        Denver, CO 80012</br>
+        (970) 555 - 5555
+    </p>
+    <div id="listing-subcategories-list">
+        <strong>Categories:</strong>
+        {% for category_dict in listing.tags %}{{ category_dict.get(category, [])|join(', ') }}{% endfor %}
+    </div>
+    {% if listing.get('about', None) %}
+    <div class="listing-info-section" id="additional-info-div">
+        <h5>Description</h5>
+        <p>{{ listing.about }}</p>
+    </div>
+    {% endif %}
+    <div class="listing-info-section">
+        <h5>Additional Information</h5>
+        {% for contact in listing.contact_infos %}
+        <p><strong>{{ contact.type }}:</strong> {{ contact.value }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
