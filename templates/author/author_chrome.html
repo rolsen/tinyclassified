@@ -24,7 +24,12 @@
 {% endblock %}
 
 {% block content %}
-
+<div class="header">
+    <h3>TinyClassified</h3>
+    <span>Hello, {{ email }}</span>
+    <span><a href="{{ [base_url, 'logout']|join('/') }}">Logout</a>
+</div>
+<hr>
 <div class="tabbable" id="individual-document-view">
     <ul class="nav nav-tabs">
         <li class="active author-view-tab"><a href="#listing" data-toggle="tab">Listing</a></li>

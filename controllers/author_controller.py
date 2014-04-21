@@ -7,6 +7,8 @@ import json
 
 import flask
 
+import tiny_classified
+
 import services
 
 import util
@@ -35,5 +37,7 @@ def show_user_ui():
     return flask.render_template(
         'author/author_chrome.html',
         listing_view_templates=listing_view_templates,
-        contacts_view_templates=contacts_view_templates
+        contacts_view_templates=contacts_view_templates,
+        email=flask.session[util.SESS_EMAIL],
+        base_url=tiny_classified.get_config()['BASE_URL']
     )
