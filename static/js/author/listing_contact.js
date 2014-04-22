@@ -1,8 +1,8 @@
 
 window.ListingContact = Backbone.Model.extend({
     defaults:{
-        'type': 'DEFAULTtype',
-        'value': 'DEFAULTvalue'
+        'type': '',
+        'value': ''
     },
     idAttribute: "_id"
 });
@@ -128,9 +128,7 @@ window.ListingContactAddView = Backbone.View.extend({
             'type': elem.find('#type-input').val(),
             'value': elem.find('#value-input').val()
         });
-        result = this.contactCollection.create(contact, {wait: true});
-        console.log('result = this.contactCollection.create(contact);');
-        console.log(result);
+        result = this.contactCollection.create(contact);
 
         elem.find('#value-input').val('');
         return false;

@@ -55,9 +55,7 @@ def create():
     # TODO: Put db operations in util.after_this_request
     services.listing_service.update(listing)
 
-    result_dict = {'contact': contact_dict}
-    result_dict[util.SESS_EMAIL] = email
-    return json.dumps(result_dict)
+    return json.dumps(contact_dict)
 
 
 @blueprint.route('/contact/<int:contact_id>', methods=['GET'])
@@ -84,7 +82,6 @@ def read(contact_id):
         return 'Contact information not found for author.', 404
 
     result_dict = {'contact': contact_read}
-    result_dict[util.SESS_EMAIL] = email
     return json.dumps(result_dict)
 
 
@@ -103,7 +100,6 @@ def index():
         return 'Listing not found for author.', 404
 
     result_dict = {'contact_infos': listing.get('contact_infos', None)}
-    result_dict[util.SESS_EMAIL] = email
     return json.dumps(listing.get('contact_infos', None))
 
 
