@@ -1,0 +1,15 @@
+
+<script type="text/template" id="about-view-template">
+    <form role="form" id="doc-metadata-form" parsley-validate>
+        <div id="doc-title"></div>
+        <div class="form-group">
+            <label for="short-summary">About Me</label>
+            <textarea class="mceEditor form-control" id="about" name="about" rows="3">
+                <%= markdown.toHTML(about) %>
+            </textarea>
+        </div>
+        <div class="extra-bottom-padding-group form-group">
+            <button class="btn btn-primary" id="save-listing-button">Save About Me Section</button>
+        </div>
+    </form>
+</script>

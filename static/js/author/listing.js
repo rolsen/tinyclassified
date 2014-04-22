@@ -2,11 +2,11 @@
  * Model that represents a TinyClassified listing.
 **/
 window.Listing = Backbone.Model.extend({
-    urlRoot: '/author',
+    urlRoot: '/author/',
     defaults: {
         'author_email': null,
         'name': null,
-        'about': null,
+        'about': '',
         'slugs': [],
         'tags': []
     },
@@ -24,8 +24,11 @@ window.ListingView = Backbone.View.extend({
         this.contactView = new ListingContactView({model: this.model});
         // this.socialView = new ListingSocialView({model: this.model});
         // this.showcaseView = new ListingShowcaseView({model: this.model});
-        // this.aboutView = new ListingAboutView({model: this.model});
+        this.aboutView = new ListingAboutView({model: this.model});
         this.model.bind('change', this.render, this);
+
+        this.model.set({'_id' : '_current'});
+        this.model.fetch();
     },
 
     render:tinyClassifiedUtil.getViewRender(),
@@ -35,7 +38,7 @@ window.ListingView = Backbone.View.extend({
         tinyClassifiedUtil.assign(this.contactView, '#contacts-view');
         // tinyClassifiedUtil.assign(this.socialView, '#social-view-display');
         // tinyClassifiedUtil.assign(this.showcaseView, '#showcase-view-display');
-        // tinyClassifiedUtil.assign(this.aboutView, '#about-view-display');
+        tinyClassifiedUtil.assign(this.aboutView, '#about-view');
     },
 
     beforeClose:function () {

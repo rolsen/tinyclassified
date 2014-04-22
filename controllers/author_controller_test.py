@@ -25,6 +25,7 @@ TEST_LISTING = {
     'slugs': TEST_LISTING_SLUGS,
     'about': TEST_LISTING_ABOUT
 }
+TEST_LISTING_FORM = dict(model = json.dumps(TEST_LISTING))
 
 class AuthorControllerTests(mox.MoxTestBase):
 
@@ -32,6 +33,8 @@ class AuthorControllerTests(mox.MoxTestBase):
         mox.MoxTestBase.setUp(self)
         tiny_classified.app.debug = True
         self.app = tiny_classified.app.test_client()
+        with self.app.session_transaction() as sess:
+            sess[util.SESS_EMAIL] = TEST_EMAIL
 
     def setup_logged_in(self):
         self.mox.StubOutWithMock(util, 'check_active_requirement')
@@ -51,3 +54,28 @@ class AuthorControllerTests(mox.MoxTestBase):
 
         result = self.app.get('/author/')
         self.assertEqual(200, result.status_code)
+
+    def test_update(self):
+        self.setup_logged_in()
+
+        self.mox.StubOutWithMock(services.listing_service, 'update')
+        services.listing_service.update(TEST_LISTING)
+
+        self.mox.ReplayAll()
+
+        response = self.app.put(
+            '/author/not_sure_why_this_param_is_needed',
+            data=TEST_LISTING_FORM
+        )
+        self.assertEqual(200, response.status_code)
+
+    def test_read(self):
+        self.setup_logged_in()
+
+        self.mox.StubOutWithMock(services.listing_service, 'read_by_email')
+        services.listing_service.read_by_email(TEST_EMAIL)
+
+        self.mox.ReplayAll()
+
+        response = self.app.get('/author/_current')
+        self.assertEqual(200, response.status_code)
