@@ -1,9 +1,16 @@
 
 <script type="text/template" id="listing-details-template">
+    <div id="name-view"/>
     <div class="listing-details" id="listing-item">
-        <span>Name: <%= name %></span><br/>
         <span>Tags: <%= tags %></span><br/>
     </div>
     <div id="contacts-view"/>
     <div id="about-view"/>
+</script>
+
+<script type="text/template" id="listing-name-template">
+    <form role="form" id="listing-name-form" parsley-validate>
+        <input type="text" name="listing-name" class="form-control" id="listing-name" placeholder="ex: Listing Name" value="<%= name %>" required>
+        <button class="btn btn-primary" id="save-name-button">Save</button>
+    </form>
 </script>

@@ -73,9 +73,8 @@ class AuthorContactControllerTests(mox.MoxTestBase):
 
         self.assertTrue(test_util.check_dict(
             TEST_CONTACT,
-            data_response['contact']
+            data_response
         ))
-        self.assertTrue('email' in data_response)
 
     def test_index(self):
         test_listing = copy.deepcopy(TEST_LISTING)

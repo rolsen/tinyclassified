@@ -24,6 +24,7 @@ window.ListingView = Backbone.View.extend({
         this.contactView = new ListingContactView({model: this.model});
         // this.socialView = new ListingSocialView({model: this.model});
         // this.showcaseView = new ListingShowcaseView({model: this.model});
+        this.nameView = new ListingNameView({model: this.model});
         this.aboutView = new ListingAboutView({model: this.model});
         this.model.bind('change', this.render, this);
 
@@ -38,6 +39,7 @@ window.ListingView = Backbone.View.extend({
         tinyClassifiedUtil.assign(this.contactView, '#contacts-view');
         // tinyClassifiedUtil.assign(this.socialView, '#social-view-display');
         // tinyClassifiedUtil.assign(this.showcaseView, '#showcase-view-display');
+        tinyClassifiedUtil.assign(this.nameView, '#name-view');
         tinyClassifiedUtil.assign(this.aboutView, '#about-view');
     },
 
@@ -46,4 +48,24 @@ window.ListingView = Backbone.View.extend({
             this.contactView.close();
         }
     }
+});
+
+window.ListingNameView = Backbone.View.extend({
+
+    template:_.template($('#listing-name-template').html()),
+
+    events:{
+        'click #save-name-button': 'saveName'
+    },
+
+    saveName:function () {
+        this.model.set({
+            name: $(this.el).find('#listing-name').val()
+        });
+        this.model.save();
+        return false;
+    },
+
+    render: tinyClassifiedUtil.getViewRender(),
+    close: tinyClassifiedUtil.getViewClose()
 });
