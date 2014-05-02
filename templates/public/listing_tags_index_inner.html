@@ -3,7 +3,7 @@
     <thead>
         <th colspan="2">
             <a href="{{ listing_url_base }}/{{ category.replace(' ', '-') }}">
-                {{ category }}
+                {{ category.replace('_slash_', '/') }}
             </a>
         </th>
     </thead>
@@ -14,9 +14,9 @@
             <td>
                 {% if subcategory != '&nbsp;' %}
                 <a href="{{ listing_url_base }}/{{ subcategory.replace(' ', '-') }}">
-                    {{ subcategory }}
+                    {{ subcategory.replace('_slash_', '/') }}
                 </a>
-                {% else %} {{ subcategory }} {% endif %}
+                {% else %} {{ subcategory.replace('_slash_', '/') }} {% endif %}
             </td>
             {% endfor %}
         </tr>

@@ -98,7 +98,7 @@ window.ListingTagsView = Backbone.View.extend({
         var rows = [];
         tags.forEach(function (subtags, cat_output) {
             rows.push.apply(rows, subtags.map(function (subtag) {
-                return template({cat_output: cat_output, subtag: subtag});
+                return template({cat_output: cat_output.replace('_slash_', '/'), subtag: subtag});
             }));
         });
         $('#tags-list').html(rows.join('\n'));
@@ -139,6 +139,7 @@ window.ListingTagsView = Backbone.View.extend({
         var subtag = $(event.target).attr('subtag');
 
         var tags = this.model.get('tags');
+        cat_output = cat_output.replace('/', '_slash_');
         tags = this.deleteSubcategory(tags, cat_output, subtag);
         this.model.set('tags', tags);
 

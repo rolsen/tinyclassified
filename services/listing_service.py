@@ -14,16 +14,59 @@ INDEX_TEMPLATE_PATH = os.path.join(
     PUBLIC_TEMPLATE_DIR,
     'listing_tags_index_inner.html'
 )
+ESCAPED_SLASH = '_slash_'
 
-def make_string_safe(string):
-    """Convert / modify a string into a safe version for use in URLs.
 
-    @param string: The string to make safe.
-    @type string: str
-    @return: The safe version of the string.
+def make_tag_safe(tag):
+    """Convert / modify a tag into a safe version for use as a tag.
+
+    @param tag: The tag or subtag to make safe.
+    @type tag: str
+    @return: The safe version of the tag.
     @rtype: str
     """
-    return string.replace(' ', '-')
+    return tag.replace('/', ESCAPED_SLASH)
+
+
+def sanitize_tags(listing):
+    """Constructs a safe slug from the given tag, subtag, and name.
+
+    @param tag: The tag of the slug to be constructed.
+    @type tag: str
+    @param subtag: The subtag of the slug to be constructed.
+    @type subtag: str
+    @param name: The name of the slug to be constructed.
+    @type name: str
+    @return: The slug
+    @rtype: str
+    """
+    # Put the tags into a list so that newly sanitized tags don't overwrite
+    # existing sanitized tags
+    tags_temp = []
+    for tag in listing['tags']:
+        tags_temp.append((
+            make_tag_safe(tag),
+            [make_tag_safe(subtag) for subtag in listing['tags'][tag]]
+        ))
+
+    tags = {}
+    for tag, subtags in tags_temp:
+        if not tags.get(tag, None):
+            tags[tag] = []
+        tags[tag].extend(subtags)
+
+    listing['tags'] = tags
+
+
+def make_slug_safe(slug):
+    """Convert / modify a slug substring into a safe version for use in URLs.
+
+    @param slug: The slug substring to make safe.
+    @type slug: str
+    @return: The safe version of the slug substring.
+    @rtype: str
+    """
+    return slug.replace(' ', '-')
 
 
 def make_slug(tag, subtag, name):
@@ -38,9 +81,9 @@ def make_slug(tag, subtag, name):
     @return: The slug
     @rtype: str
     """
-    safe_tag = make_string_safe(tag)
-    safe_subtag = make_string_safe(subtag)
-    safe_name = make_string_safe(name)
+    safe_tag = make_slug_safe(tag)
+    safe_subtag = make_slug_safe(subtag)
+    safe_name = make_slug_safe(name)
     return safe_tag + '/' + safe_subtag + '/' + safe_name
 
 
@@ -221,6 +264,7 @@ def update(listing):
     if not listing.get('_id', None):
         raise ValueError('Listing not yet saved to database')
 
+    sanitize_tags(listing)
     calculate_slugs(listing)
     tiny_classified.get_db_adapter().upsert_listing(listing)
 

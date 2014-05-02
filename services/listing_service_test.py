@@ -17,6 +17,9 @@ import listing_service
 ALL_CHARS_STR = '0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]\
 ^_`abcdefghijklmnopqrstuvwxyz/'
 
+ALL_CHARS_STR_SAFE = '0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]\
+^_`abcdefghijklmnopqrstuvwxyz%s' % listing_service.ESCAPED_SLASH
+
 TEST_EMAIL = 'test@example.com'
 TEST_NAME = 'TestName'
 TEST_TAG1 = 'cat1'
@@ -61,26 +64,81 @@ TEST_INDEX_CATEGORIES = {
 
 class ListingServiceTests(mox.MoxTestBase):
 
-    def test_make_string_safe_no_spaces(self):
-        result = listing_service.make_string_safe(ALL_CHARS_STR)
+    def test_make_tag_safe_simple(self):
+        result = listing_service.make_tag_safe(ALL_CHARS_STR)
+        self.assertEqual(ALL_CHARS_STR_SAFE, result)
+
+    def test_make_tag_safe_slash_no_spaces(self):
+        test_str = "test/string"
+        result = listing_service.make_tag_safe(test_str)
+
+        safe_str = "test%sstring" % listing_service.ESCAPED_SLASH
+        self.assertEqual(safe_str, result)
+
+    def test_make_tag_safe_slash_spaces(self):
+        test_str = "test / string"
+        result = listing_service.make_tag_safe(test_str)
+
+        safe_str = "test %s string" % listing_service.ESCAPED_SLASH
+        self.assertEqual(safe_str, result)
+
+    def test_sanitize_tags(self):
+        test_listing = {'tags': TEST_TAGS_MULTIPLE_TAGS}
+        self.mox.StubOutWithMock(listing_service, 'make_tag_safe')
+
+        ls = listing_service
+        ls.make_tag_safe(TEST_TAG1).InAnyOrder().AndReturn(TEST_TAG1)
+        ls.make_tag_safe(TEST_TAG2).InAnyOrder().AndReturn(TEST_TAG2)
+        ls.make_tag_safe(TEST_SUBTAG1).InAnyOrder().AndReturn(TEST_SUBTAG1)
+        ls.make_tag_safe(TEST_SUBTAG2).InAnyOrder().AndReturn(TEST_SUBTAG2)
+        ls.make_tag_safe(TEST_SUBTAG3).InAnyOrder().AndReturn(TEST_SUBTAG3)
+
+        self.mox.ReplayAll()
+
+        listing_service.sanitize_tags(test_listing)
+        tags = test_listing['tags']
+        self.assertEqual(2, len(tags))
+        self.assertEqual(2, len(tags[TEST_TAG1]))
+        self.assertEqual(1, len(tags[TEST_TAG2]))
+
+    def test_sanitize_tags_collision_avoidance(self):
+        test_listing = {'tags': TEST_TAGS_MULTIPLE_TAGS}
+        self.mox.StubOutWithMock(listing_service, 'make_tag_safe')
+
+        ls = listing_service
+        ls.make_tag_safe(TEST_TAG1).InAnyOrder().AndReturn(TEST_TAG1)
+        ls.make_tag_safe(TEST_TAG2).InAnyOrder().AndReturn(TEST_TAG1)
+        ls.make_tag_safe(TEST_SUBTAG1).InAnyOrder().AndReturn(TEST_SUBTAG1)
+        ls.make_tag_safe(TEST_SUBTAG2).InAnyOrder().AndReturn(TEST_SUBTAG2)
+        ls.make_tag_safe(TEST_SUBTAG3).InAnyOrder().AndReturn(TEST_SUBTAG3)
+
+        self.mox.ReplayAll()
+
+        listing_service.sanitize_tags(test_listing)
+        tags = test_listing['tags']
+        self.assertEqual(1, len(tags))
+        self.assertEqual(3, len(tags[TEST_TAG1]))
+
+    def test_make_slug_safe_no_spaces(self):
+        result = listing_service.make_slug_safe(ALL_CHARS_STR)
         self.assertEqual(ALL_CHARS_STR, result)
 
-    def test_make_string_safe_spaces(self):
+    def test_make_slug_safe_spaces(self):
         test_str = "test string"
-        result = listing_service.make_string_safe(test_str)
+        result = listing_service.make_slug_safe(test_str)
 
         safe_str = "test-string"
         self.assertEqual(safe_str, result)
 
     def test_make_slug(self):
-        self.mox.StubOutWithMock(listing_service, 'make_string_safe')
-        listing_service.make_string_safe(TEST_NAME).InAnyOrder().AndReturn(
+        self.mox.StubOutWithMock(listing_service, 'make_slug_safe')
+        listing_service.make_slug_safe(TEST_NAME).InAnyOrder().AndReturn(
             TEST_NAME
         )
-        listing_service.make_string_safe(TEST_TAG1).InAnyOrder().AndReturn(
+        listing_service.make_slug_safe(TEST_TAG1).InAnyOrder().AndReturn(
             TEST_TAG1
         )
-        listing_service.make_string_safe(TEST_SUBTAG1).InAnyOrder().AndReturn(
+        listing_service.make_slug_safe(TEST_SUBTAG1).InAnyOrder().AndReturn(
             TEST_SUBTAG1
         )
 
@@ -274,6 +332,9 @@ class ListingServiceTests(mox.MoxTestBase):
         test_listing_copy['_id'] = test_id
         test_listing_new = copy.deepcopy(TEST_LISTING)
         test_listing_new['_id'] = test_id
+
+        self.mox.StubOutWithMock(listing_service, 'sanitize_tags')
+        listing_service.sanitize_tags(test_listing_new)
 
         self.mox.StubOutWithMock(listing_service, 'calculate_slugs')
         listing_service.calculate_slugs(test_listing_new)

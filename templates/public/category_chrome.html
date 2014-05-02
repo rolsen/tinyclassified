@@ -23,28 +23,36 @@ $(document).ready(function() {
 
 {% block content %}
 <div>
-    <h3>{{ category }}</h3>
+    <h3>{{ category|replace('_slash_', '/') }}</h3>
 </div>
 <div id="public-category-index">
     {% if subcat_filter %}
     <a href="{{ [listing_url_base, category]|join('/') }}">Clear Filters</a>
     {% endif %}
     <table id="subcategories-table">
-    <tr><th>Category</th></tr>
-    {% if subcat_filter %}
-        <tr>
-            <td>
-                <a href="{{ [listing_url_base, category]|join('/') }}">{{ subcategories }}</a><!-- This is a clear filter button -->
-            </td>
-        </tr>
-    {% else %}
-    {% for subcat in subcategories %}
-        <tr>
-            <td>
-                <a href="{{ [listing_url_base, category, subcat]|join('/') }}">{{ subcat }}</a>
-            </td>
-        </tr>
-    {% endfor %}
+        <thead>
+            <tr><th>Category</th></tr>
+        </thead>
+        <tbody>
+        {% if subcat_filter %}
+            <tr>
+                <td>
+                    <a href="{{ [listing_url_base, category]|join('/') }}">
+                        {{ subcategories|replace('_slash_', '/') }}
+                    </a><!-- This is a clear filter button -->
+                </td>
+            </tr>
+        {% else %}
+        {% for subcat in subcategories %}
+            <tr>
+                <td>
+                    <a href="{{ [listing_url_base, category, subcat]|join('/') }}">
+                        {{ subcat|replace('_slash_', '/') }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
     {% endif %}
     </table>
     <table id="listings-table">
@@ -63,7 +71,7 @@ $(document).ready(function() {
                 </a>
             </td>
             <td>
-                Categories: {{ listing.tags.get(category, [])|join(', ') }}
+                Categories: {{ listing.tags.get(category, [])|join(', ')|replace('_slash_', '/') }}
             </td>
             <td>
                 {{ listing.about }}

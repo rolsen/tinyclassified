@@ -31,7 +31,7 @@
 
 {% block content %}
 <div>
-    <h3>{{ category }}</h3>
+    <h3>{{ category.replace('_slash_', '/') }}</h3>
     <a href="{{ [listing_url_base, category]|join('/') }}">&#8592 Return to search</a>
     <hr>
 </div>
@@ -45,7 +45,7 @@
     </p>
     <div id="listing-subcategories-list">
         <strong>Categories:</strong>
-        <span>{{ listing.tags.get(category, [])|join(', ') }}</span>
+        <span>{{ listing.tags.get(category, [])|join(', ')|replace('_slash_', '/') }}</span>
     </div>
     {% if listing.get('about', None) %}
     <div class="listing-info-section" id="additional-info-div">
