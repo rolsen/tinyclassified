@@ -1,8 +1,3 @@
 .listing-info-section {
   border:1px solid black;
 }
-#map-canvas {
-  border:1px solid black;
-  height: 300px;
-  width: 500px;
-}

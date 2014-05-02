@@ -4,31 +4,6 @@
 <link rel="stylesheet" type="text/css" href="/static/css/public_listing.css">
 {% endblock %}
 
-{% block scripts %}
-<script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&sensor=false">
-</script>
-<script type="text/javascript">
-    var latlng = new google.maps.LatLng(28.6988853, -81.3081226);
-    function initialize() {
-        var mapOptions = {
-          center: latlng,
-          zoom: 15
-        };
-        var map = new google.maps.Map(
-            document.getElementById("map-canvas"),
-            mapOptions
-        );
-        var marker = new google.maps.Marker({
-            position: latlng,
-            map: map,
-            title:"{{ listing.name }}"
-        });
-    }
-    google.maps.event.addDomListener(window, 'load', initialize);
-</script>
-{% endblock %}
-
 {% block content %}
 <div>
     <h3>{{ category.replace('_slash_', '/') }}</h3>
@@ -59,6 +34,5 @@
         <p><strong>{{ contact.type }}:</strong> {{ contact.value }}</p>
         {% endfor %}
     </div>
-    <div id="map-canvas"/>
 </div>
 {% endblock %}
