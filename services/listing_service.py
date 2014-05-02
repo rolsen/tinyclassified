@@ -54,10 +54,9 @@ def calculate_slugs(listing):
     @type listing: dict
     """
     slugs = []
-    for tagdict in listing['tags']:
-        for tag, subtaglist in tagdict.iteritems():
-            for subtag in subtaglist:
-                slugs.append(make_slug(tag, subtag, listing['name']))
+    for (tag, subtaglist) in listing['tags'].items():
+        for subtag in subtaglist:
+            slugs.append(make_slug(tag, subtag, listing['name']))
 
     listing['slugs'] = slugs
 
@@ -91,8 +90,8 @@ def check_is_qualified_slug(slug):
 def index_tags():
     """List all unique listings tags.
 
-    @return: listing tags
-    @rtype: iterable over str
+    @return: listing tags as a list of tag dicts
+    @rtype: iterable over dicts
     """
     listings = tiny_classified.get_db_adapter().get_listings_collection()
     return listings.distinct('tags')

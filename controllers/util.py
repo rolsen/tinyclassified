@@ -74,6 +74,26 @@ def require_login(admin=False):
     return decorator
 
 
+def remove_element_by_id(items, item_id, idAttribute='_id'):
+    """Remove a dict element from a list for a given id.
+
+    @param items: The list to remove an item from.
+    @type items: iterable over dict
+    @param item_id: The id of the item to remove from the items list.
+    @type item_id: str or int
+    @param idAttribute: The key of the id field of each item.
+    @type idAttribute: str
+    @return: True if success and item has been removed, False if unsuccessful
+        and the item not removed.
+    @rtype: bool
+    """
+    items_len = len(items)
+    items[:] = [item for item in items if item.get(idAttribute) != item_id]
+    if len(items) != items_len - 1:
+        return False
+    return True
+
+
 # def after_this_request(func):
 #     """Performs a task/function after returning a response.
 

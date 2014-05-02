@@ -1,9 +1,7 @@
 
 <script type="text/template" id="listing-details-template">
     <div id="name-view"/>
-    <div class="listing-details" id="listing-item">
-        <span>Tags: <%= tags %></span><br/>
-    </div>
+    <div id="tags-view"/>
     <div id="contacts-view"/>
     <div id="about-view"/>
 </script>
@@ -11,6 +9,37 @@
 <script type="text/template" id="listing-name-template">
     <form role="form" id="listing-name-form" parsley-validate>
         <input type="text" name="listing-name" class="form-control" id="listing-name" placeholder="ex: Listing Name" value="<%= name %>" required>
-        <button class="btn btn-primary" id="save-name-button">Save</button>
+        <button class="btn btn-primary" id="save-name-button">Save Name</button>
     </form>
+</script>
+
+<script type="text/template" id="listing-tags-template">
+    <form role="form" id="listing-tags-form" parsley-validate>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Value</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tags-list">
+            </tbody>
+        </table>
+        <form role="form" id="tag-add-form" parsley-validate>
+        <div class="form-group">
+            <input type="text" id="category" placeholder="ex: main category" required>
+            <input type="text" id="subcategory" placeholder="ex: sub category" required>
+            <button id="add-tag-button" type="submit" class="btn btn-default">Add Category</button>
+        </div>
+    </form>
+    </form><br/>
+</script>
+
+<script type="text/template" id="listing-tags-listing-template">
+    <tr>
+        <td><%- cat_output %></td>
+        <td><%- subtag %></td>
+        <td><a class="delete-tag-link" href="#" cat_output="<%- cat_output %>" subtag="<%- subtag %>">remove tag</a></td>
+    </tr>
 </script>

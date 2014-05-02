@@ -9,6 +9,8 @@ import tiny_classified
 
 import util
 
+TEST_TAG0 = {'foo': ['stuff'], '_id': 0}
+TEST_TAG1 = {'bar': ['stuff'], '_id': 1}
 
 def function_undecorated():
     return flask.render_template('util_test.html')
@@ -54,3 +56,20 @@ class UtilTests(mox.MoxTestBase):
 
         result = function_require_admin()
         self.assertEqual('redirect_302', result)
+
+    def test_remove_element_by_id_exists(self):
+        tags = [TEST_TAG0, TEST_TAG1]
+
+        result = util.remove_element_by_id(tags, 0)
+        self.assertTrue(result)
+        self.assertEqual(1, len(tags))
+        self.assertEqual(TEST_TAG1, tags[0])
+
+    def test_remove_element_by_id_not_exist(self):
+        tags = [TEST_TAG0, TEST_TAG1]
+
+        result = util.remove_element_by_id(tags, 3)
+        self.assertFalse(result)
+        self.assertEqual(2, len(tags))
+        self.assertEqual(TEST_TAG0, tags[0])
+        self.assertEqual(TEST_TAG1, tags[1])

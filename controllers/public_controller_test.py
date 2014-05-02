@@ -16,7 +16,7 @@ import test_util
 TEST_LISTING_1 = {
     'author_email': 'test1@example.com',
     'name': 'TestName1',
-    'tags': [{'cat1':['subcat1']}],
+    'tags': {'cat1':['subcat1']},
     'slugs': ['/cat1/subcat1/TestName1'],
     'about': 'About test listing 1'
 }
@@ -24,7 +24,7 @@ TEST_LISTING_1 = {
 TEST_LISTING_2 = {
     'author_email': 'test2@example.com',
     'name': 'TestName2',
-    'tags': [{'cat1':['subcat1', 'subcat2']}],
+    'tags': {'cat1':['subcat1', 'subcat2']},
     'slugs': ['/cat1/subcat1/TestName2', '/cat1/subcat2/TestName2'],
     'about': 'About test listing 2'
 }

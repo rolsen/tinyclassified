@@ -45,7 +45,7 @@
     </p>
     <div id="listing-subcategories-list">
         <strong>Categories:</strong>
-        {% for category_dict in listing.tags %}{{ category_dict.get(category, [])|join(', ') }}{% endfor %}
+        <span>{{ listing.tags.get(category, [])|join(', ') }}</span>
     </div>
     {% if listing.get('about', None) %}
     <div class="listing-info-section" id="additional-info-div">

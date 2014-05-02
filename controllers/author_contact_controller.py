@@ -99,7 +99,6 @@ def index():
     if not listing:
         return 'Listing not found for author.', 404
 
-    result_dict = {'contact_infos': listing.get('contact_infos', None)}
     return json.dumps(listing.get('contact_infos', None))
 
 
@@ -122,7 +121,10 @@ def delete(contact_id):
     if not contacts:
         return 'Contact not found', 404
 
-    contacts[:] = [d for d in contacts if d.get('_id') != contact_id]
+    success = util.remove_element_by_id(contacts, contact_id)
+    if not success:
+        return 'Contact not found', 404
+
     listing['contact_infos'] = contacts
     services.listing_service.update(listing)
 

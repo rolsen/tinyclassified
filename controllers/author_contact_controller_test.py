@@ -147,6 +147,11 @@ class AuthorContactControllerTests(mox.MoxTestBase):
             test_listing
         )
 
+        self.mox.StubOutWithMock(util, 'remove_element_by_id')
+        util.remove_element_by_id(test_listing['contact_infos'], 0).AndReturn(
+            True
+        )
+
         self.mox.StubOutWithMock(services.listing_service, 'update')
         services.listing_service.update(mox.IsA(dict))
 
