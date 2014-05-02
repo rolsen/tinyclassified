@@ -1,7 +1,24 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+<script type="text/javascript" language="javascript" src="/static/js/lib/jquery.dataTables.js"></script>
+<script>
+$(document).ready(function() {
+    $('#listings-table').dataTable( {
+        "columnDefs": [
+            {
+                "targets": [2],
+                "visible": false
+            }
+        ]
+    } );
+} );
+</script>
+{% endblock %}
+
 {% block styles %}
 <link rel="stylesheet" type="text/css" href="/static/css/public_category.css">
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.css">
 {% endblock %}
 
 {% block content %}
@@ -31,6 +48,13 @@
     {% endif %}
     </table>
     <table id="listings-table">
+    <thead>
+        <tr>
+            <td>Listing Name</td>
+            <td>Categories</td>
+            <td>About</td>
+        </tr>
+    </thead>
     {% for listing in listings %}
         <tr>
             <td>
@@ -40,6 +64,9 @@
             </td>
             <td>
                 Categories: {{ listing.tags.get(category, [])|join(', ') }}
+            </td>
+            <td>
+                {{ listing.about }}
             </td>
         </tr>
     {% endfor %}
