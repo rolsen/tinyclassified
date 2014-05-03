@@ -33,7 +33,8 @@ ALLOWED_LISTING_FIELDS = [
     'tags',
     'is_published',
     'contact_id_next',
-    'contact_infos'
+    'contact_infos',
+    'address'
 ]
 
 MINIMUM_REQUIRED_USER_FIELDS = ['email', 'password_hash', 'is_admin']

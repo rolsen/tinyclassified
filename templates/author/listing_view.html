@@ -4,6 +4,7 @@
     <div id="tags-view"/>
     <div id="contacts-view"/>
     <div id="about-view"/>
+    <div id="address-view"/>
 </script>
 
 <script type="text/template" id="listing-name-template">
@@ -32,7 +33,6 @@
             <input type="text" id="subcategory" placeholder="ex: sub category" required>
             <button id="add-tag-button" type="submit" class="btn btn-default">Add Category</button>
         </div>
-    </form>
     </form><br/>
 </script>
 
@@ -42,4 +42,18 @@
         <td><%- subtag %></td>
         <td><a class="delete-tag-link" href="#" cat_output="<%- cat_output %>" subtag="<%- subtag %>">remove tag</a></td>
     </tr>
+</script>
+
+<script type="text/template" id="listing-address-template">
+    <form role="form" id="listing-address-form" parsley-validate>
+        <label for="street-input">Address</label>
+        <input type="text" id="street-input" placeholder="ex: 123 Main St. #45" value="<%= address.street %>" required>
+        <label for="city-input">City</label>
+        <input type="text" id="city-input" placeholder="ex: Denver" value="<%= address.city %>" required>
+        <label for="state-input">State</label>
+        <input type="text" id="state-input" placeholder="ex: CO" value="<%= address.state %>" required>
+        <label for="zip-input">Zip Code</label>
+        <input type="text" id="zip-input" placeholder="ex: 80201" value="<%= address.zip %>" required>
+        <button id="save-address-button" type="submit" class="btn btn-default">Save Address</button>
+    </form>
 </script>

@@ -12,12 +12,18 @@
 </div>
 <div id="public-listing">
     <h4>{{ listing.name }}</h4>
-    <hr>
-    <p>
-        1234 Listing St (stub)</br>
-        Denver, CO 80012</br>
-        (970) 555 - 5555
-    </p>
+    <div id="listing-address">
+        {% if listing.address.street and
+            listing.address.city and
+            listing.address.state and
+            listing.address.zip
+        %}
+            <p>
+                {{ listing.address.street }}</br>
+                {{ listing.address.city }}, {{ listing.address.state }} {{ listing.address.zip }}
+            </p>
+        {% endif %}
+    </div>
     <div id="listing-subcategories-list">
         <strong>Categories:</strong>
         <span>{{ listing.tags.get(category, [])|join(', ')|replace('_slash_', '/') }}</span>

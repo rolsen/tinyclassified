@@ -8,7 +8,13 @@ window.Listing = Backbone.Model.extend({
         'name': null,
         'about': '',
         'slugs': [],
-        'tags': []
+        'tags': [],
+        'address': {
+            'street': '',
+            'city': '',
+            'state': '',
+            'zip': ''
+        }
     },
     idAttribute: "_id"
 });
@@ -25,6 +31,7 @@ window.ListingView = Backbone.View.extend({
         this.nameView = new ListingNameView({model: this.model});
         this.tagsView = new ListingTagsView({model: this.model});
         this.aboutView = new ListingAboutView({model: this.model});
+        this.addressView = new ListingAddressView({model: this.model});
 
         this.model.bind('change', this.render, this);
         this.model.set({'_id' : '_current'});
@@ -39,6 +46,7 @@ window.ListingView = Backbone.View.extend({
         tinyClassifiedUtil.assign(this.nameView, '#name-view');
         tinyClassifiedUtil.assign(this.tagsView, '#tags-view');
         tinyClassifiedUtil.assign(this.aboutView, '#about-view');
+        tinyClassifiedUtil.assign(this.addressView, '#address-view');
     },
 
     beforeClose:function () {
@@ -159,5 +167,30 @@ window.ListingTagsView = Backbone.View.extend({
         $('.delete-tag-link').click(callback);
     },
 
+    close: tinyClassifiedUtil.getViewClose()
+});
+
+window.ListingAddressView = Backbone.View.extend({
+
+    template:_.template($('#listing-address-template').html()),
+
+    events:{
+        'click #save-address-button': 'saveAddress'
+    },
+
+    saveAddress:function () {
+        this.model.set({
+            address: {
+                street: $(this.el).find('#street-input').val(),
+                city: $(this.el).find('#city-input').val(),
+                state: $(this.el).find('#state-input').val(),
+                zip: $(this.el).find('#zip-input').val(),
+            }
+        });
+        this.model.save();
+        return false;
+    },
+
+    render: tinyClassifiedUtil.getViewRender(),
     close: tinyClassifiedUtil.getViewClose()
 });
