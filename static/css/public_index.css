@@ -1,9 +1,11 @@
-table,th,td
-{
-  border:1px solid black;
-  border-collapse:collapse;
+.category-table-header {
+    background-color: #225277;
 }
-#index-table
-{
-  width:300px;
+
+.category-link {
+    color: white;
+}
+
+.category-link:hover {
+    color: white;
 }

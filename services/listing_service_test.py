@@ -127,7 +127,7 @@ class ListingServiceTests(mox.MoxTestBase):
         test_str = "test string"
         result = listing_service.make_slug_safe(test_str)
 
-        safe_str = "test-string"
+        safe_str = "test string"
         self.assertEqual(safe_str, result)
 
     def test_make_slug(self):
@@ -245,25 +245,6 @@ class ListingServiceTests(mox.MoxTestBase):
     def test_collect_index_dict(self):
         actual_result = listing_service.collect_index_dict(TEST_TAGLIST)
         self.assertEqual(TEST_INDEX_CATEGORIES, actual_result)
-
-    def test_index_tags_as_html(self):
-        self.mox.StubOutWithMock(listing_service, 'index_tags')
-        listing_service.index_tags().AndReturn(TEST_TAGLIST)
-
-        self.mox.StubOutWithMock(listing_service, 'collect_index_dict')
-        listing_service.collect_index_dict(TEST_TAGLIST).AndReturn(
-            TEST_INDEX_CATEGORIES)
-
-        self.mox.ReplayAll()
-
-        result = listing_service.index_tags_as_html()
-        self.assertTrue('altcategory' in result)
-        self.assertTrue('altsubcat1' in result)
-        self.assertTrue('altsubcat2' in result)
-        self.assertTrue('altsubcat3' in result)
-        self.assertTrue('category' in result)
-        self.assertTrue('subcat2' in result)
-        self.assertTrue('subcat3' in result)
 
     def test_read_by_slug_ensures_qualified(self):
         self.mox.StubOutWithMock(listing_service, 'ensure_qualified_slug')

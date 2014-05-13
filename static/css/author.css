@@ -1,3 +1,7 @@
+.author-section-divider {
+    margin-top: 10px;
+    margin-bottom: 60px;
+}
 
 .author-view-tab :hover {
     cursor: pointer !important;

@@ -3,7 +3,6 @@
     <form role="form" id="listing-about-form" parsley-validate>
         <div id="doc-title"></div>
         <div class="form-group">
-            <label for="short-summary">About Me</label>
             <textarea class="mceEditor form-control" id="about" name="about" rows="3">
                 <%= markdown.toHTML(about) %>
             </textarea>

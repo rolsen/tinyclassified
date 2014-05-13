@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-xs-8">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th colspan="2" class="category-table-header">
+                        <a class="category-link" href="{{ listing_url_base }}/{{ category }}">
+                            {{ category.replace('_slash_', '/') }}
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for dualsubcategory in subcategories|sort|batch(2, '&nbsp;') %}
+                <tr>
+                    {% for subcategory in dualsubcategory %}
+                    <td>
+                        {% if subcategory != '&nbsp;' %}
+                        <a href="{{ subcategory.url }}">
+                            {{ subcategory.name }}
+                        </a>
+                        {% else %} {{ '&nbsp;' }}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

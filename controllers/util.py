@@ -94,6 +94,24 @@ def remove_element_by_id(items, item_id, idAttribute='_id'):
     return True
 
 
+
+def prepare_subcategory(listing_url_base, category, subcategory):
+    """Preprare a subcategory for a view by calculating its URL.
+
+    @param listing_url_base: The base url.
+    @type listing_url_base: str
+    @param category: The URL-safe category the subcategory belongs to.
+    @type category: str
+    @param subcategory: The view-appropriate subcategory name.
+    @type subcategory: str
+    @return: subcategory url and subcategory name
+    @rtype: dict
+    """
+    return {
+        'url': '/'.join((listing_url_base, category, subcategory)),
+        'name': subcategory
+    }
+
 # def after_this_request(func):
 #     """Performs a task/function after returning a response.
 

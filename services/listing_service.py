@@ -66,7 +66,7 @@ def make_slug_safe(slug):
     @return: The safe version of the slug substring.
     @rtype: str
     """
-    return slug.replace(' ', '-')
+    return slug
 
 
 def make_slug(tag, subtag, name):
@@ -126,7 +126,7 @@ def check_is_qualified_slug(slug):
     @return: True if the slug is fully qualified, False if not
     @rtype: boolean
     """
-    regex = re.compile("^[\w-]+\/[\w-]+\/[\w@\.-]+$")
+    regex = re.compile("^[\w\- ]+\/[\w\- ]+\/[\w@\.\- ]+$")
     return isinstance(slug, basestring) and regex.match(slug)
 
 

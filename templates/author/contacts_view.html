@@ -24,16 +24,21 @@
 </script>
 
 <script type="text/template" id="add-contact-view-template">
-    <form role="form" id="contact-add-form" parsley-validate>
+    <form role="form" class="form-inline" id="contact-add-form" parsley-validate>
+        <label for="type-input">Add new contact</label><br/>
         <div class="form-group">
-            <select id="type-input">
+            <select id="type-input" class="form-control">
               <option value="email">Email</option>
               <option value="phone">Phone</option>
               <option value="mailing">Mailing Address</option>
               <option value="website">Website</option>
             </select>
-            <input type="text" id="value-input" placeholder="ex: test@example.com" required>
-            <button id="add-contact-button" type="submit" class="btn btn-default">Add Contact Detail</button>
+        </div>
+        <div class="form-group">
+            <input type="text" id="value-input" class="form-control" placeholder="ex: test@example.com" required>
+        </div>
+        <div class="form-group">
+            <button id="add-contact-button" type="submit" class="btn btn-primary">Add Contact Detail</button>
         </div>
     </form>
 </script>

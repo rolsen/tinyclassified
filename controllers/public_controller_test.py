@@ -18,7 +18,13 @@ TEST_LISTING_1 = {
     'name': 'TestName1',
     'tags': {'cat1':['subcat1']},
     'slugs': ['/cat1/subcat1/TestName1'],
-    'about': 'About test listing 1'
+    'about': 'About test listing 1',
+    'address': {
+        'street': 'example street',
+        'city': 'example city',
+        'state': 'example state',
+        'zip': 'example zip',
+    }
 }
 
 TEST_LISTING_2 = {
@@ -43,6 +49,15 @@ TEST_COLLECTED_TAGS_CATEGORY = {
     'cat1': ['subcat1', 'subcat2']
 }
 
+TEST_TAGLIST = [
+    {'altcategory': ['altsubcat1', 'altsubcat2']},
+    {'altcategory': ['altsubcat2', 'altsubcat3']},
+    {'category': ['subcat2', 'subcat3']}
+]
+TEST_INDEX_CATEGORIES = {
+    'altcategory': ['altsubcat1', 'altsubcat2', 'altsubcat3'],
+    'category': ['subcat2', 'subcat3']
+}
 
 class PublicControllerTests(mox.MoxTestBase):
 
@@ -52,15 +67,34 @@ class PublicControllerTests(mox.MoxTestBase):
         self.app = tiny_classified.app.test_client()
 
     def test_index_listings(self):
-        test_html = 'listing tags html'
-        self.mox.StubOutWithMock(services.listing_service, 'index_tags_as_html')
-        services.listing_service.index_tags_as_html().AndReturn(test_html)
+        expected_htmls = ['testhtml', 'otherone']
+
+        self.mox.StubOutWithMock(services.listing_service, 'index_tags')
+        services.listing_service.index_tags().AndReturn(TEST_TAGLIST)
+
+        self.mox.StubOutWithMock(services.listing_service, 'collect_index_dict')
+        services.listing_service.collect_index_dict(TEST_TAGLIST).AndReturn(
+            TEST_INDEX_CATEGORIES)
+
+        self.mox.StubOutWithMock(public_controller, 'render_html_category')
+        public_controller.render_html_category(
+            mox.IsA(str),
+            'altcategory',
+            ['altsubcat1', 'altsubcat2', 'altsubcat3']
+        ).InAnyOrder().AndReturn('testhmtl')
+
+        public_controller.render_html_category(
+            mox.IsA(str),
+            'category',
+            ['subcat2', 'subcat3']
+        ).InAnyOrder().AndReturn('otherone')
 
         self.mox.ReplayAll()
 
         result = self.app.get('/public/listings')
         self.assertEqual(200, result.status_code)
-        self.assertTrue(test_html in result.data)
+        self.assertTrue('testhmtl' in result.data)
+        self.assertTrue('otherone' in result.data)
 
     def test_index_listings_by_slug_category(self):
         test_cursor = test_util.TestCursor(TEST_LISTINGS)
@@ -141,12 +175,9 @@ class PublicControllerTests(mox.MoxTestBase):
         self.assertTrue('Clear Filters' in res_html)
 
     def test_index_listings_by_slug_individual(self):
-        self.mox.StubOutWithMock(
-            services.listing_service,
-            'list_by_slug'
-        )
-
         url = 'cat1/subcat1/TestName1'
+
+        self.mox.StubOutWithMock(services.listing_service, 'list_by_slug')
         services.listing_service.list_by_slug(url).AndReturn(
             test_util.TestCursor([TEST_LISTING_1])
         )

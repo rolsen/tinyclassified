@@ -1,3 +1,43 @@
-.listing-info-section {
-  border:1px solid black;
+#select-category-button {
+    white-space: normal;
+}
+
+.subcategory-link {
+    background-color: #3A87AD;
+    color: white;
+    border-radius:3px;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin: 2px;
+}
+
+#return-to-search-action {
+    margin: 50% 0;
+}
+
+#listing-title {
+    color: #426D2C;
+    margin-top: 0;
+}
+
+#description-row-container {
+    background-color: #F0F0F0;
+    margin-top: 0px;
+    margin-left: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#additional-info-row-container {
+    margin: 25px;
+}
+
+#about-section {
+    white-space: pre-wrap;
+}
+
+#about-row {
+    margin-top: 30px;
 }

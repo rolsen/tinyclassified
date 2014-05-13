@@ -1,59 +1,106 @@
 
 <script type="text/template" id="listing-details-template">
+    <h3>Name <small>Set the title of your listing (this can be your company/organization name)</small></h3>
     <div id="name-view"/>
-    <div id="tags-view"/>
-    <div id="contacts-view"/>
-    <div id="about-view"/>
+    <hr class="author-section-divider"/>
+
+    <h3>Categories <small>Select where your listing will be displayed</small></h3>
+    <div id="tags-view" class="table-responsive"/>
+    <hr class="author-section-divider"/>
+
+    <h3>Address <small>Add primary address information</small></h3>
     <div id="address-view"/>
+    <hr class="author-section-divider"/>
+
+    <h3>Contact <small>Add contact information</small></h3>
+    <div id="contacts-view" class="table-responsive"/>
+    <hr class="author-section-divider"/>
+
+    <h3>Description <small>Add a description/"About Me" section</small></h3>
+    <div id="about-view"/>
 </script>
 
 <script type="text/template" id="listing-name-template">
     <form role="form" id="listing-name-form" parsley-validate>
-        <input type="text" name="listing-name" class="form-control" id="listing-name" placeholder="ex: Listing Name" value="<%= name %>" required>
-        <button class="btn btn-primary" id="save-name-button">Save Name</button>
+        <div class="form-group">
+            <input type="text" name="listing-name" class="form-control" id="listing-name" placeholder="ex: Listing Name" value="<%= name %>" required>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" id="save-name-button">Save Name</button>
+        </div>
     </form>
 </script>
 
 <script type="text/template" id="listing-tags-template">
-    <form role="form" id="listing-tags-form" parsley-validate>
-        <table>
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Value</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="tags-list">
-            </tbody>
-        </table>
-        <form role="form" id="tag-add-form" parsley-validate>
-        <div class="form-group">
-            <input type="text" id="category" placeholder="ex: main category" required>
-            <input type="text" id="subcategory" placeholder="ex: sub category" required>
-            <button id="add-tag-button" type="submit" class="btn btn-default">Add Category</button>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Main Category</th>
+                        <th>Sub Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tags-list">
+                </tbody>
+            </table>
+            <form role="form" id="tag-add-form" class="form-inline" parsley-validate>
+                <div class="form-group">
+                    <label class="sr-only" for="category">Main Category</label>
+                    <input type="text" id="category" class="form-control" placeholder="ex: main category" required>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="subcategory">Sub Category</label>
+                    <input type="text" id="subcategory" class="form-control" placeholder="ex: sub category" required>
+                </div>
+                <div class="form-group">
+                    <button id="add-tag-button" type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
         </div>
-    </form><br/>
+    </div>
 </script>
 
 <script type="text/template" id="listing-tags-listing-template">
     <tr>
         <td><%- cat_output %></td>
         <td><%- subtag %></td>
-        <td><a class="delete-tag-link" href="#" cat_output="<%- cat_output %>" subtag="<%- subtag %>">remove tag</a></td>
+        <td><a class="delete-tag-link" href="#" cat_output="<%- cat_output %>" subtag="<%- subtag %>">remove</a></td>
     </tr>
 </script>
 
 <script type="text/template" id="listing-address-template">
-    <form role="form" id="listing-address-form" parsley-validate>
-        <label for="street-input">Address</label>
-        <input type="text" id="street-input" placeholder="ex: 123 Main St. #45" value="<%= address.street %>" required>
-        <label for="city-input">City</label>
-        <input type="text" id="city-input" placeholder="ex: Denver" value="<%= address.city %>" required>
-        <label for="state-input">State</label>
-        <input type="text" id="state-input" placeholder="ex: CO" value="<%= address.state %>" required>
-        <label for="zip-input">Zip Code</label>
-        <input type="text" id="zip-input" placeholder="ex: 80201" value="<%= address.zip %>" required>
-        <button id="save-address-button" type="submit" class="btn btn-default">Save Address</button>
+    <form role="form" class="form-horizontal" id="listing-address-form" parsley-validate>
+        <div class="form-group">
+            <div class="col-xs-9">
+                <label for="street-input">Street/P.O.</label>
+                <input type="text" id="street-input" class="form-control" placeholder="ex: 123 Main St. #45" value="<%= address.street %>" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-9">
+                <label for="city-input">City</label>
+                <input type="text" id="city-input" class="form-control" placeholder="ex: Denver" value="<%= address.city %>" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-9">
+                <label for="state-input">State</label>
+                <input type="text" id="state-input" class="form-control" placeholder="ex: CO" value="<%= address.state %>" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-9">
+
+                <label for="zip-input">Zip Code</label>
+                <input type="text" id="zip-input" class="form-control" placeholder="ex: 80201" value="<%= address.zip %>" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-9">
+                <button id="save-address-button" type="submit" class="btn btn-primary">Save Address</button>
+            </div>
+        </div>
     </form>
 </script>
