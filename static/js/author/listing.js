@@ -1,6 +1,14 @@
 /**
+ * @fileoverview The main listing model plus views. Relies on other listing
+ * models and views.
+ * @author rory@gleap.org (Rory Olsen)
+ * @author sam@gleap.org (Sam Pottinger)
+ * @license GNU GPLv3
+ */
+
+/**
  * Model that represents a TinyClassified listing.
-**/
+ */
 window.Listing = Backbone.Model.extend({
     urlRoot: '/author/',
     defaults: {
@@ -21,7 +29,7 @@ window.Listing = Backbone.Model.extend({
 
 /**
  * Presenter to show controls to edit and view a listing.
-**/
+ */
 window.ListingView = Backbone.View.extend({
 
     template:_.template($('#listing-details-template').html()),
@@ -56,6 +64,9 @@ window.ListingView = Backbone.View.extend({
     }
 });
 
+/**
+ * Presenter to show controls to edit and view a listing name.
+ */
 window.ListingNameView = Backbone.View.extend({
 
     template:_.template($('#listing-name-template').html()),
@@ -76,6 +87,9 @@ window.ListingNameView = Backbone.View.extend({
     close: tinyClassifiedUtil.getViewClose()
 });
 
+/**
+ * Presenter to show controls to edit and view a listing's tags.
+ */
 window.ListingTagsView = Backbone.View.extend({
 
     template:_.template($('#listing-tags-template').html()),
@@ -84,34 +98,27 @@ window.ListingTagsView = Backbone.View.extend({
         'click #add-tag-button': 'addSubcategory'
     },
 
-    debugLogTags: function (tags) {
-        _.each(
-            tags,
-            function(value, key, list) {
-                console.log(value);
-                _.each(
-                    list[key],
-                    function(subcat) {
-                        console.log(subcat);
-                    }
-                );
-                console.log("delim");
-            }
-        );
-    },
-
+    /**
+     * Update the view, based on the model.
+     */
     renderTagsList: function () {
         var template = _.template($('#listing-tags-listing-template').html());
         var tags = dict(this.model.attributes.tags);
         var rows = [];
         tags.forEach(function (subtags, cat_output) {
             rows.push.apply(rows, subtags.map(function (subtag) {
-                return template({cat_output: cat_output.replace('_slash_', '/'), subtag: subtag});
+                return template({
+                    cat_output: cat_output.replace('_slash_', '/'),
+                    subtag: subtag
+                });
             }));
         });
         $('#tags-list').html(rows.join('\n'));
     },
 
+    /**
+     * Fetch tag information and add it to the model.
+     */
     addSubcategory: function () {
         var category = $('#category').val();
         var subcategory = $('#subcategory').val();
@@ -126,6 +133,13 @@ window.ListingTagsView = Backbone.View.extend({
         this.model.save();
     },
 
+    /**
+     * Delete a subcategory from a tags obj.
+     * @param {Object} tags The tags object to modify.
+     * @param {String} cat_output The url-safe category to which subtag belogs to.
+     * @param {String} subtag The subcategory to remove.
+     * @return {Object} The tags input minus the removed subtag.
+     */
     deleteSubcategory: function (tags, cat_output, subtag) {
         tags = dict(tags);
         var category = tags.get(cat_output);
@@ -141,6 +155,11 @@ window.ListingTagsView = Backbone.View.extend({
 
     render: tinyClassifiedUtil.getViewRender(),
 
+    /**
+     * Fetch tag information, delete it from the model, and update the view.
+     * @param {jQuery.Event} event The delete-triggering event, which must have
+     *     a target element containing the tag information to be deleted.
+     */
     handleDeleteTag: function (event) {
         event.preventDefault();
         var cat_output = $(event.target).attr('cat_output');
@@ -170,6 +189,9 @@ window.ListingTagsView = Backbone.View.extend({
     close: tinyClassifiedUtil.getViewClose()
 });
 
+/**
+ * Presenter to show controls to edit and view a listing address.
+ */
 window.ListingAddressView = Backbone.View.extend({
 
     template:_.template($('#listing-address-template').html()),

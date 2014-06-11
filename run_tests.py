@@ -12,7 +12,6 @@ from controllers.login_controller_test import *
 from controllers.public_controller_test import *
 from controllers.util_test import *
 
-
 if __name__ == '__main__':
     import tiny_classified
     tiny_classified.attach_blueprints()

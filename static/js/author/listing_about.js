@@ -1,7 +1,13 @@
+/**
+ * @fileoverview Contains the models/views associated with a listing about section.
+ * @author rory@gleap.org (Rory Olsen)
+ * @author sam@gleap.org (Sam Pottinger)
+ * @license GNU GPLv3
+ */
 
-// /**
-//  * Presenter / backbone view for the About Me.
-// **/
+/**
+ * Presenter / backbone view for a listing about section.
+ */
 window.ListingAboutView = Backbone.View.extend({
 
     template:_.template($('#about-view-template').html()),
@@ -29,6 +35,7 @@ window.ListingAboutView = Backbone.View.extend({
     },
 
     saveAbout: function () {
+        // TODO: Validate input
         // if (!$('#about-form').parsley('validate')) {
         //     return;
         // }

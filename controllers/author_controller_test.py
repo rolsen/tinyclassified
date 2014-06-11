@@ -64,7 +64,7 @@ class AuthorControllerTests(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         response = self.app.put(
-            '/author/not_sure_why_this_param_is_needed',
+            '/author/',
             data=TEST_LISTING_FORM
         )
         self.assertEqual(200, response.status_code)

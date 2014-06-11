@@ -2,7 +2,7 @@
 
 Controllers / Flask request handlers that handle application-wide admin
 functionality, such as approving / denying listings, managing listings, setting
-application settings, and view application stats.
+application settings, and viewing application stats.
 
 @author: Rory Olsen (rolsen, Gleap LLC 2014)
 @license: GNU GPLv3
