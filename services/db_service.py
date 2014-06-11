@@ -197,21 +197,46 @@ class DBAdapter:
 
 
     def get_user_by_email(self, user_email):
+        """Find a user given an email address.
+
+        @param user_email: The email address of the user to be found.
+        @type user_email: str
+        @return: The user corresponding to the given email, or None if no user
+            is found.
+        @rtype: dict
+        """
         collection = self.get_users_collection()
         return collection.find_one({'email': user_email})
 
 
     def upsert_user(self, user_info):
+        """Updates or inserts a user, with checks for user validity.
+
+        @param user: The user to insert or update. If the user has an "_id"
+            then the existing user with that "_id" is updated, otherwise a
+            new user is inserted.
+        @type user: dict
+        """
         self.ensure_required_fields(user_info, MINIMUM_REQUIRED_USER_FIELDS)
         collection = self.get_users_collection()
         collection.save(user_info)
 
 
     def delete_user(self, user_email):
+        """Delete a user given a that user's email address.
+
+        @param user_email: The email address of the user to delete.
+        @type user_email: str
+        """
         collection = self.get_users_collection()
         collection.remove({'email': user_email})
 
 
     def get_tags(self):
+        """Get all the unique listing tags.
+
+        @return: All the unique listing tags.
+        @type: list
+        """
         collection = self.get_listings_collection()
         return collection.distinct('tags')

@@ -38,6 +38,7 @@ def redirect_inactive_user():
         flask.url_for('login.login', next=flask.request.url)
     )
 
+
 def redirect_unauthorized_user():
     return redirect_inactive_user()
 
