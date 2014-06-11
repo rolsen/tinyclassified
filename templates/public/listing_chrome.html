@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="/static/css/public_listing.css">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-6">
+        <h1>{{ category.replace('_slash_', '/') }}</h1>
+    </div>
+    <div class="pull-right col-xs-2">
+        <a id="return-to-search-action" href="{{ [listing_url_base, category]|join('/') }}">
+            <span class="glyphicon glyphicon-arrow-left"></span> Return to search
+        </a>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div id="public-listing" class="col-xs-10">
+        <h2 id="listing-title">{{ listing.name }}</h2>
+    </div>
+</div>
+<hr>
+<div class="row">
+    {% if listing.address.street and
+        listing.address.city and
+        listing.address.state and
+        listing.address.zip
+    %}
+    <div id="listing-address" class="col-xs-4">
+        <address>
+            <p>
+                {{ listing.address.street }}</br>
+                {{ listing.address.city }}, {{ listing.address.state }} {{ listing.address.zip }}
+            </p>
+        </address>
+    </div>
+    {% endif %}
+    <div id="listing-subcategories-list" class="col-xs-4">
+                <strong>Categories:</strong>
+                {% for subcategory in listing.tags.get(category, []) %}
+                <div class="row">
+                    <div class="col-xs-4">
+                        <a id="select-category-button" class="subcategory-link btn btn-sm" href="{{ [listing_url_base, category, subcategory]|join('/') }}">
+                            {{ subcategory|replace('_slash_', '/') }}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+    </div>
+</div>
+{% if listing.get('about', None) %}
+<div id="about-row" class="row">
+    <div id="description-row-container" class="listing-info-section col-xs-6">
+        <span id="about-section">{{ listing.about }}</span>
+    </div>
+</div>
+{% endif %}
+<div class="row">
+    <div id="additional-info-row-container" class="listing-info-section col-xs-6">
+        <!-- <h3>Additional Information</h3> -->
+        {% for contact in listing.contact_infos %}
+        <p>
+            <strong>{{ contact.type|capitalize }}:</strong></br>
+            {{ contact.value }}</p>
+        </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

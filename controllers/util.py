@@ -9,7 +9,10 @@ import flask
 
 SESS_EMAIL = 'email'
 SESS_IS_ADMIN = 'is_admin'
-
+SESS_PASSWORD = 'password'
+SESS_VALIDATION_ERROR = 'validation error'
+SESS_CONFIRMATION_MSG = 'confirmation message'
+SESS_VALIDATION_SHOW_RESET = 'show reset'
 
 def check_active_requirement():
     """Check if the current user meets the requirement to be logged in.
@@ -70,3 +73,55 @@ def require_login(admin=False):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+
+def remove_element_by_id(items, item_id, idAttribute='_id'):
+    """Remove a dict element from a list for a given id.
+
+    @param items: The list to remove an item from.
+    @type items: iterable over dict
+    @param item_id: The id of the item to remove from the items list.
+    @type item_id: str or int
+    @param idAttribute: The key of the id field of each item.
+    @type idAttribute: str
+    @return: True if success and item has been removed, False if unsuccessful
+        and the item not removed.
+    @rtype: bool
+    """
+    items_len = len(items)
+    items[:] = [item for item in items if item.get(idAttribute) != item_id]
+    if len(items) != items_len - 1:
+        return False
+    return True
+
+
+
+def prepare_subcategory(listing_url_base, category, subcategory):
+    """Preprare a subcategory for a view by calculating its URL.
+
+    @param listing_url_base: The base url.
+    @type listing_url_base: str
+    @param category: The URL-safe category the subcategory belongs to.
+    @type category: str
+    @param subcategory: The view-appropriate subcategory name.
+    @type subcategory: str
+    @return: subcategory url and subcategory name
+    @rtype: dict
+    """
+    return {
+        'url': '/'.join((listing_url_base, category, subcategory)),
+        'name': subcategory
+    }
+
+# def after_this_request(func):
+#     """Performs a task/function after returning a response.
+
+#     Calls a given functions after the controller routing function returns.
+
+#     @param func: The function to perform.
+#     @type func: function
+#     """
+#     if not hasattr(flask.g, 'call_after_request'):
+#         flask.g.call_after_request = []
+#     flask.g.call_after_request.append(func)
+#     return func

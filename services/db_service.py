@@ -3,11 +3,19 @@
 @author: Rory Olsen (rolsen, Gleap LLC 2014)
 @license: GNU GPLv3
 """
+import pymongo
+import re
 
 DATABASE_NAME = 'tiny_classified'
 
 LISTINGS_COLLECTION_NAME = 'listing'
 USERS_COLLECTION_NAME = 'user'
+
+# CONTACT_FIELDS = [
+#     'type',
+#     'value',
+#     '_id'
+# ]
 
 MINIMUM_REQUIRED_LISTING_FIELDS = [
     'author_email',
@@ -17,13 +25,16 @@ MINIMUM_REQUIRED_LISTING_FIELDS = [
     'tags'
 ]
 ALLOWED_LISTING_FIELDS = [
+    '_id',
     'author_email',
     'name',
     'slugs',
     'about',
     'tags',
     'is_published',
-    'contact_infos'
+    'contact_id_next',
+    'contact_infos',
+    'address'
 ]
 
 MINIMUM_REQUIRED_USER_FIELDS = ['email', 'password_hash', 'is_admin']
@@ -31,13 +42,16 @@ MINIMUM_REQUIRED_USER_FIELDS = ['email', 'password_hash', 'is_admin']
 class DBAdapter:
     """Dependency inversion adapter to make db access suck less."""
 
-    def __init__(self, client):
+    def __init__(self, app):
         """Create a new database adapater around the database engine.
 
         @param client: The native database wrapper to adapt.
         @type client: flask.ext.pymongo.PyMongo
         """
-        self.client = client
+        self.client = pymongo.mongo_client.MongoClient(
+            host=app.config['MONGO_HOST'],
+            port=app.config['MONGO_PORT'],
+        )
 
 
     def get_database(self):

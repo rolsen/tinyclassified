@@ -7,6 +7,11 @@ import json
 
 import flask
 
+from bson import BSON
+from bson import json_util
+
+import tiny_classified
+
 import services
 
 import util
@@ -21,45 +26,58 @@ blueprint = flask.Blueprint(
 @blueprint.route('/')
 @util.require_login()
 def show_user_ui():
-    return flask.render_template('author/controls.html')
+    """Render the chrome (UI constructs) for user / author controls.
+
+    @return {String} Rendered HTML template with the author control interface.
+    """
+    listing_view_templates = flask.render_template(
+        'author/listing_view.html'
+    )
+    contacts_view_templates = flask.render_template(
+        'author/contacts_view.html'
+    )
+    listing_about_templates = flask.render_template(
+        'author/listing_about.html'
+    )
+
+    return flask.render_template(
+        'author/author_chrome.html',
+        listing_view_templates=listing_view_templates,
+        contacts_view_templates=contacts_view_templates,
+        listing_about_templates=listing_about_templates,
+        email=flask.session[util.SESS_EMAIL],
+        base_url=tiny_classified.get_config()['BASE_URL']
+    )
 
 
-@blueprint.route('/create', methods=['POST'])
+@blueprint.route('/_current')
 @util.require_login()
-def create_listing():
-    listing = json.loads(flask.request.form['listing'])
-    services.listing_service.create(listing)
-    return json.dumps(listing)
+def read():
+    """Get the current user's listing through the JSON-REST API.
+
+    @return: JSON-encoded document describing the user's listing.
+    @rtype: str
+    """
+    email = flask.session.get(util.SESS_EMAIL, None).lower()
+    listing = services.listing_service.read_by_email(email)
+
+    result_dict = listing
+    return json.dumps(result_dict, default=json_util.default)
 
 
-@blueprint.route('/show/<path:listing_slug>')
+@blueprint.route('/<update_param>', methods=['PUT'])
 @util.require_login()
-def show_listing(listing_slug):
-    listings = services.listing_service.list_by_slug(listing_slug)
-    if not listings:
-        return '', 404
+def update(update_param):
+    """Update the current user's listing through the JSON-REST API.
 
-    return json.dumps(listings)
+    @return: JSON-encoded document describing the user's listing.
+    @rtype: str
+    """
+    listing = json.loads(
+        flask.request.form.get('model'),
+        object_hook=json_util.object_hook
+    )
+    services.listing_service.update(listing)
 
-
-@blueprint.route('/update/<path:listing_slug>', methods=['PUT'])
-@util.require_login()
-def update_listing(listing_slug):
-    listing = json.loads(flask.request.form['listing'])
-    try:
-        services.listing_service.update(listing_slug, listing)
-    except ValueError:
-        return '', 404
-
-    return json.dumps(listing)
-
-
-@blueprint.route('/delete/<path:listing_slug>', methods=['POST'])
-@util.require_login()
-def delete_listing(listing_slug):
-    try:
-        services.listing_service.delete_by_slug(listing_slug)
-    except ValueError:
-        return '', 404
-
-    return ''
+    result_dict = listing
+    return json.dumps(result_dict, default=json_util.default)

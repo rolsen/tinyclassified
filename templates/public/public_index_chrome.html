@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/public_index.css">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Resource Directory</h1>
+    </div>
+</div>
+{% for html in html_categories|sort %}
+<div class="public-listing-category">
+    {{ html|safe }}
+</div>
+{% endfor %}
+{% endblock %}

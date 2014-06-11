@@ -1,0 +1,44 @@
+<script type="text/template" id="contacts-view-template">
+    <table class="table table-striped" id="contact-collection-view"></table>
+    <div id="contact-add-view"></div>
+</script>
+
+<script type="text/template" id="contact-table-template">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</script>
+
+<script type="text/template" id="contact-item-template">
+    <td><%- type %></td>
+    <td><%- value %></td>
+    <td>
+        <a href="#" id="delete-contact-link">remove contact</a>
+    </td>
+</script>
+
+<script type="text/template" id="add-contact-view-template">
+    <form role="form" class="form-inline" id="contact-add-form" parsley-validate>
+        <label for="type-input">Add new contact</label><br/>
+        <div class="form-group">
+            <select id="type-input" class="form-control">
+              <option value="email">Email</option>
+              <option value="phone">Phone</option>
+              <option value="mailing">Mailing Address</option>
+              <option value="website">Website</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" id="value-input" class="form-control" placeholder="ex: test@example.com" required>
+        </div>
+        <div class="form-group">
+            <button id="add-contact-button" type="submit" class="btn btn-primary">Add Contact Detail</button>
+        </div>
+    </form>
+</script>

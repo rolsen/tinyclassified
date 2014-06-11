@@ -7,6 +7,8 @@ import copy
 
 import mox
 
+import tiny_classified
+
 import db_service
 
 
@@ -57,9 +59,10 @@ class DBAdapterTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        self.db_adapter = db_service.DBAdapter('fake test client')
+        self.db_adapter = db_service.DBAdapter(tiny_classified.app)
 
     def test_get_listings_collection_ensures_unique_names(self):
+
         test_collection = TestCollection()
         test_database = {db_service.LISTINGS_COLLECTION_NAME: test_collection}
 

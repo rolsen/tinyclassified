@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="/static/css/default.time.css">
+<link rel="stylesheet" type="text/css" href="/static/css/default.date.css">
+<link rel="stylesheet" type="text/css" href="/static/css/default.css">
+<link rel="stylesheet" type="text/css" href="/static/css/author.css">
+{% endblock %}
+
+{% block scripts %}
+
+{{ listing_view_templates|safe }}
+{{ contacts_view_templates|safe }}
+{{ listing_about_templates|safe }}
+
+<script src="/static/js/lib/date.js"></script>
+<script src="/static/js/lib/markdown.js"></script>
+<script src="/static/js/lib/picker.js"></script>
+<script src="/static/js/lib/picker.date.js"></script>
+<script src="/static/js/lib/picker.time.js"></script>
+<script src="/static/js/lib/reMarked.js"></script>
+<script src="/static/js/lib/tinymce/tinymce.min.js"></script>
+
+<script src="/static/js/util.js"></script>
+<script src="/static/js/author/listing_contact.js"></script>
+<script src="/static/js/author/listing_about.js"></script>
+<script src="/static/js/author/listing.js"></script>
+<script src="/static/js/author/author_controller.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h3>TinyClassified</h3>
+    <span>Hello, {{ email }}</span>
+    <span><a href="{{ [base_url, 'logout']|join('/') }}">Logout</a>
+</div>
+<hr>
+<div class="tabbable" id="individual-document-view">
+    <ul class="nav nav-tabs">
+        <li class="active author-view-tab"><a href="#listing" data-toggle="tab">Listing</a></li>
+        <li class="author-view-tab"><a href="#job-postings" data-toggle="tab">Job Postings</a></li>
+        <li class="author-view-tab"><a href="#premium-features" data-toggle="tab">Premium Features</a></li>
+    </ul>
+    <div id="author-view-content" class="tab-content">
+        <div id="listing-details-tab" class="tab-pane active"></div>
+        <div id="job-postings-tab" class="tab-pane"></div>
+        <div id="premium-features-tab" class="tab-pane"></div>
+    </div>
+</div>
+
+{% endblock %}

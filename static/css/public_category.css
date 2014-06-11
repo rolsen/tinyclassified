@@ -1,0 +1,62 @@
+#filters-ctrl .btn {
+    white-space: normal;
+    height: 100%;
+}
+
+#listings-table.dataTable {
+    border-bottom: 1px solid #DDD;
+}
+
+#listings-table {
+    width: 100% !important;
+}
+
+#listings-table td {
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+#clear-filters-button {
+    margin-bottom: 20px;
+}
+
+#clear-category-button {
+    font-size: 14px;
+}
+
+#subcategories-table .btn {
+    white-space: normal;
+}
+
+#subcategories-table-header {
+    background-color: #1F4A6C;
+    color: #FFF;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.btn-link:hover {
+    background-color: #B0D0E8;
+    color: #000;
+    text-decoration: none;
+}
+
+@media (max-width: 992px) {
+    #filters-ctrl {
+        width: 100%;
+        margin-bottom: 80px;
+    }
+}
+
+@media (max-width: 650px) {
+    #listings-table_length {
+        float: none;
+        text-align: left;
+    }
+
+    #listings-table_filter {
+        float: none;
+        text-align: left;
+    }
+}

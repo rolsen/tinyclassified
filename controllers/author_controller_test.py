@@ -25,6 +25,7 @@ TEST_LISTING = {
     'slugs': TEST_LISTING_SLUGS,
     'about': TEST_LISTING_ABOUT
 }
+TEST_LISTING_FORM = dict(model = json.dumps(TEST_LISTING))
 
 class AuthorControllerTests(mox.MoxTestBase):
 
@@ -32,11 +33,12 @@ class AuthorControllerTests(mox.MoxTestBase):
         mox.MoxTestBase.setUp(self)
         tiny_classified.app.debug = True
         self.app = tiny_classified.app.test_client()
+        with self.app.session_transaction() as sess:
+            sess[util.SESS_EMAIL] = TEST_EMAIL
 
     def setup_logged_in(self):
         self.mox.StubOutWithMock(util, 'check_active_requirement')
         util.check_active_requirement().AndReturn(True)
-
 
     def test_show_user_ui_not_logged_in(self):
         self.mox.StubOutWithMock(util, 'check_active_requirement')
@@ -53,100 +55,27 @@ class AuthorControllerTests(mox.MoxTestBase):
         result = self.app.get('/author/')
         self.assertEqual(200, result.status_code)
 
-    def test_create_listing_success(self):
+    def test_update(self):
         self.setup_logged_in()
 
-        self.mox.StubOutWithMock(services.listing_service, 'create')
-        services.listing_service.create(TEST_LISTING)
+        self.mox.StubOutWithMock(services.listing_service, 'update')
+        services.listing_service.update(TEST_LISTING)
 
         self.mox.ReplayAll()
 
-        test_listing = dict(listing = json.dumps(TEST_LISTING))
-        result = self.app.post('/author/create', data=test_listing)
-        result_loaded = json.loads(result.data)
-        self.assertEqual(TEST_LISTING, result_loaded)
-
-    def test_show_listing_not_exists(self):
-        self.setup_logged_in()
-
-        self.mox.StubOutWithMock(services.listing_service, 'list_by_slug')
-        services.listing_service.list_by_slug(TEST_SLUG).AndReturn(None)
-
-        self.mox.ReplayAll()
-
-        result = self.app.get('/author/show/%s' % TEST_SLUG)
-        self.assertEqual(404, result.status_code)
-
-    def test_show_listing_success(self):
-        self.setup_logged_in()
-
-        self.mox.StubOutWithMock(services.listing_service, 'list_by_slug')
-        services.listing_service.list_by_slug(TEST_SLUG).AndReturn(
-            [TEST_LISTING]
+        response = self.app.put(
+            '/author/not_sure_why_this_param_is_needed',
+            data=TEST_LISTING_FORM
         )
+        self.assertEqual(200, response.status_code)
 
-        self.mox.ReplayAll()
-
-        result = self.app.get('/author/show/%s' % TEST_SLUG)
-        result_loaded = json.loads(result.data)
-        self.assertEqual([TEST_LISTING], result_loaded)
-
-    def test_update_listing_not_exists(self):
+    def test_read(self):
         self.setup_logged_in()
 
-        test_updated_listing = copy.deepcopy(TEST_LISTING)
-        test_updated_listing['about'] = 'Great new about'
-
-        non_existant_slug = 'non/existant/slug'
-        self.mox.StubOutWithMock(services.listing_service, 'update')
-        services.listing_service.update(
-            non_existant_slug,
-            test_updated_listing
-        ).AndRaise(ValueError('No listing with slug: ' + non_existant_slug))
+        self.mox.StubOutWithMock(services.listing_service, 'read_by_email')
+        services.listing_service.read_by_email(TEST_EMAIL)
 
         self.mox.ReplayAll()
 
-        test_listing = dict(listing = json.dumps(test_updated_listing))
-        test_url = '/author/update/%s' % non_existant_slug
-        result = self.app.put(test_url, data=test_listing)
-        self.assertEqual(404, result.status_code)
-
-    def test_update_listing_success(self):
-        self.setup_logged_in()
-
-        test_updated_listing = copy.deepcopy(TEST_LISTING)
-        test_updated_listing['about'] = 'Great new about'
-
-        self.mox.StubOutWithMock(services.listing_service, 'update')
-        services.listing_service.update(TEST_SLUG, test_updated_listing)
-
-        self.mox.ReplayAll()
-
-        test_listing = dict(listing = json.dumps(test_updated_listing))
-        test_url = '/author/update/%s' % TEST_SLUG
-        result = self.app.put(test_url, data=test_listing)
-        result_loaded = json.loads(result.data)
-        self.assertEqual(test_updated_listing, result_loaded)
-
-    def test_delete_listing_not_exists(self):
-        self.setup_logged_in()
-
-        test_slug = 'non/existant/slug'
-        self.mox.StubOutWithMock(services.listing_service, 'delete_by_slug')
-        services.listing_service.delete_by_slug(test_slug).AndRaise(ValueError)
-
-        self.mox.ReplayAll()
-
-        result = self.app.post('/author/delete/%s' % test_slug)
-        self.assertEqual(404, result.status_code)
-
-    def test_delete_listing_success(self):
-        self.setup_logged_in()
-
-        self.mox.StubOutWithMock(services.listing_service, 'delete_by_slug')
-        services.listing_service.delete_by_slug(TEST_SLUG)
-
-        self.mox.ReplayAll()
-
-        result = self.app.post('/author/delete/%s' % TEST_SLUG)
-        self.assertEqual(200, result.status_code)
+        response = self.app.get('/author/_current')
+        self.assertEqual(200, response.status_code)

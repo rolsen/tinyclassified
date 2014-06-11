@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script type="text/javascript" language="javascript" src="/static/js/lib/jquery.dataTables.js"></script>
+<script>
+$(document).ready(function() {
+    $('#listings-table').dataTable( {
+        "columnDefs": [
+            {
+                "targets": [2],
+                "visible": false
+            }
+        ]
+    } );
+} );
+</script>
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="/static/css/public_category.css">
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="/static/css/dataTables.bootstrap.css">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <h3>{{ category|replace('_slash_', '/') }}</h3>
+    </div>
+</div>
+<div class="row">
+    <div id="filters-ctrl" class="col-md-2">
+        {% if selected_subcategory %}
+        <a id="clear-filters-button" class="btn btn-default" href="{{ [listing_url_base, category]|join('/') }}">Clear Filters</a>
+        {% endif %}
+        <table id="subcategories-table" class="table">
+            <thead>
+                <tr><th id="subcategories-table-header">Category</th></tr>
+            </thead>
+            <tbody>
+            {% if selected_subcategory %}
+                <tr><td>
+                    <form method="link" action="{{ [listing_url_base, category]|join('/') }}">
+                        <button type="submit" class="form-control btn btn-primary" id="clear-category-button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            {{ selected_subcategory.name }}
+                        </button>
+                        <!-- Thank you, http://glyphicons.com/ -->
+                    </form>
+                </tr></td>
+            {% else %}
+            {% for subcat in subcategories %}
+                <tr>
+                    <td>
+                        <form method="link" action="{{ subcat.url }}">
+                            <button type="submit" class="form-control btn btn-link" id="select-category-button">
+                                {{ subcat.name }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-8">
+        <table id="listings-table" class="table-bordered">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Categories</td>
+                    <td>About</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for listing in listings %}
+                <tr>
+                    <td>
+                        <a href="{{ [listing_url_base, listing.slugs[0]]|join('/') }}">
+                            {{ listing.name }}
+                        </a>
+                    </td>
+                    <td>
+                    {% if listing.tags.get(category, [])|length == 1 %}
+                        Category:
+                    {% else %}
+                        Categories:
+                    {% endif %}
+                    {{ listing.tags.get(category, [])|join(', ')|replace('_slash_', '/') }}
+                    </td>
+                    <td>
+                        {{ listing.about }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
