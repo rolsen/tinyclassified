@@ -20,10 +20,13 @@ TEST_LISTING_1 = {
     'slugs': ['/cat1/subcat1/TestName1'],
     'about': 'About test listing 1',
     'address': {
+        'address': 'example corporation',
         'street': 'example street',
+        'street2': 'example suite',
         'city': 'example city',
         'state': 'example state',
         'zip': 'example zip',
+        'country': 'example country',
     }
 }
 
@@ -95,6 +98,24 @@ class PublicControllerTests(mox.MoxTestBase):
         self.assertEqual(200, result.status_code)
         self.assertTrue('testhmtl' in result.data)
         self.assertTrue('otherone' in result.data)
+
+    def test_render_html_category(self):
+        test_base_url = 'test_base_url.com'
+        test_category = 'category'
+        test_subcategories = ['altsubcat1', 'altsubcat2', 'altsubcat3']
+
+        result = public_controller.render_html_category(
+            test_base_url,
+            test_category,
+            test_subcategories
+        )
+        self.assertTrue('href="test_base_url.com/category"' in result)
+        self.assertTrue(
+            'href="test_base_url.com/category/altsubcat1"' in result)
+        self.assertTrue(
+            'href="test_base_url.com/category/altsubcat2"' in result)
+        self.assertTrue(
+            'href="test_base_url.com/category/altsubcat3"' in result)
 
     def test_index_listings_by_slug_category(self):
         test_cursor = test_util.TestCursor(TEST_LISTINGS)

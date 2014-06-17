@@ -31,8 +31,17 @@
     <div id="listing-address" class="col-xs-4">
         <address>
             <p>
+                {% if listing.address.address %}
+                {{ listing.address.address }}</br>
+                {% endif %}
                 {{ listing.address.street }}</br>
+                {% if listing.address.street2 %}
+                {{ listing.address.street2 }}</br>
+                {% endif %}
                 {{ listing.address.city }}, {{ listing.address.state }} {{ listing.address.zip }}
+                {% if listing.address.country %}
+                </br>{{ listing.address.country }}
+                {% endif %}
             </p>
         </address>
     </div>

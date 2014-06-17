@@ -74,8 +74,15 @@
     <form role="form" class="form-horizontal" id="listing-address-form" parsley-validate>
         <div class="form-group">
             <div class="col-xs-9">
+                <label for="address-input">Name</label>
+                <input type="text" id="address-input" class="form-control" placeholder="ex: XYZ Corporation" value="<%= address.address %>">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-9">
                 <label for="street-input">Street/P.O.</label>
-                <input type="text" id="street-input" class="form-control" placeholder="ex: 123 Main St. #45" value="<%= address.street %>" required>
+                <input type="text" id="street-input" class="form-control" placeholder="ex: 123 Main St." value="<%= address.street %>" required>
+                <input type="text" id="street2-input" class="form-control" placeholder="ex: Suite #45" value="<%= address.street2 %>">
             </div>
         </div>
         <div class="form-group">
@@ -92,9 +99,14 @@
         </div>
         <div class="form-group">
             <div class="col-xs-9">
-
                 <label for="zip-input">Zip Code</label>
                 <input type="text" id="zip-input" class="form-control" placeholder="ex: 80201" value="<%= address.zip %>" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-9">
+                <label for="country-input">Country</label>
+                <input type="text" id="country-input" class="form-control" placeholder="ex: USA" value="<%= address.country %>">
             </div>
         </div>
         <div class="form-group">

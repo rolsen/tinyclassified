@@ -10,10 +10,13 @@ window.Listing = Backbone.Model.extend({
         'slugs': [],
         'tags': [],
         'address': {
+            'address': '',
             'street': '',
+            'street2': '',
             'city': '',
             'state': '',
-            'zip': ''
+            'zip': '',
+            'country': '',
         }
     },
     idAttribute: "_id"
@@ -181,10 +184,13 @@ window.ListingAddressView = Backbone.View.extend({
     saveAddress:function () {
         this.model.set({
             address: {
+                address: $(this.el).find('#address-input').val(),
                 street: $(this.el).find('#street-input').val(),
+                street2: $(this.el).find('#street2-input').val(),
                 city: $(this.el).find('#city-input').val(),
                 state: $(this.el).find('#state-input').val(),
                 zip: $(this.el).find('#zip-input').val(),
+                country: $(this.el).find('#country-input').val(),
             }
         });
         this.model.save();

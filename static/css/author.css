@@ -11,3 +11,7 @@
     padding: 20px;
     overflow: auto;
 }
+
+#street-input {
+    margin-bottom: 10px;
+}
