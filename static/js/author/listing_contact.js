@@ -11,7 +11,8 @@
 window.ListingContact = Backbone.Model.extend({
     defaults:{
         'type': '',
-        'value': ''
+        'value': '',
+        'parent': '_current'
     },
     idAttribute: "_id"
 });
@@ -31,10 +32,13 @@ window.ListingContactView = Backbone.View.extend({
 
     initialize: function () {
         this.contactCollection = new ListingContactCollection();
+        this.contactCollection.parent = this.model;
         this.contactCollectionView = new ListingContactCollectionView({
             model: this.contactCollection
         });
-        this.contactAddView = new ListingContactAddView();
+        this.contactAddView = new ListingContactAddView({
+            model: this.model
+        });
         this.contactAddView.contactCollection = this.contactCollection;
 
         this.contactCollection.fetch();
@@ -148,7 +152,8 @@ window.ListingContactAddView = Backbone.View.extend({
         var contact = new ListingContact();
         contact.set({
             'type': elem.find('#type-input').val(),
-            'value': elem.find('#value-input').val()
+            'value': elem.find('#value-input').val(),
+            'parent': this.model.attributes.author_email
         });
         result = this.contactCollection.create(contact);
 
