@@ -18,7 +18,7 @@
 <hr>
 <div class="row">
     <div id="public-listing" class="col-xs-10">
-        <h2 id="listing-title">{{ listing.name }}</h2>
+        <h2 id="listing-title">{{ listing.name }} {% if admin %}[<a href="/author?target={{ listing.author_email }}">edit</a>]{% endif %}</h2>
     </div>
 </div>
 <hr>

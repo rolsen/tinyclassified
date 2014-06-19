@@ -16,6 +16,10 @@ var tinyClassifiedUtil = {
         view.setElement($(selector)).render();
     },
 
+    flashUser: function () {
+        $('#flash-bar').slideDown().delay(3000).slideUp();
+    },
+
     /**
      * Default clean up of a Backbone.View. Calls beforeClose() if it exists.
     **/

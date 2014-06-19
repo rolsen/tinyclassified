@@ -12,6 +12,24 @@
     overflow: auto;
 }
 
+#flash-bar {
+    background-color: #00C000;
+    color: white;
+    padding: 15px;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    font-size: 18px;
+    display: none;
+}
+
+#flash-bar .glyphicon {
+    margin-right: 20px;
+}
+
 #street-input {
     margin-bottom: 10px;
 }

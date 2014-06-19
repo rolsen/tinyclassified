@@ -8,7 +8,7 @@ window.ListingContact = Backbone.Model.extend({
 });
 
 window.ListingContactCollection = Backbone.Collection.extend({
-    url:'contact',
+    url:'content/contact',
     model: ListingContact
 });
 
