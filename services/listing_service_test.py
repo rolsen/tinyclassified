@@ -61,6 +61,14 @@ TEST_INDEX_CATEGORIES = {
     'altcategory': ['altsubcat1', 'altsubcat2', 'altsubcat3'],
     'category': ['subcat2', 'subcat3']
 }
+TEST_GET_SLUG_CATEGORY_FIRST = 'some category'
+TEST_GET_SLUG_CATEGORY_SECOND = 'other _slash_ stuff'
+TEST_GET_SLUG_SLUG_FIRST = 'some category/subcat1/TestName'
+TEST_GET_SLUG_SLUG_SECOND = 'other _slash_ stuff/somecat/TestName'
+TEST_GET_SLUG_SLUG_LIST = [TEST_GET_SLUG_SLUG_FIRST, TEST_GET_SLUG_SLUG_SECOND]
+TEST_LISTING_SLUGS_ONLY = {
+    'slugs': TEST_GET_SLUG_SLUG_LIST
+}
 
 class ListingServiceTests(mox.MoxTestBase):
 
@@ -329,3 +337,24 @@ class ListingServiceTests(mox.MoxTestBase):
         listing_service.update(test_listing_new)
         self.assertEqual(test_id, test_listing_new['_id'])
         self.assertEqual(test_listing_new, test_listing_copy)
+
+    def test_get_slug_first(self):
+        slug = listing_service.get_slug(
+            TEST_LISTING_SLUGS_ONLY,
+            TEST_GET_SLUG_CATEGORY_FIRST
+        )
+        self.assertEqual(TEST_GET_SLUG_SLUG_FIRST, slug)
+
+    def test_get_slug_second(self):
+        slug = listing_service.get_slug(
+            TEST_LISTING_SLUGS_ONLY,
+            TEST_GET_SLUG_CATEGORY_SECOND
+        )
+        self.assertEqual(TEST_GET_SLUG_SLUG_SECOND, slug)
+
+    def test_get_slug_graceful_fail(self):
+        slug = listing_service.get_slug(
+            TEST_LISTING_SLUGS_ONLY,
+            'nonexistant category which definitely does not exist in slugs'
+        )
+        self.assertTrue(slug in TEST_GET_SLUG_SLUG_LIST)

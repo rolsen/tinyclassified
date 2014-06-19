@@ -16,4 +16,5 @@ from controllers.util_test import *
 if __name__ == '__main__':
     import tiny_classified
     tiny_classified.attach_blueprints()
+    tiny_classified.setup_template_functions()
     unittest.main()

@@ -49,7 +49,7 @@ $(document).ready(function() {
                     </form>
                 </tr></td>
             {% else %}
-            {% for subcat in subcategories %}
+            {% for subcat in subcategories|sort %}
                 <tr>
                     <td>
                         <form method="link" action="{{ subcat.url }}">
@@ -78,7 +78,7 @@ $(document).ready(function() {
             {% for listing in listings %}
                 <tr>
                     <td>
-                        <a href="{{ [listing_url_base, listing.slugs[0]]|join('/') }}">
+                        <a href="{{ [listing_url_base, get_slug(listing, category)]|join('/') }}">
                             {{ listing.name }}
                         </a>
                     </td>

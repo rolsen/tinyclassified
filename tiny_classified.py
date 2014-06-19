@@ -21,6 +21,9 @@ db_adapter = services.db_service.DBAdapter(app)
 # Load configuration settings
 app.config.from_pyfile('flask_config.cfg', silent=False)
 
+def setup_template_functions():
+    app.jinja_env.globals.update(get_slug=services.listing_service.get_slug)
+
 def attach_blueprints():
     app.register_blueprint(
         controllers.public_controller.blueprint,
@@ -61,5 +64,6 @@ def get_config():
 if __name__ == '__main__':
     app.config['DEBUG'] = True
     attach_blueprints()
+    setup_template_functions()
     mongo = PyMongo(app)
     app.run()
