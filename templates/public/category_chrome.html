@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends parent_template %}
 
 {% block scripts %}
-<script type="text/javascript" language="javascript" src="/static/js/lib/jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="{{ base_url }}/static/js/lib/jquery.dataTables.js"></script>
 <script>
 $(document).ready(function() {
     $('#listings-table').dataTable( {
@@ -17,12 +17,12 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" type="text/css" href="/static/css/public_category.css">
-<link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css" href="/static/css/dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/public_category.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/dataTables.bootstrap.css">
 {% endblock %}
 
-{% block content %}
+{% block tiny_classified_content %}
 <div class="row">
     <div class="col-xs-12">
         <h3>{{ category|replace('_slash_', '/') }}</h3>

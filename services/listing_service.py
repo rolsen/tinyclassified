@@ -7,7 +7,7 @@ import jinja2
 import os
 import re
 
-import tiny_classified
+import tinyclassified.tiny_classified as tiny_classified
 
 PUBLIC_TEMPLATE_DIR = os.path.join('templates', 'public')
 INDEX_TEMPLATE_PATH = os.path.join(

@@ -7,9 +7,9 @@ import json
 
 import flask
 
-import tiny_classified
+import tinyclassified.tiny_classified as tiny_classified
 
-import services
+from .. import services
 
 import util
 
@@ -17,7 +17,8 @@ import util
 blueprint = flask.Blueprint(
     'author_contact',
     __name__,
-    template_folder='templates'
+    template_folder='../templates',
+    static_folder='../static'
 )
 
 

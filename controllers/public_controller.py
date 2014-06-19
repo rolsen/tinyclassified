@@ -9,28 +9,37 @@ browsing listings.
 import flask
 import jinja2
 
-import tiny_classified
+import tinyclassified.tiny_classified as tiny_classified
 
-import services
+from .. import services
 import util
 
 # Create a Flask blueprint to split the Flask routes amoung multiple files.
 blueprint = flask.Blueprint(
     'public',
     __name__,
-    template_folder='templates'
+    template_folder='../templates',
+    static_folder='../static'
 )
 
 
-@blueprint.route('/listings')
+@blueprint.route('/')
 def index():
     """List all listings tags.
 
     @return: HTML with the listing tags index.
     @rtype: str
     """
+    config = tiny_classified.get_config()
+    
+    ignore_front_list = config['NO_FRONT_PAGE_CATEGORIES']
+
     tags = services.listing_service.index_tags()
     categories = services.listing_service.collect_index_dict(tags)
+    categories = dict(filter(
+        lambda (key,val): key not in ignore_front_list,
+        categories.iteritems()
+    ))
 
     url_base = tiny_classified.get_config()['LISTING_URL_BASE']
 
@@ -39,6 +48,8 @@ def index():
 
     return flask.render_template(
         'public/public_index_chrome.html',
+        base_url=config['BASE_URL'],
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
         html_categories=html_categories
     )
 
@@ -55,21 +66,18 @@ def render_html_category(listing_url_base, category, subcategories):
     @return: The HTML for a single category
     @rtype: str
     """
-    template = None
-    with open('templates/public/index_category_inner.html') as f:
-        template = jinja2.Template(f.read())
-
     prep = util.prepare_subcategory
     subcategories = [prep(listing_url_base, category, x) for x in subcategories]
 
-    return template.render({
-        'category': category,
-        'subcategories': subcategories,
-        'listing_url_base': listing_url_base
-    })
+    return flask.render_template(
+        'public/index_category_inner.html',
+        category=category,
+        subcategories=subcategories,
+        listing_url_base=listing_url_base
+    )
 
 
-@blueprint.route('/listings/<path:slug>')
+@blueprint.route('/<path:slug>')
 def index_listings_by_slug(slug):
     """List all listings of a given slug.
 
@@ -84,9 +92,13 @@ def index_listings_by_slug(slug):
     slug_split = slug.split('/')
     category = slug_split[0]
 
+    config = tiny_classified.get_config()
+
     if listings.count() == 1 and is_qualified:
         return flask.render_template(
             'public/listing_chrome.html',
+            base_url=config['BASE_URL'],
+            parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
             listing=listings[0],
             category=category,
             listing_url_base=tiny_classified.get_config()['LISTING_URL_BASE'],
@@ -103,14 +115,16 @@ def index_listings_by_slug(slug):
             subcategories = tags[category]
             selected_subcategory = None
 
-        url_base = tiny_classified.get_config()['LISTING_URL_BASE']
+        url_base = config['LISTING_URL_BASE']
 
         prep = util.prepare_subcategory
         return flask.render_template(
             'public/category_chrome.html',
+            base_url=config['BASE_URL'],
+            parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
             category=category,
             listings=listings,
             subcategories=[prep(url_base, category, x) for x in subcategories],
             selected_subcategory=selected_subcategory,
-            listing_url_base=url_base,
+            listing_url_base=url_base
         )

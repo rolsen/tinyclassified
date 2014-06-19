@@ -6,6 +6,8 @@
 import pymongo
 import re
 
+from tinyclassified import tiny_classified
+
 DATABASE_NAME = 'tiny_classified'
 
 LISTINGS_COLLECTION_NAME = 'listing'
@@ -47,15 +49,16 @@ MINIMUM_REQUIRED_USER_FIELDS = ['email', 'password_hash', 'is_admin']
 class DBAdapter:
     """Dependency inversion adapter to make db access suck less."""
 
-    def __init__(self, app):
+    def __init__(self):
         """Create a new database adapater around the database engine.
 
         @param client: The native database wrapper to adapt.
         @type client: flask.ext.pymongo.PyMongo
         """
+        app_config = tiny_classified.get_config()
         self.client = pymongo.mongo_client.MongoClient(
-            host=app.config['MONGO_HOST'],
-            port=app.config['MONGO_PORT'],
+            host=app_config['MONGO_HOST'],
+            port=app_config['MONGO_PORT'],
         )
 
 

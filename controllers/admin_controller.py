@@ -9,13 +9,14 @@ application settings, and view application stats.
 """
 import flask
 
-import services
+from .. import services
 
 # Create a Flask blueprint to split the Flask routes amoung multiple files.
 blueprint = flask.Blueprint(
     'admin',
     __name__,
-    template_folder='templates'
+    template_folder='../templates',
+    static_folder='../static'
 )
 
 

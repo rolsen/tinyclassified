@@ -10,7 +10,7 @@ import flask
 import werkzeug
 from werkzeug import security
 
-import services
+from .. import services
 import util
 
 PASSWORD_RESET_MESSAGE = 'Password reset. Please check your email inbox.'
@@ -28,7 +28,8 @@ USER_PASSWORD_CHANGED_MSG = 'Password updated!'
 blueprint = flask.Blueprint(
     'login',
     __name__,
-    template_folder='templates'
+    template_folder='../templates',
+    static_folder='../static'
 )
 
 
@@ -55,11 +56,15 @@ def login():
     if confirm:
         del flask.session[util.SESS_CONFIRMATION_MSG]
 
+    config = tiny_classified.get_config()
+
     return flask.render_template(
         'login/login.html',
         error=error,
         confirm=confirm,
-        show_reset_password=show_reset_password
+        show_reset_password=show_reset_password,
+        base_url=config['BASE_URL'],
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html')
     )
 
 @blueprint.route('/login', methods=['POST'])
@@ -117,7 +122,12 @@ def forgot_password():
     @return: The HTML forgot password view.
     @rtype: str
     """
-    return flask.render_template('login/forgot_password.html')
+    config = tiny_classified.get_config()
+    return flask.render_template(
+        'login/forgot_password.html',
+        base_url=config['BASE_URL'],
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html')
+    )
 
 
 @blueprint.route('/forgot_password', methods=['POST'])

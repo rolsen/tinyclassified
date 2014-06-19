@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 import pymongo
 
 sys.path.append('..')
-import tiny_classified
+import tinyclassified
 
-MONGO_DATABASE_NAME = 'tiny_classified'
+MONGO_DATABASE_NAME = 'tinyclassified'
 MONGO_HOST = 'localhost'
 MONGO_PORT = 27017
 
@@ -227,7 +227,7 @@ def parse_data(fname):
     """Parses a file into a dict, using the first line of the file as the dict keys.
     """
     if not os.path.isfile(fname):
-        raise "file '%s' does not exist" % fname
+        raise RuntimeError("file '%s' does not exist" % fname)
 
     file_data = {
         'file_name': fname
@@ -429,11 +429,11 @@ def gogogo(data_dir=DATA_DIR, files=FILES):
 
 
 def create_listing(listing):
-    tiny_classified.services.listing_service.create(listing)
+    tinyclassified.services.listing_service.create(listing)
 
 
 def load_data_import():
-    data = gogogo()
+    data = gogogo(data_dir='data_import/data')
 
     for file_key, file_data in data.iteritems():
         for row in file_data['rows']:
@@ -444,4 +444,5 @@ def load_data_import():
 
 
 if __name__ == "__main__":
+    tinyclassified.tiny_classified.initialize_standalone()
     load_data_import()

@@ -10,9 +10,9 @@ import flask
 from bson import BSON
 from bson import json_util
 
-import tiny_classified
+import tinyclassified.tiny_classified as tiny_classified
 
-import services
+from .. import services
 
 import util
 
@@ -20,7 +20,8 @@ import util
 blueprint = flask.Blueprint(
     'author',
     __name__,
-    template_folder='templates'
+    template_folder='../templates',
+    static_folder='../static'
 )
 
 @blueprint.route('/')
@@ -30,23 +31,32 @@ def show_user_ui():
 
     @return {String} Rendered HTML template with the author control interface.
     """
+    config = tiny_classified.get_config()
+
     listing_view_templates = flask.render_template(
-        'author/listing_view.html'
+        'author/listing_view.html',
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        base_url=config['BASE_URL']
     )
     contacts_view_templates = flask.render_template(
-        'author/contacts_view.html'
+        'author/contacts_view.html',
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        base_url=config['BASE_URL']
     )
     listing_about_templates = flask.render_template(
-        'author/listing_about.html'
+        'author/listing_about.html',
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        base_url=config['BASE_URL']
     )
 
     return flask.render_template(
         'author/author_chrome.html',
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
         listing_view_templates=listing_view_templates,
         contacts_view_templates=contacts_view_templates,
         listing_about_templates=listing_about_templates,
         email=flask.session[util.SESS_EMAIL],
-        base_url=tiny_classified.get_config()['BASE_URL']
+        base_url=config['BASE_URL']
     )
 
 

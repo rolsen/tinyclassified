@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends parent_template %}
 
 {% block styles %}
-<link rel="stylesheet" type="text/css" href="/static/css/public_listing.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/public_listing.css">
 {% endblock %}
 
-{% block content %}
+{% block tiny_classified_content %}
 <div class="row">
     <div class="col-xs-6">
         <h1>{{ category.replace('_slash_', '/') }}</h1>

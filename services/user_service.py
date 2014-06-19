@@ -8,7 +8,7 @@ import string
 
 import werkzeug
 
-import tiny_classified
+import tinyclassified.tiny_classified as tiny_classified
 
 import email_service
 

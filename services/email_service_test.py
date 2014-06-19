@@ -30,15 +30,15 @@ class EmailTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        tiny_classified.app.config['FAKE_EMAIL'] = False
+        tiny_classified.get_config()['FAKE_EMAIL'] = False
 
     def test_send(self):
         test_service = TestEmailService()
         self.mox.StubOutWithMock(email_service, 'get_service_client')
         email_service.get_service_client(
-            tiny_classified.app.config['EMAIL_USERNAME'],
-            tiny_classified.app.config['EMAIL_PASSWORD'],
-            tiny_classified.app.config['EMAIL_USE_SECURE'],
+            tiny_classified.get_config()['EMAIL_USERNAME'],
+            tiny_classified.get_config()['EMAIL_PASSWORD'],
+            tiny_classified.get_config()['EMAIL_USE_SECURE'],
         ).AndReturn(test_service)
         self.mox.ReplayAll()
 
@@ -53,7 +53,7 @@ class EmailTests(mox.MoxTestBase):
         mesg_dict = message.__dict__
         self.assertEqual(
             mesg_dict['from_email'],
-            tiny_classified.app.config['EMAIL_FROM_ADDR']
+            tiny_classified.get_config()['EMAIL_FROM_ADDR']
         )
         self.assertEqual(mesg_dict['to'], ['recipient@example.com'])
         self.assertEqual(mesg_dict['subject'], 'subject')
@@ -64,9 +64,9 @@ class EmailTests(mox.MoxTestBase):
         test_service = TestEmailService()
         self.mox.StubOutWithMock(email_service, 'get_service_client')
         email_service.get_service_client(
-            tiny_classified.app.config['EMAIL_USERNAME'],
-            tiny_classified.app.config['EMAIL_PASSWORD'],
-            tiny_classified.app.config['EMAIL_USE_SECURE'],
+            tiny_classified.get_config()['EMAIL_USERNAME'],
+            tiny_classified.get_config()['EMAIL_PASSWORD'],
+            tiny_classified.get_config()['EMAIL_USE_SECURE'],
         ).AndReturn(test_service)
         self.mox.ReplayAll()
 
@@ -80,7 +80,7 @@ class EmailTests(mox.MoxTestBase):
         mesg_dict = message.__dict__
         self.assertEqual(
             mesg_dict['from_email'],
-            tiny_classified.app.config['EMAIL_FROM_ADDR']
+            tiny_classified.get_config()['EMAIL_FROM_ADDR']
         )
         self.assertEqual(mesg_dict['to'], ['recipient@example.com'])
         self.assertEqual(mesg_dict['subject'], 'subject')

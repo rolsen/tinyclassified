@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends parent_template %}
 
 {% block styles %}
-<link rel="stylesheet" type="text/css" href="/static/css/default.time.css">
-<link rel="stylesheet" type="text/css" href="/static/css/default.date.css">
-<link rel="stylesheet" type="text/css" href="/static/css/default.css">
-<link rel="stylesheet" type="text/css" href="/static/css/author.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/default.time.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/default.date.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/default.css">
+<link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/author.css">
 {% endblock %}
 
 {% block scripts %}
@@ -13,22 +13,22 @@
 {{ contacts_view_templates|safe }}
 {{ listing_about_templates|safe }}
 
-<script src="/static/js/lib/date.js"></script>
-<script src="/static/js/lib/markdown.js"></script>
-<script src="/static/js/lib/picker.js"></script>
-<script src="/static/js/lib/picker.date.js"></script>
-<script src="/static/js/lib/picker.time.js"></script>
-<script src="/static/js/lib/reMarked.js"></script>
-<script src="/static/js/lib/tinymce/tinymce.min.js"></script>
+<script src="{{ base_url }}/static/js/lib/date.js"></script>
+<script src="{{ base_url }}/static/js/lib/markdown.js"></script>
+<script src="{{ base_url }}/static/js/lib/picker.js"></script>
+<script src="{{ base_url }}/static/js/lib/picker.date.js"></script>
+<script src="{{ base_url }}/static/js/lib/picker.time.js"></script>
+<script src="{{ base_url }}/static/js/lib/reMarked.js"></script>
+<script src="{{ base_url }}/static/js/lib/tinymce/tinymce.min.js"></script>
 
-<script src="/static/js/util.js"></script>
-<script src="/static/js/author/listing_contact.js"></script>
-<script src="/static/js/author/listing_about.js"></script>
-<script src="/static/js/author/listing.js"></script>
-<script src="/static/js/author/author_controller.js"></script>
+<script src="{{ base_url }}/static/js/util.js"></script>
+<script src="{{ base_url }}/static/js/author/listing_contact.js"></script>
+<script src="{{ base_url }}/static/js/author/listing_about.js"></script>
+<script src="{{ base_url }}/static/js/author/listing.js"></script>
+<script src="{{ base_url }}/static/js/author/author_controller.js"></script>
 {% endblock %}
 
-{% block content %}
+{% block tiny_classified_content %}
 <div id="flash-bar"><span class="glyphicon glyphicon-thumbs-up"></span> Changes saved.</div>
 <div class="header">
     <h3>TinyClassified</h3>

@@ -14,7 +14,9 @@ SESS_VALIDATION_ERROR = 'validation error'
 SESS_CONFIRMATION_MSG = 'confirmation message'
 SESS_VALIDATION_SHOW_RESET = 'show reset'
 
-def check_active_requirement():
+AUTH_STRATEGIES = {}
+
+def check_active_requirement_inner():
     """Check if the current user meets the requirement to be logged in.
 
     @return: True if the user meets the requirement, False if not
@@ -22,8 +24,10 @@ def check_active_requirement():
     """
     return flask.session.get(SESS_EMAIL, None) != None
 
+AUTH_STRATEGIES['check_active_requirement'] = check_active_requirement_inner
 
-def check_admin_requirement(admin_required):
+
+def check_admin_requirement_inner(admin_required):
     """Check if the current user meets the requirement to be an admin.
 
     @param admin_required: Whether or not the user is required to be an admin
@@ -34,6 +38,20 @@ def check_admin_requirement(admin_required):
     if not admin_required:
         return True
     return flask.session.get(SESS_IS_ADMIN, False)
+
+AUTH_STRATEGIES['check_admin_requirement'] = check_admin_requirement_inner
+
+
+def inject_auth_strategy(name, function):
+    AUTH_STRATEGIES[name] = function
+
+
+def check_active_requirement():
+    return AUTH_STRATEGIES['check_active_requirement']()
+
+
+def check_admin_requirement():
+    return AUTH_STRATEGIES['check_admin_requirement']()
 
 
 def redirect_inactive_user():

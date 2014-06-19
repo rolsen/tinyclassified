@@ -13,7 +13,11 @@ TEST_TAG0 = {'foo': ['stuff'], '_id': 0}
 TEST_TAG1 = {'bar': ['stuff'], '_id': 1}
 
 def function_undecorated():
-    return flask.render_template('util_test.html')
+    return flask.render_template(
+        'util_test.html',
+        base_url=config['BASE_URL'],
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html')
+    )
 
 @util.require_login()
 def function_require_login():
