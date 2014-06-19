@@ -29,7 +29,8 @@ blueprint = flask.Blueprint(
 def show_user_ui():
     """Render the chrome (UI constructs) for user / author controls.
 
-    @return {String} Rendered HTML template with the author control interface.
+    @return: Rendered HTML template with the author control interface.
+    @rtype: str
     """
     config = tiny_classified.get_config()
     temp_vals = tiny_classified.render_common_template_vals()
@@ -82,9 +83,9 @@ def read(email):
     return json.dumps(result_dict, default=json_util.default)
 
 
-@blueprint.route('/content/<update_param>', methods=['PUT', 'POST'])
+@blueprint.route('/content', methods=['PUT', 'POST'])
 @util.require_login()
-def update(update_param):
+def update():
     """Update the current user's listing through the JSON-REST API.
 
     @return: JSON-encoded document describing the user's listing.

@@ -56,6 +56,12 @@ def get_beautiful_soup(value, get):
 
     return value
 
+def strip_field_value(func):
+    def func_wrapper(file_data, row, field_key, field_value):
+        func(file_data, row, field_key, field_value.strip())
+
+    return func_wrapper
+
 def add_as_string_to(
     output_key,
     append=True,
@@ -64,6 +70,7 @@ def add_as_string_to(
     overwrite=True,
     default=''
 ):
+    @strip_field_value
     def inner(file_data, row, field_key, field_value):
         if not overwrite and row['output'].get(output_key):
             return False
@@ -91,6 +98,7 @@ def add_as_string_to(
     return inner
 
 def add_contact(contact_type, default=''):
+    @strip_field_value
     def inner(file_data, row, field_key, field_value):
         value = field_value
         if not value:
@@ -119,6 +127,7 @@ def add_contact(contact_type, default=''):
     return inner
 
 def set_as_address_subfield(address_subfield, overwrite=True):
+    @strip_field_value
     def inner(file_data, row, field_key, field_value):
         ensure_key(row['output'], 'address', {})
         ensure_key(row['output']['address'], address_subfield, '')
@@ -134,6 +143,7 @@ def set_as_address_subfield(address_subfield, overwrite=True):
 def ignore(*args):
     pass
 
+@strip_field_value
 def complain_if_found(file_data, row, field_key, field_value):
     if field_value:
         print "complain_if_found:"
@@ -143,15 +153,19 @@ def complain_if_found(file_data, row, field_key, field_value):
         print "  field_value:", field_value
         print
 
+@strip_field_value
 def add_tags(file_data, row, field_key, field_value):
     ensure_key(row['output'], 'tags', {})
     category = file_data['category']
     row['output']['tags'][category] = []
     for subcat in field_value.split(','):
-        row['output']['tags'][category].append(subcat)
+        subcat = subcat.strip()
+        if subcat != '':
+            row['output']['tags'][category].append(subcat)
 
     return False
 
+@strip_field_value
 def set_as_is_published(file_data, row, field_key, field_value):
     row['output']['is_published'] = True if field_value == 't' else False
 
@@ -422,8 +436,8 @@ def gogogo(data_dir=DATA_DIR, files=FILES):
     #     for row in file_data['rows']:
     #         add_row_to_mongo(row)
 
+    # print "Clearing the collection..."
     mongo_listing_collection.remove( { } ) # Clear collection!
-    print "mongo_listing_collection dataSize():", mongo_listing_collection.count()
 
     return data
 
