@@ -17,7 +17,7 @@ var tinyClassifiedUtil = {
     },
 
     flashUser: function () {
-        $('#flash-bar').slideDown().delay(3000).slideUp();
+        $('#flash-bar').stop().slideUp().slideDown().delay(3000).slideUp();
     },
 
     /**
