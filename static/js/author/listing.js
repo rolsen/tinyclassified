@@ -1,3 +1,17 @@
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+
 /**
  * @fileoverview The main listing model plus views. Relies on other listing
  * models and views.
@@ -10,7 +24,7 @@
  * Model that represents a TinyClassified listing.
  */
 window.Listing = Backbone.Model.extend({
-    urlRoot: '/author/',
+    urlRoot: '/author/content/',
     defaults: {
         'author_email': null,
         'name': null,
@@ -18,10 +32,13 @@ window.Listing = Backbone.Model.extend({
         'slugs': [],
         'tags': [],
         'address': {
+            'address': '',
             'street': '',
+            'street2': '',
             'city': '',
             'state': '',
-            'zip': ''
+            'zip': '',
+            'country': '',
         }
     },
     idAttribute: "_id"
@@ -41,8 +58,14 @@ window.ListingView = Backbone.View.extend({
         this.aboutView = new ListingAboutView({model: this.model});
         this.addressView = new ListingAddressView({model: this.model});
 
+        var targetID = getUrlVars()['target'];
+        if (targetID)
+            targetID = decodeURIComponent(targetID);
+        else
+            targetID = '_current';
+
         this.model.bind('change', this.render, this);
-        this.model.set({'_id' : '_current'});
+        this.model.set({'_id' : targetID});
         this.model.fetch();
     },
 
@@ -79,6 +102,7 @@ window.ListingNameView = Backbone.View.extend({
         this.model.set({
             name: $(this.el).find('#listing-name').val()
         });
+        tinyClassifiedUtil.flashUser();
         this.model.save();
         return false;
     },
@@ -130,7 +154,9 @@ window.ListingTagsView = Backbone.View.extend({
 
         tags.get(category).push(subcategory);
         this.model.set('tags', dictAsObj(tags));
+        tinyClassifiedUtil.flashUser();
         this.model.save();
+        return false;
     },
 
     /**
@@ -172,7 +198,9 @@ window.ListingTagsView = Backbone.View.extend({
 
         this.renderTagsList();
 
+        tinyClassifiedUtil.flashUser();
         this.model.save();
+        return false;
     },
 
     afterRender: function () {
@@ -203,12 +231,17 @@ window.ListingAddressView = Backbone.View.extend({
     saveAddress:function () {
         this.model.set({
             address: {
+                address: $(this.el).find('#address-input').val(),
                 street: $(this.el).find('#street-input').val(),
+                street2: $(this.el).find('#street2-input').val(),
                 city: $(this.el).find('#city-input').val(),
                 state: $(this.el).find('#state-input').val(),
                 zip: $(this.el).find('#zip-input').val(),
+                country: $(this.el).find('#country-input').val(),
             }
         });
+
+        tinyClassifiedUtil.flashUser();
         this.model.save();
         return false;
     },

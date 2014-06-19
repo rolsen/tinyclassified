@@ -57,14 +57,16 @@ class AuthorControllerTests(mox.MoxTestBase):
 
     def test_update(self):
         self.setup_logged_in()
+        test_listing = copy.deepcopy(TEST_LISTING)
+        test_listing['is_published'] = True
 
         self.mox.StubOutWithMock(services.listing_service, 'update')
-        services.listing_service.update(TEST_LISTING)
+        services.listing_service.update(test_listing)
 
         self.mox.ReplayAll()
 
         response = self.app.put(
-            '/author/',
+            '/author/content',
             data=TEST_LISTING_FORM
         )
         self.assertEqual(200, response.status_code)
@@ -77,5 +79,5 @@ class AuthorControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        response = self.app.get('/author/_current')
+        response = self.app.get('/author/content/_current')
         self.assertEqual(200, response.status_code)

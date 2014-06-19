@@ -20,10 +20,13 @@ TEST_LISTING_1 = {
     'slugs': ['/cat1/subcat1/TestName1'],
     'about': 'About test listing 1',
     'address': {
+        'address': 'example corporation',
         'street': 'example street',
+        'street2': 'example suite',
         'city': 'example city',
         'state': 'example state',
         'zip': 'example zip',
+        'country': 'example country',
     }
 }
 

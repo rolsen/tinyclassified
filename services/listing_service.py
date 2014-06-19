@@ -126,7 +126,7 @@ def check_is_qualified_slug(slug):
     @return: True if the slug is fully qualified, False if not
     @rtype: boolean
     """
-    regex = re.compile("^[\w\- ]+\/[\w\- ]+\/[\w@\.\- ]+$")
+    regex = re.compile("^[\w\.\- ]+\/[\w\- \(\)]+\/[\w@\.,\- \(\)]+$")
     return isinstance(slug, basestring) and regex.match(slug)
 
 
@@ -299,13 +299,16 @@ def create(listing):
     """Create a new listing and persist it to the database.
 
     @param listing: The new listing to save
-    @param listing: dict
+    @type listing: dict
     @raise ValueError: If a listing with the same name as the new listing
         already exists.
     """
-    if tiny_classified.get_db_adapter().get_listing_by_name(listing.name):
-        raise ValueError('Listing with name %s already exists.' % name)
+    if tiny_classified.get_db_adapter().get_listing_by_name(listing['name']):
+        raise ValueError(
+            'Listing with name %s already exists.' % listing['name']
+        )
 
+    sanitize_tags(listing)
     calculate_slugs(listing)
     tiny_classified.get_db_adapter().upsert_listing(listing)
 
@@ -326,6 +329,22 @@ def list_by_slug(slug):
     @rtype: list
     """
     return tiny_classified.get_db_adapter().list_listings_by_slug(slug)
+
+
+def get_slug(listing, category):
+    """Get a slug of a given listing that matches a given category.
+
+    @param listing: The listing containing the slug options
+    @type listing: dict
+    @param category: The category for which to get a slug
+    @type category: str
+    @return: A slug of the given listing matching the given category
+    @rtype: str
+    """
+    for slug in listing['slugs']:
+        if category in slug:
+            return slug
+    return listing['slugs'][0]
 
 
 def create_default_listing_for_user(email):

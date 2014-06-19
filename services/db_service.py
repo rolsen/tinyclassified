@@ -28,7 +28,12 @@ ALLOWED_LISTING_FIELDS = [
     'is_published',
     'contact_id_next',
     'contact_infos',
-    'address'
+    'address',
+    'latitude',
+    'longitude',
+    'datecreated',
+    'datemodified',
+    'listingtype'
 ]
 
 MINIMUM_REQUIRED_USER_FIELDS = ['email', 'password_hash', 'is_admin']
@@ -153,6 +158,8 @@ class DBAdapter:
         @rtype: iterable over dicts
         """
         collection = self.get_listings_collection()
+        listing_slug = listing_slug.replace('(', '\(')
+        listing_slug = listing_slug.replace(')', '\)')
         regex = re.compile('^' + listing_slug, re.IGNORECASE)
         return collection.find({'slugs': regex})
 

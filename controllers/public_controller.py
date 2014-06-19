@@ -90,6 +90,7 @@ def index_listings_by_slug(slug):
             listing=listings[0],
             category=category,
             listing_url_base=tiny_classified.get_config()['LISTING_URL_BASE'],
+            admin=True
         )
     else:
         tags = listings.distinct('tags')

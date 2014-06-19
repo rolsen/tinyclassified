@@ -51,22 +51,27 @@ def show_user_ui():
     )
 
 
-@blueprint.route('/_current')
+def is_admin():
+    return True
+
+
+@blueprint.route('/content/<email>')
 @util.require_login()
-def read():
+def read(email):
     """Get the current user's listing through the JSON-REST API.
 
     @return: JSON-encoded document describing the user's listing.
     @rtype: str
     """
-    email = flask.session.get(util.SESS_EMAIL, None).lower()
+    if not is_admin() or email == '_current':
+        email = flask.session.get(util.SESS_EMAIL, None).lower()
     listing = services.listing_service.read_by_email(email)
 
     result_dict = listing
     return json.dumps(result_dict, default=json_util.default)
 
 
-@blueprint.route('/', methods=['PUT'])
+@blueprint.route('/content', methods=['PUT', 'POST'])
 @util.require_login()
 def update():
     """Update the current user's listing through the JSON-REST API.
@@ -78,6 +83,10 @@ def update():
         flask.request.form.get('model'),
         object_hook=json_util.object_hook
     )
+
+    if is_admin():
+        listing['is_published'] = True
+
     services.listing_service.update(listing)
 
     result_dict = listing

@@ -17,7 +17,7 @@ window.ListingContact = Backbone.Model.extend({
 });
 
 window.ListingContactCollection = Backbone.Collection.extend({
-    url:'contact',
+    url:'content/contact',
     model: ListingContact
 });
 
@@ -115,6 +115,7 @@ window.ListingContactCollectionItemView = Backbone.View.extend({
 
     deleteContact:function () {
         this.model.destroy();
+        tinyClassifiedUtil.flashUser();
         return false;
     },
 
@@ -152,6 +153,7 @@ window.ListingContactAddView = Backbone.View.extend({
         result = this.contactCollection.create(contact);
 
         elem.find('#value-input').val('');
+        tinyClassifiedUtil.flashUser();
         return false;
     },
 

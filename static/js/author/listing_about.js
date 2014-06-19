@@ -77,6 +77,7 @@ window.ListingAboutView = Backbone.View.extend({
         });
 
         this.model.save();
+        tinyClassifiedUtil.flashUser();
         return false;
     }
 });

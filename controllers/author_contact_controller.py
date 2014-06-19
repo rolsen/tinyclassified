@@ -21,7 +21,7 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route('/contact', methods=['POST'])
+@blueprint.route('/content/contact', methods=['POST'])
 @util.require_login()
 def create():
     """Creates a new listing contact through the JSON-REST API.
@@ -58,7 +58,7 @@ def create():
     return json.dumps(contact_dict)
 
 
-@blueprint.route('/contact/<int:contact_id>', methods=['GET'])
+@blueprint.route('/content/contact/<int:contact_id>', methods=['GET'])
 @util.require_login()
 def read(contact_id):
     """Get information on a contact listing through the JSON-REST API.
@@ -85,7 +85,7 @@ def read(contact_id):
     return json.dumps(result_dict)
 
 
-@blueprint.route('/contact', methods=['GET'])
+@blueprint.route('/content/contact', methods=['GET'])
 @util.require_login()
 def index():
     """Get the listing contacts for an author through the JSON-REST API.
@@ -102,7 +102,7 @@ def index():
     return json.dumps(listing.get('contact_infos', None))
 
 
-@blueprint.route('/contact/<int:contact_id>', methods=['DELETE'])
+@blueprint.route('/content/contact/<int:contact_id>', methods=['DELETE'])
 @util.require_login()
 def delete(contact_id):
     """Delete a listing contact through the JSON-REST API.
