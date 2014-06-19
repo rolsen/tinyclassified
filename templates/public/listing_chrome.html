@@ -18,7 +18,7 @@
 <hr>
 <div class="row">
     <div id="public-listing" class="col-xs-10">
-        <h2 id="listing-title">{{ listing.name }}</h2>
+        <h2 id="listing-title">{{ listing.name }} {% if admin %}[<a href="/author?target={{ listing.author_email }}">edit</a>]{% endif %}</h2>
     </div>
 </div>
 <hr>
@@ -31,26 +31,35 @@
     <div id="listing-address" class="col-xs-4">
         <address>
             <p>
+                {% if listing.address.address %}
+                {{ listing.address.address }}</br>
+                {% endif %}
                 {{ listing.address.street }}</br>
+                {% if listing.address.street2 %}
+                {{ listing.address.street2 }}</br>
+                {% endif %}
                 {{ listing.address.city }}, {{ listing.address.state }} {{ listing.address.zip }}
+                {% if listing.address.country %}
+                </br>{{ listing.address.country }}
+                {% endif %}
             </p>
         </address>
     </div>
     {% endif %}
     <div id="listing-subcategories-list" class="col-xs-4">
-                <strong>Categories:</strong>
-                {% for subcategory in listing.tags.get(category, []) %}
-                <div class="row">
-                    <div class="col-xs-4">
-                        <a id="select-category-button" class="subcategory-link btn btn-sm" href="{{ [listing_url_base, category, subcategory]|join('/') }}">
-                            {{ subcategory|replace('_slash_', '/') }}
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
+        <strong>Categories:</strong>
+        {% for subcategory in listing.tags.get(category, []) %}
+        <div class="row">
+            <div class="col-xs-4">
+                <a id="select-category-button" class="subcategory-link btn btn-sm" href="{{ [listing_url_base, category, subcategory]|join('/') }}">
+                    {{ subcategory|replace('_slash_', '/') }}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
-{% if listing.get('about', None) %}
+{% if listing.get('about', None).strip() %}
 <div id="about-row" class="row">
     <div id="description-row-container" class="listing-info-section col-xs-6">
         <span id="about-section">{{ listing.about }}</span>
