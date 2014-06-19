@@ -62,9 +62,10 @@ def login():
         show_reset_password=show_reset_password
     )
 
+
 @blueprint.route('/login', methods=['POST'])
 def login_post():
-    """Controller for handling user login form POSTs.
+    """Handle user login form POSTs.
 
     @return: Redirect to author chrome if login successful otherwise redirect
         back to the login form with validation error.
@@ -100,7 +101,7 @@ def login_post():
 
 @blueprint.route('/logout')
 def logout():
-    """Controller for handling user logouts.
+    """Handle user logouts.
 
     @return: Redirect to login form with session credentials reset to None.
     @rtype: flask.redirect
@@ -122,10 +123,10 @@ def forgot_password():
 
 @blueprint.route('/forgot_password', methods=['POST'])
 def forgot_password_post():
-    """Controller handling forgot password form POSTs.
+    """Handle user forgot password POSTs.
 
     @return: Redirect to the login form with a confirmation message.
-    @rtype: str
+    @rtype: flask.redirect
     """
     email = flask.request.form[util.SESS_EMAIL].lower()
     user = services.user_service.read(email)

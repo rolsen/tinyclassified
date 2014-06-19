@@ -11,12 +11,6 @@ DATABASE_NAME = 'tiny_classified'
 LISTINGS_COLLECTION_NAME = 'listing'
 USERS_COLLECTION_NAME = 'user'
 
-# CONTACT_FIELDS = [
-#     'type',
-#     'value',
-#     '_id'
-# ]
-
 MINIMUM_REQUIRED_LISTING_FIELDS = [
     'author_email',
     'name',

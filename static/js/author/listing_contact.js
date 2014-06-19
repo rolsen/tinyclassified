@@ -1,4 +1,13 @@
+/**
+ * @fileoverview Contains the models/views associated with a listing about section.
+ * @author rory@gleap.org (Rory Olsen)
+ * @author sam@gleap.org (Sam Pottinger)
+ * @license GNU GPLv3
+ */
 
+ /**
+  * Model that represents a listing contact.
+  */
 window.ListingContact = Backbone.Model.extend({
     defaults:{
         'type': '',
@@ -12,6 +21,10 @@ window.ListingContactCollection = Backbone.Collection.extend({
     model: ListingContact
 });
 
+/**
+ * Presenter / manager to coordinate presentation of a contact collection and
+ *     creation.
+ */
 window.ListingContactView = Backbone.View.extend({
 
     template:_.template($('#contacts-view-template').html()),
@@ -42,6 +55,9 @@ window.ListingContactView = Backbone.View.extend({
     close:tinyClassifiedUtil.getViewClose()
 });
 
+/**
+ * Presenter to display the controls to edit and view many listing contacts.
+ */
 window.ListingContactCollectionView = Backbone.View.extend({
 
     tagName:'table',
@@ -52,7 +68,7 @@ window.ListingContactCollectionView = Backbone.View.extend({
 
     /**
      * Constructor for the contact list presenter.
-    **/
+     */
     initialize: function () {
         this.model.bind('reset', this.render, this);
         var self = this;
@@ -65,7 +81,7 @@ window.ListingContactCollectionView = Backbone.View.extend({
 
     /**
      * Generate the HTML view for the collection of contacts.
-    **/
+     */
     render: function (eventName) {
         $(this.el).html(this.template());
         _.each(this.model.models, function (contact) {
@@ -79,6 +95,9 @@ window.ListingContactCollectionView = Backbone.View.extend({
     close:tinyClassifiedUtil.getViewClose()
 });
 
+/**
+ * Presenter to display controls to edit and view a listing contact.
+ */
 window.ListingContactCollectionItemView = Backbone.View.extend({
 
     tagName:'tr',
@@ -104,6 +123,9 @@ window.ListingContactCollectionItemView = Backbone.View.extend({
     close:tinyClassifiedUtil.getViewClose()
 });
 
+/**
+ * Presenter to display the controls to add a new listing contact.
+ */
 window.ListingContactAddView = Backbone.View.extend({
 
     template:_.template($('#add-contact-view-template').html()),
@@ -117,11 +139,10 @@ window.ListingContactAddView = Backbone.View.extend({
     },
 
     newContact:function () {
-        // console.log("ListingContactAddView");
+        // TODO: Validate input
         // if (!$('#contact-add-form').parsley('validate')) {
         //     return;
         // }
-        // console.log("ListingContactAddView post validate");
 
         var elem = $(this.el);
         var contact = new ListingContact();

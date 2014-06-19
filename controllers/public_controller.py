@@ -50,8 +50,8 @@ def render_html_category(listing_url_base, category, subcategories):
     @type listing_url_base: str
     @param category: The URL-safe category the subcategory belongs to.
     @type category: str
-    @param subcategory: The category's subcategories.
-    @type subcategory: iterable over str
+    @param subcategories: The category's subcategories.
+    @type subcategories: iterable over str
     @return: The HTML for a single category
     @rtype: str
     """
@@ -60,11 +60,11 @@ def render_html_category(listing_url_base, category, subcategories):
         template = jinja2.Template(f.read())
 
     prep = util.prepare_subcategory
-    subcategories = [prep(listing_url_base, category, x) for x in subcategories]
+    prep_subcats = [prep(listing_url_base, category, x) for x in subcategories]
 
     return template.render({
         'category': category,
-        'subcategories': subcategories,
+        'subcategories': prep_subcats,
         'listing_url_base': listing_url_base
     })
 

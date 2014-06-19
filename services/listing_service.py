@@ -1,4 +1,4 @@
-"""Service for listing CRUD and searching.
+"""Service for listing CRUD and listing searching.
 
 @author: Rory Olsen (rolsen, Gleap LLC 2014)
 @license: GNU GPLv3
