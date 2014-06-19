@@ -16,7 +16,7 @@ function getUrlVars()
  * Model that represents a TinyClassified listing.
 **/
 window.Listing = Backbone.Model.extend({
-    urlRoot: '/author/content/',
+    urlRoot: '/resources/author/content/',
     defaults: {
         'author_email': null,
         'name': null,

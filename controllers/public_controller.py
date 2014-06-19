@@ -11,6 +11,7 @@ import jinja2
 
 import tinyclassified.tiny_classified as tiny_classified
 
+import tinyclassified.tiny_classified as tiny_classified
 from .. import services
 import util
 
@@ -46,11 +47,14 @@ def index():
     html_categories = [render_html_category(url_base, cat, subcats)
         for cat, subcats in categories.iteritems()]
 
+    temp_vals = tiny_classified.render_common_template_vals()
+
     return flask.render_template(
         'public/public_index_chrome.html',
         base_url=config['BASE_URL'],
         parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
-        html_categories=html_categories
+        html_categories=html_categories,
+        **temp_vals
     )
 
 
@@ -69,11 +73,14 @@ def render_html_category(listing_url_base, category, subcategories):
     prep = util.prepare_subcategory
     subcategories = [prep(listing_url_base, category, x) for x in subcategories]
 
+    temp_vals = tiny_classified.render_common_template_vals()
+
     return flask.render_template(
         'public/index_category_inner.html',
         category=category,
         subcategories=subcategories,
-        listing_url_base=listing_url_base
+        listing_url_base=listing_url_base,
+        **temp_vals
     )
 
 
@@ -94,6 +101,8 @@ def index_listings_by_slug(slug):
 
     config = tiny_classified.get_config()
 
+    temp_vals = tiny_classified.render_common_template_vals()
+
     if listings.count() == 1 and is_qualified:
         return flask.render_template(
             'public/listing_chrome.html',
@@ -102,7 +111,8 @@ def index_listings_by_slug(slug):
             listing=listings[0],
             category=category,
             listing_url_base=tiny_classified.get_config()['LISTING_URL_BASE'],
-            admin=True
+            admin=util.check_admin_requirement(True),
+            **temp_vals
         )
     else:
         tags = listings.distinct('tags')
@@ -126,5 +136,6 @@ def index_listings_by_slug(slug):
             listings=listings,
             subcategories=[prep(url_base, category, x) for x in subcategories],
             selected_subcategory=selected_subcategory,
-            listing_url_base=url_base
+            listing_url_base=url_base,
+            **temp_vals
         )

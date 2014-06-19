@@ -8,12 +8,16 @@ import flask_sslify
 from flask.ext.pymongo import PyMongo
 
 
-OVERWRITE_CONFIG = {'config': None, 'db_adapter': None}
+OVERWRITE_CONFIG = {
+    'config': None,
+    'db_adapter': None,
+    'get_common_template_vals': lambda: {}
+}
 
 
-def setup_template_functions():
+def setup_template_functions(target):
     import services
-    app.jinja_env.globals.update(get_slug=services.listing_service.get_slug)
+    target.jinja_env.globals.update(get_slug=services.listing_service.get_slug)
 
 def attach_blueprints(target):
     import controllers
@@ -60,12 +64,9 @@ def get_db_adapter():
 def set_overwrite_config(config):
     OVERWRITE_CONFIG['config'] = config
 
+
 def get_config():
     return OVERWRITE_CONFIG['config']
-    if OVERWRITE_CONFIG['config']:
-        return OVERWRITE_CONFIG['config']
-    else:
-        return app.config
 
 
 def initialize_standalone():
@@ -80,11 +81,19 @@ def initialize_standalone():
     app.config.from_pyfile('flask_config.cfg', silent=False)
 
 
+def set_render_common_template_vals(func):
+    OVERWRITE_CONFIG['get_common_template_vals'] = func
+
+
+def render_common_template_vals():
+    return OVERWRITE_CONFIG['get_common_template_vals']()
+
+
 if __name__ == '__main__':
     initialize_standalone()
 
     app.config['DEBUG'] = True
     attach_blueprints()
-    setup_template_functions()
+    setup_template_functions(app)
     mongo = PyMongo(app)
     app.run()

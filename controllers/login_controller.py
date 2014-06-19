@@ -10,6 +10,7 @@ import flask
 import werkzeug
 from werkzeug import security
 
+import tinyclassified.tiny_classified as tiny_classified
 from .. import services
 import util
 
@@ -58,13 +59,16 @@ def login():
 
     config = tiny_classified.get_config()
 
+    temp_vals = tiny_classified.render_common_template_vals()
+
     return flask.render_template(
         'login/login.html',
         error=error,
         confirm=confirm,
         show_reset_password=show_reset_password,
         base_url=config['BASE_URL'],
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html')
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        **temp_vals
     )
 
 @blueprint.route('/login', methods=['POST'])

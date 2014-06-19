@@ -50,8 +50,8 @@ def check_active_requirement():
     return AUTH_STRATEGIES['check_active_requirement']()
 
 
-def check_admin_requirement():
-    return AUTH_STRATEGIES['check_admin_requirement']()
+def check_admin_requirement(admin_required):
+    return AUTH_STRATEGIES['check_admin_requirement'](admin_required)
 
 
 def redirect_inactive_user():

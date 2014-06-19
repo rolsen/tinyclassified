@@ -32,6 +32,7 @@ def show_user_ui():
     @return {String} Rendered HTML template with the author control interface.
     """
     config = tiny_classified.get_config()
+    temp_vals = tiny_classified.render_common_template_vals()
 
     listing_view_templates = flask.render_template(
         'author/listing_view.html',
@@ -56,7 +57,8 @@ def show_user_ui():
         contacts_view_templates=contacts_view_templates,
         listing_about_templates=listing_about_templates,
         email=flask.session[util.SESS_EMAIL],
-        base_url=config['BASE_URL']
+        base_url=config['BASE_URL'],
+        **temp_vals
     )
 
 
