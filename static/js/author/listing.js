@@ -1,17 +1,3 @@
-function getUrlVars()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
-
-
 /**
  * @fileoverview The main listing model plus views. Relies on other listing
  * models and views.
@@ -58,7 +44,7 @@ window.ListingView = Backbone.View.extend({
         this.aboutView = new ListingAboutView({model: this.model});
         this.addressView = new ListingAddressView({model: this.model});
 
-        var targetID = getUrlVars()['target'];
+        var targetID = tinyClassifiedUtil.getUrlVars()['target'];
         if (targetID)
             targetID = decodeURIComponent(targetID);
         else

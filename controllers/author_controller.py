@@ -83,9 +83,9 @@ def read(email):
     return json.dumps(result_dict, default=json_util.default)
 
 
-@blueprint.route('/content', methods=['PUT', 'POST'])
+@blueprint.route('/content/<type>', methods=['PUT', 'POST'])
 @util.require_login()
-def update():
+def update(type):
     """Update the current user's listing through the JSON-REST API.
 
     @return: JSON-encoded document describing the user's listing.
