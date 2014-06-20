@@ -48,10 +48,7 @@ class DBAdapter:
         @type client: flask.ext.pymongo.PyMongo
         """
         app_config = tiny_classified.get_config()
-        self.client = pymongo.mongo_client.MongoClient(
-            host=app_config['MONGO_HOST'],
-            port=app_config['MONGO_PORT'],
-        )
+        self.client = pymongo.mongo_client.MongoClient(app_config['MONGO_URI'])
 
 
     def get_database(self):
