@@ -63,6 +63,16 @@ def show_user_ui():
     )
 
 
+@blueprint.route('/categories.json')
+@util.require_login()
+def get_categories():
+    tags = services.listing_service.index_tags()
+    return json.dumps(services.listing_service.collect_index_dict(
+        tags,
+        home_only=False
+    ))
+
+
 def is_admin():
     return util.check_admin_requirement(True)
 
@@ -100,6 +110,25 @@ def update(type):
         listing['is_published'] = True
 
     services.listing_service.update(listing)
+
+    result_dict = listing
+    return json.dumps(result_dict, default=json_util.default)
+
+
+@blueprint.route('/content/<email>', methods=['DELETE'])
+@util.require_login()
+def delete(email):
+    """Delete a listing through the JSON-REST API.
+
+    @return: JSON-encoded document describing the deleted listing.
+    @rtype: str
+    """
+    listing = services.listing_service.read_by_email(email)
+
+    if not is_admin():
+        flask.abort(403)
+
+    services.listing_service.delete(listing)
 
     result_dict = listing
     return json.dumps(result_dict, default=json_util.default)

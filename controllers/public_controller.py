@@ -25,6 +25,19 @@ blueprint = flask.Blueprint(
 )
 
 
+@blueprint.route('/confirm_delete')
+def confirm_delete():
+    config = tiny_classified.get_config()
+    temp_vals = tiny_classified.render_common_template_vals()
+
+    return flask.render_template(
+        'public/deleted_confirmation.html',
+        base_url=config['BASE_URL'],
+        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        **temp_vals
+    )
+
+
 @blueprint.route('/')
 def index():
     """List all listings tags.
@@ -92,6 +105,9 @@ def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
 
     config = tiny_classified.get_config()
 
+    if listings.count() == 0:
+        return None
+
     listing = listings[0]
     about = listing.get('about', None)
     if about:
@@ -148,9 +164,14 @@ def index_listings_by_slug(slug):
     config = tiny_classified.get_config()
     temp_vals = tiny_classified.render_common_template_vals()
 
-    return index_listings_by_slug_programmatic(
+    result = index_listings_by_slug_programmatic(
         slug,
         config.get('PARENT_TEMPLATE', 'base.html'),
         temp_vals,
         True
     )
+
+    if not result:
+        flask.abort(404)
+
+    return result

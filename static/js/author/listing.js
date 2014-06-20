@@ -65,6 +65,27 @@ window.ListingView = Backbone.View.extend({
         tinyClassifiedUtil.assign(this.tagsView, '#tags-view');
         tinyClassifiedUtil.assign(this.aboutView, '#about-view');
         tinyClassifiedUtil.assign(this.addressView, '#address-view');
+
+        console.log('here');
+        $.getJSON(
+            '/resources/author/categories.json',
+            function (categoriesInfo) {
+                var categories = [];
+                for (category in categoriesInfo)
+                    categories.push(category.replace('_slash_', '/'));
+
+                $('#category').autocomplete({
+                    source: categories
+                });
+
+                $('#category').blur(function () {
+                    var category = $('#category').val();
+                    $('#subcategory').autocomplete({
+                        source: categoriesInfo[category.replace('/', '_slash_')]
+                    });
+                });
+            }
+        )
     },
 
     beforeClose:function () {

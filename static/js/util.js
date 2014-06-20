@@ -5,6 +5,8 @@
  * @license GNU GPLv3
  */
 
+var FLASH_DUR = 1000;
+
 var tinyClassifiedUtil = {
     /**
      * Delegate a subsection of the view to another presenter.
@@ -17,7 +19,7 @@ var tinyClassifiedUtil = {
     },
 
     flashUser: function () {
-        $('#flash-bar').stop().slideUp().slideDown().delay(3000).slideUp();
+        $('#flash-bar').stop().slideUp().slideDown().delay(FLASH_DUR).slideUp();
     },
 
     getUrlVars: function () {
