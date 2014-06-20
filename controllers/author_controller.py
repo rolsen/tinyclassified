@@ -64,7 +64,7 @@ def show_user_ui():
 
 
 def is_admin():
-    return True
+    return util.check_admin_requirement(True)
 
 
 @blueprint.route('/content/<email>')

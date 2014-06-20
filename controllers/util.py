@@ -7,7 +7,7 @@ from functools import wraps
 
 import flask
 
-SESS_EMAIL = 'email'
+SESS_EMAIL = 'auth_user'
 SESS_IS_ADMIN = 'is_admin'
 SESS_PASSWORD = 'password'
 SESS_VALIDATION_ERROR = 'validation error'
