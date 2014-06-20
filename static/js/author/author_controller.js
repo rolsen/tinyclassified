@@ -1,3 +1,6 @@
+// TODO: Remove dead code here.
+
+
 /**
  * Top level presenter / presentation logic to manage user / author controls.
  * @author rory@gleap.org (Rory Olsen)
@@ -9,6 +12,7 @@ window.AuthorControlsView = Backbone.View.extend({
     tagName: 'div',
 
     initialize:function () {
+        console.log('starting');
         this.listingView = new ListingView({model: this.model});
 
         // TODO:
@@ -19,11 +23,32 @@ window.AuthorControlsView = Backbone.View.extend({
         this.render();
     },
 
-    render:tinyClassifiedUtil.getViewRender(),
+    render: function () {
+        $(this.el).html(this.template(this.model.toJSON()));
+        console.log("HEHEHERE")
+        if (this.afterRender) {
+            this.afterRender();
+        }
+
+        return this;
+    },
+
     close:tinyClassifiedUtil.getViewClose(),
 
     afterRender:function () {
         tinyClassifiedUtil.assign(this.listingView, '#listing-tab');
+        $.getJSON(
+            './categories.json',
+            function (categoriesInfo) {
+                var categories = [];
+                for (category in categoriesInfo)
+                    categories.push(category);
+
+                $('#category').autocomplete({
+                    source: category
+                });
+            }
+        )
     }
 });
 

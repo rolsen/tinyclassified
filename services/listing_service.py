@@ -302,7 +302,7 @@ def delete(listing):
     """
     listing_id = listing.get('_id', None)
     if listing_id:
-        collection = tiny_classified.get_db_adapter().get_listing_collection()
+        collection = tiny_classified.get_db_adapter().get_listings_collection()
         collection.remove(listing_id)
 
 
