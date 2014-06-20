@@ -31,6 +31,10 @@ window.ListingContactView = Backbone.View.extend({
     template:_.template($('#contacts-view-template').html()),
 
     initialize: function () {
+        var ListingContactCollection = Backbone.Collection.extend({
+            url: 'content/' + encodeURIComponent(this.model.attributes.author_email) + '/contact',
+            model: ListingContact
+        });
         this.contactCollection = new ListingContactCollection();
         this.contactCollection.parent = this.model;
         this.contactCollectionView = new ListingContactCollectionView({

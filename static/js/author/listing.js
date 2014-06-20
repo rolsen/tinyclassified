@@ -38,20 +38,21 @@ window.ListingView = Backbone.View.extend({
     template:_.template($('#listing-details-template').html()),
 
     initialize:function () {
+        var targetID = tinyClassifiedUtil.getUrlVars()['target'];
+        if (targetID)
+            targetID = decodeURIComponent(targetID);
+        else
+            targetID = '_current';
+        this.model.set({'_id' : targetID});
+        this.model.set({'author_email' : targetID});
+
         this.contactView = new ListingContactView({model: this.model});
         this.nameView = new ListingNameView({model: this.model});
         this.tagsView = new ListingTagsView({model: this.model});
         this.aboutView = new ListingAboutView({model: this.model});
         this.addressView = new ListingAddressView({model: this.model});
 
-        var targetID = tinyClassifiedUtil.getUrlVars()['target'];
-        if (targetID)
-            targetID = decodeURIComponent(targetID);
-        else
-            targetID = '_current';
-
         this.model.bind('change', this.render, this);
-        this.model.set({'_id' : targetID});
         this.model.fetch();
     },
 

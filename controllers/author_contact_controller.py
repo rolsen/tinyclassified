@@ -22,26 +22,32 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route('/content/contact/<param>', methods=['POST', 'PUT'])
+@blueprint.route('/content/<author_email>/contact', methods=['POST'])
 @util.require_login()
-def create(param):
+def create(author_email):
     """Creates a new listing contact through the JSON-REST API.
 
     @return: JSON-encoded document describing the contact just created.
     @rtype: str
     """
-    email = flask.session.get(util.SESS_EMAIL, None).lower()
     model = json.loads(flask.request.form.get('model'))
     contact_type = model.get('type')
     value = model.get('value')
 
-    listing = services.listing_service.read_by_email(email)
+    listing = services.listing_service.read_by_email(author_email)
     if not listing:
-        listing = services.listing_service.create_default_listing_for_user(email)
+        listing = services.listing_service.create_default_listing_for_user(
+            author_email
+        )
 
     if not listing.get('contact_infos', None):
         listing['contact_infos'] = []
         listing['contact_id_next'] = 0
+
+    if not listing.get('contact_id_next'):
+        listing['contact_id_next'] = max(
+            map(lambda x: x['_id'], listing['contact_infos'])
+        ) + 1
 
     contact_dict = {
         'type': contact_type,
@@ -59,9 +65,9 @@ def create(param):
     return json.dumps(contact_dict)
 
 
-@blueprint.route('/content/contact/<int:contact_id>', methods=['GET'])
+@blueprint.route('/content/<author_email>/contact/<int:contact_id>', methods=['GET'])
 @util.require_login()
-def read(contact_id):
+def read(author_email, contact_id):
     """Get information on a contact listing through the JSON-REST API.
 
     @param contact_id: The integer ID of the contact record to read.
@@ -69,8 +75,7 @@ def read(contact_id):
     @return: JSON-encoded document describing the requested contact.
     @rtype: str
     """
-    email = flask.session.get(util.SESS_EMAIL, None).lower()
-    listing = services.listing_service.read_by_email(email)
+    listing = services.listing_service.read_by_email(author_email)
     contact_infos = listing.get('contact_infos', None)
     if not contact_infos:
         return 'Contact information entries not found for author.', 404
@@ -86,16 +91,17 @@ def read(contact_id):
     return json.dumps(result_dict)
 
 
-@blueprint.route('/content/contact', methods=['GET'])
+@blueprint.route('/content/<author_email>/contact', methods=['GET'])
 @util.require_login()
-def index():
+def index(author_email):
     """Get the listing contacts for an author through the JSON-REST API.
 
+    @param author_email:
+    @type author_email:
     @return: JSON-encoded document describing the requested contact infos.
     @rtype: str
     """
-    email = flask.session.get(util.SESS_EMAIL, None).lower()
-    listing = services.listing_service.read_by_email(email)
+    listing = services.listing_service.read_by_email(author_email)
 
     if not listing:
         return 'Listing not found for author.', 404
@@ -103,9 +109,9 @@ def index():
     return json.dumps(listing.get('contact_infos', None))
 
 
-@blueprint.route('/content/contact/<int:contact_id>', methods=['DELETE'])
+@blueprint.route('/content/<author_email>/contact/<int:contact_id>', methods=['DELETE'])
 @util.require_login()
-def delete(contact_id):
+def delete(author_email, contact_id):
     """Delete a listing contact through the JSON-REST API.
 
     @param contact_id: The integer ID of the contact record to delete.
@@ -114,10 +120,8 @@ def delete(contact_id):
         with status code 200.
     @rtype: tuple (str, int)
     """
-    email = flask.session.get(util.SESS_EMAIL, None).lower()
-
     # TODO: Put db operations in util.after_this_request
-    listing = services.listing_service.read_by_email(email)
+    listing = services.listing_service.read_by_email(author_email)
     contacts = listing.get('contact_infos', None)
     if not contacts:
         return 'Contact not found', 404
