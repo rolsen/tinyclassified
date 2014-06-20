@@ -8,7 +8,10 @@ import string
 
 import werkzeug
 
-import tinyclassified.tiny_classified as tiny_classified
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
 
 import email_service
 

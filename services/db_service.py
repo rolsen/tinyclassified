@@ -6,7 +6,10 @@
 import pymongo
 import re
 
-from tinyclassified import tiny_classified
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
 
 LISTINGS_COLLECTION_NAME = 'listing'
 USERS_COLLECTION_NAME = 'user'

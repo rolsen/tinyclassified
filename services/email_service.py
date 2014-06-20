@@ -6,7 +6,10 @@
 import markdown
 import sendgrid
 
-from tinyclassified import tiny_classified
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
 
 
 def get_service_client(username, password, secure):

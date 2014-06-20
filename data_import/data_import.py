@@ -8,18 +8,12 @@ from bs4 import BeautifulSoup
 import pymongo
 
 sys.path.append('..')
-import tinyclassified
 
-MONGO_DATABASE_NAME = 'ifn'
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
+# might need:
+# from tinyclassified import tiny_classified
+import tiny_classified
 
-mongo_client = pymongo.mongo_client.MongoClient(
-    host=MONGO_HOST,
-    port=MONGO_PORT
-)
-mongo_db = mongo_client.db[MONGO_DATABASE_NAME]
-mongo_listing_collection = mongo_db['listing']
+import services
 
 # DEFAULT_EMAIL = 'admin@insurance-forums.net'
 INCREMENT = "increment"
@@ -42,6 +36,23 @@ FILES = {
 EXPLODE_ON_UNRECOGNIZED_FIELD = True
 COMPLAIN_ON_UNMATCHED_ROW_LENGTH = False
 
+DATA_IMPORT_DATA = {
+    'mongo_db': None,
+    'mongo_listing_collection': None
+}
+
+def get_database():
+    if not DATA_IMPORT_DATA['mongo_db']:
+        DATA_IMPORT_DATA['mongo_db'] = tiny_classified.get_db_adapter().get_database()
+        DATA_IMPORT_DATA['mongo_listing_collection'] = DATA_IMPORT_DATA['mongo_db']
+
+    return DATA_IMPORT_DATA['mongo_db']
+
+def get_listing_collection():
+    if not DATA_IMPORT_DATA['mongo_listing_collection']:
+        DATA_IMPORT_DATA['mongo_listing_collection'] = tiny_classified.get_db_adapter().get_listings_collection()
+
+    return DATA_IMPORT_DATA['mongo_listing_collection']
 
 def ensure_key(obj, key, default):
     if not obj.get(key):
@@ -358,8 +369,8 @@ def compress_duplicates(data):
 
 def add_row_to_mongo(row):
     print "++++++++++++++++"
-    print row['output']
-    mongo_listing_collection.save(row['output'])
+    # print row['output']
+    # get_listing_collection().save(row['output'])
     print "================"
     print
 
@@ -432,24 +443,22 @@ def gogogo(data_dir=DATA_DIR, files=FILES):
 
     compress_duplicates(data)
 
-    # for file_key, file_data in data.iteritems():
-    #     for row in file_data['rows']:
-    #         add_row_to_mongo(row)
-
-    # print "Clearing the collection..."
-    mongo_listing_collection.remove( { } ) # Clear collection!
-    print mongo_listing_collection.count()
-
     return data
 
 
 def create_listing(listing):
-    tinyclassified.services.listing_service.create(listing)
+    services.listing_service.create(listing)
 
 
 def load_data_import():
-    data = gogogo(data_dir='data_import/data')
+    print "Parsing CSVs..."
+    data = gogogo(data_dir='data')
 
+    mongo_listing_collection = get_listing_collection()
+    mongo_listing_collection.remove( { } ) # Clear collection!
+    print "Clearing the collection:", mongo_listing_collection.count()
+
+    print "Adding listings..."
     for file_key, file_data in data.iteritems():
         for row in file_data['rows']:
             output = row['output']
@@ -458,6 +467,12 @@ def load_data_import():
             create_listing(listing)
 
 
+    print "Saving ['meta'].save({'name': '_tinyclassified', 'next_author_id..."
+    get_database()['meta'].save({'name': '_tinyclassified', 'next_author_id': IncrementingNumber.get()})
+
+    print "Success"
+
+
 if __name__ == "__main__":
-    tinyclassified.tiny_classified.initialize_standalone()
+    tiny_classified.initialize_standalone()
     load_data_import()
