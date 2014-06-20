@@ -176,7 +176,7 @@ class DBAdapter:
             new listing is inserted.
         @type listing: dict
         """
-        self.ensure_required_fields(listing, MINIMUM_REQUIRED_LISTING_FIELDS)
+        # self.ensure_required_fields(listing, MINIMUM_REQUIRED_LISTING_FIELDS)
         self.ensure_limited_fields(listing, ALLOWED_LISTING_FIELDS)
         collection = self.get_listings_collection()
         collection.save(listing)
