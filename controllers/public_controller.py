@@ -8,6 +8,7 @@ browsing listings.
 """
 import flask
 import jinja2
+import markdown
 
 import tinyclassified.tiny_classified as tiny_classified
 
@@ -91,13 +92,19 @@ def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
 
     config = tiny_classified.get_config()
 
+    listing = listings[0]
+    about = listing.get('about', None)
+    if about:
+        about = markdown.markdown(about)
+
     if listings.count() == 1 and is_qualified:
         return flask.render_template(
             'public/listing_chrome.html',
             base_url=config['BASE_URL'],
             parent_template=parent_template,
-            listing=listings[0],
+            listing=listing,
             category=category,
+            about=about,
             listing_url_base=tiny_classified.get_config()['LISTING_URL_BASE'],
             admin=util.check_admin_requirement(True),
             **temp_vals
