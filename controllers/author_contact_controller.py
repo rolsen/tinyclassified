@@ -22,9 +22,9 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route('/content/contact', methods=['POST'])
+@blueprint.route('/content/contact/<param>', methods=['POST', 'PUT'])
 @util.require_login()
-def create():
+def create(param):
     """Creates a new listing contact through the JSON-REST API.
 
     @return: JSON-encoded document describing the contact just created.

@@ -32,15 +32,12 @@ def index():
     @rtype: str
     """
     config = tiny_classified.get_config()
-    
-    ignore_front_list = config['NO_FRONT_PAGE_CATEGORIES']
 
     tags = services.listing_service.index_tags()
-    categories = services.listing_service.collect_index_dict(tags)
-    categories = dict(filter(
-        lambda (key,val): key not in ignore_front_list,
-        categories.iteritems()
-    ))
+    categories = services.listing_service.collect_index_dict(
+        tags,
+        home_only=True
+    )
 
     url_base = tiny_classified.get_config()['LISTING_URL_BASE']
 
@@ -84,15 +81,8 @@ def render_html_category(listing_url_base, category, subcategories):
     )
 
 
-@blueprint.route('/<path:slug>')
-def index_listings_by_slug(slug):
-    """List all listings of a given slug.
-
-    @param slug: The slug for which to list listings.
-    @type slug: str
-    @return: HTML with the listings belonging the the given slug.
-    @rtype: str
-    """
+def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
+    print slug
     listings = services.listing_service.list_by_slug(slug)
     is_qualified = services.listing_service.check_is_qualified_slug(slug)
 
@@ -101,13 +91,11 @@ def index_listings_by_slug(slug):
 
     config = tiny_classified.get_config()
 
-    temp_vals = tiny_classified.render_common_template_vals()
-
     if listings.count() == 1 and is_qualified:
         return flask.render_template(
             'public/listing_chrome.html',
             base_url=config['BASE_URL'],
-            parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+            parent_template=parent_template,
             listing=listings[0],
             category=category,
             listing_url_base=tiny_classified.get_config()['LISTING_URL_BASE'],
@@ -116,7 +104,7 @@ def index_listings_by_slug(slug):
         )
     else:
         tags = listings.distinct('tags')
-        tags = services.listing_service.collect_index_dict(tags)
+        tags = services.listing_service.collect_index_dict(tags, home_only=home)
 
         if len(slug_split) > 1:
             subcategories = []
@@ -131,7 +119,7 @@ def index_listings_by_slug(slug):
         return flask.render_template(
             'public/category_chrome.html',
             base_url=config['BASE_URL'],
-            parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+            parent_template=parent_template,
             category=category,
             listings=listings,
             subcategories=[prep(url_base, category, x) for x in subcategories],
@@ -139,3 +127,23 @@ def index_listings_by_slug(slug):
             listing_url_base=url_base,
             **temp_vals
         )
+
+
+@blueprint.route('/<path:slug>')
+def index_listings_by_slug(slug):
+    """List all listings of a given slug.
+
+    @param slug: The slug for which to list listings.
+    @type slug: str
+    @return: HTML with the listings belonging the the given slug.
+    @rtype: str
+    """
+    config = tiny_classified.get_config()
+    temp_vals = tiny_classified.render_common_template_vals()
+
+    return index_listings_by_slug_programmatic(
+        slug,
+        config.get('PARENT_TEMPLATE', 'base.html'),
+        temp_vals,
+        True
+    )

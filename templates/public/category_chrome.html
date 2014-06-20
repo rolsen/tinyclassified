@@ -23,6 +23,27 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block tiny_classified_content %}
+<script type='text/javascript'>
+var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+var gads = document.createElement('script');
+gads.async = true;
+gads.type = 'text/javascript';
+var useSSL = 'https:' == document.location.protocol;
+gads.src = (useSSL ? 'https:' : 'http:') + 
+'//www.googletagservices.com/tag/js/gpt.js';
+var node = document.getElementsByTagName('script')[0];
+node.parentNode.insertBefore(gads, node);
+})();
+
+googletag.cmd.push(function() {
+googletag.defineSlot('{{side_ad_1}}', [300, 250], 'right-ad-1').setTargeting("name", "Life Insurance Forum").addService(googletag.pubads());
+googletag.pubads().collapseEmptyDivs(true);
+googletag.enableServices();
+});
+</script>
+
 <div class="row">
     <div class="col-xs-12">
         <h3>{{ category|replace('_slash_', '/') }}</h3>
@@ -31,7 +52,7 @@ $(document).ready(function() {
 <div class="row">
     <div id="filters-ctrl" class="col-md-2">
         {% if selected_subcategory %}
-        <a id="clear-filters-button" class="btn btn-default" href="{{ [listing_url_base, category]|join('/') }}">Clear Filters</a>
+        <a id="clear-filters-button" class="btn btn-danger" href="{{ [listing_url_base, category]|join('/') }}">Clear Filters</a>
         {% endif %}
         <table id="subcategories-table" class="table">
             <thead>
@@ -64,8 +85,7 @@ $(document).ready(function() {
             </tbody>
         </table>
     </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-8">
+    <div class="col-md-6">
         <table id="listings-table" class="table-bordered">
             <thead>
                 <tr>
@@ -97,6 +117,12 @@ $(document).ready(function() {
             {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="col-md-4">
+        <div class="right-ad" id="right-ad-1"></div>
+        <script type='text/javascript'>
+        googletag.cmd.push(function() { googletag.display('right-ad-1'); });
+        </script>
     </div>
 </div>
 {% endblock %}

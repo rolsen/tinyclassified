@@ -10,7 +10,7 @@ import pymongo
 sys.path.append('..')
 import tinyclassified
 
-MONGO_DATABASE_NAME = 'tinyclassified'
+MONGO_DATABASE_NAME = 'ifn'
 MONGO_HOST = 'localhost'
 MONGO_PORT = 27017
 
@@ -438,6 +438,7 @@ def gogogo(data_dir=DATA_DIR, files=FILES):
 
     # print "Clearing the collection..."
     mongo_listing_collection.remove( { } ) # Clear collection!
+    print mongo_listing_collection.count()
 
     return data
 

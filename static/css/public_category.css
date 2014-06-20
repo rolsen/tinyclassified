@@ -1,6 +1,5 @@
 #filters-ctrl .btn {
     white-space: normal;
-    height: 100%;
 }
 
 #listings-table.dataTable {
@@ -29,6 +28,10 @@
     white-space: normal;
 }
 
+#subcategories-table form {
+    margin-bottom: 0;
+}
+
 #subcategories-table-header {
     background-color: #1F4A6C;
     color: #FFF;
@@ -40,6 +43,18 @@
     background-color: #B0D0E8;
     color: #000;
     text-decoration: none;
+}
+
+#clear-category-button {
+    height: 100%;
+}
+
+#clear-filters-button {
+    width: 100%;
+}
+
+#select-category-button {
+    height: 100%
 }
 
 @media (max-width: 992px) {

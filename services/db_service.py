@@ -8,8 +8,6 @@ import re
 
 from tinyclassified import tiny_classified
 
-DATABASE_NAME = 'tiny_classified'
-
 LISTINGS_COLLECTION_NAME = 'listing'
 USERS_COLLECTION_NAME = 'user'
 
@@ -62,7 +60,8 @@ class DBAdapter:
         @return: Database point provided by the native pymongo.MongoClient
         @rtype: pymongo.database
         """
-        return self.client.db[DATABASE_NAME]
+        app_config = tiny_classified.get_config()
+        return self.client[app_config['MONGO_DATABASE_NAME']]
 
 
     def get_listings_collection(self):

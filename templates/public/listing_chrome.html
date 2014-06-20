@@ -5,6 +5,27 @@
 {% endblock %}
 
 {% block tiny_classified_content %}
+<script type='text/javascript'>
+var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+var gads = document.createElement('script');
+gads.async = true;
+gads.type = 'text/javascript';
+var useSSL = 'https:' == document.location.protocol;
+gads.src = (useSSL ? 'https:' : 'http:') + 
+'//www.googletagservices.com/tag/js/gpt.js';
+var node = document.getElementsByTagName('script')[0];
+node.parentNode.insertBefore(gads, node);
+})();
+
+googletag.cmd.push(function() {
+googletag.defineSlot('{{side_ad_1}}', [300, 250], 'right-ad-1').setTargeting("name", "Life Insurance Forum").addService(googletag.pubads());
+googletag.pubads().collapseEmptyDivs(true);
+googletag.enableServices();
+});
+</script>
+
 <div class="row">
     <div class="col-xs-6">
         <h1>{{ category.replace('_slash_', '/') }}</h1>
@@ -23,58 +44,68 @@
 </div>
 <hr>
 <div class="row">
-    {% if listing.address.street and
-        listing.address.city and
-        listing.address.state and
-        listing.address.zip
-    %}
-    <div id="listing-address" class="col-xs-4">
-        <address>
-            <p>
-                {% if listing.address.address %}
-                {{ listing.address.address }}</br>
-                {% endif %}
-                {{ listing.address.street }}</br>
-                {% if listing.address.street2 %}
-                {{ listing.address.street2 }}</br>
-                {% endif %}
-                {{ listing.address.city }}, {{ listing.address.state }} {{ listing.address.zip }}
-                {% if listing.address.country %}
-                </br>{{ listing.address.country }}
-                {% endif %}
-            </p>
-        </address>
-    </div>
-    {% endif %}
-    <div id="listing-subcategories-list" class="col-xs-4">
-        <strong>Categories:</strong>
-        {% for subcategory in listing.tags.get(category, []) %}
+    <div class="col-md-8">
         <div class="row">
-            <div class="col-xs-4">
-                <a id="select-category-button" class="subcategory-link btn btn-sm" href="{{ [listing_url_base, category, subcategory]|join('/') }}">
-                    {{ subcategory|replace('_slash_', '/') }}
-                </a>
+            {% if listing.address.street and
+                listing.address.city and
+                listing.address.state and
+                listing.address.zip
+            %}
+            <div id="listing-address" class="col-xs-4">
+                <address>
+                    <p>
+                        {% if listing.address.address %}
+                        {{ listing.address.address }}</br>
+                        {% endif %}
+                        {{ listing.address.street }}</br>
+                        {% if listing.address.street2 %}
+                        {{ listing.address.street2 }}</br>
+                        {% endif %}
+                        {{ listing.address.city }}, {{ listing.address.state }} {{ listing.address.zip }}
+                        {% if listing.address.country %}
+                        </br>{{ listing.address.country }}
+                        {% endif %}
+                    </p>
+                </address>
+            </div>
+            {% endif %}
+            <div id="listing-subcategories-list" class="col-xs-4">
+                <strong>Categories:</strong>
+                {% for subcategory in listing.tags.get(category, []) %}
+                <div class="row">
+                    <div class="col-xs-4">
+                        <a id="select-category-button" class="subcategory-link btn btn-sm" href="{{ [listing_url_base, category, subcategory]|join('/') }}">
+                            {{ subcategory|replace('_slash_', '/') }}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
+        {% if listing.get('about', None).strip() %}
+        <div id="about-row" class="row">
+            <div id="description-row-container" class="listing-info-section col-xs-6">
+                <span id="about-section">{{ listing.about }}</span>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div id="additional-info-row-container" class="listing-info-section col-xs-8">
+                <!-- <h3>Additional Information</h3> -->
+                {% for contact in listing.contact_infos %}
+                <p>
+                    <strong>{{ contact.type|capitalize }}:</strong></br>
+                    {{ contact.value }}</p>
+                </p>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-</div>
-{% if listing.get('about', None).strip() %}
-<div id="about-row" class="row">
-    <div id="description-row-container" class="listing-info-section col-xs-6">
-        <span id="about-section">{{ listing.about }}</span>
-    </div>
-</div>
-{% endif %}
-<div class="row">
-    <div id="additional-info-row-container" class="listing-info-section col-xs-6">
-        <!-- <h3>Additional Information</h3> -->
-        {% for contact in listing.contact_infos %}
-        <p>
-            <strong>{{ contact.type|capitalize }}:</strong></br>
-            {{ contact.value }}</p>
-        </p>
-        {% endfor %}
+    <div class="col-md-4">
+        <div class="right-ad" id="right-ad-1"></div>
+        <script type='text/javascript'>
+        googletag.cmd.push(function() { googletag.display('right-ad-1'); });
+        </script>
     </div>
 </div>
 {% endblock %}

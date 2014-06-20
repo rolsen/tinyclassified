@@ -140,7 +140,7 @@ def index_tags():
     return listings.distinct('tags')
 
 
-def collect_index_dict(taglists):
+def collect_index_dict(taglists, home_only=True):
     """Collect the unique categories and subcategories into a dict.
 
     Compresses lists of listing tags into an intersection in the form of a dict.
@@ -174,6 +174,14 @@ def collect_index_dict(taglists):
             for subcat in subcategories:
                 if not subcat in categories[category]:
                     categories[category].append(subcat)
+
+    if home_only:
+        to_ignore =  tiny_classified.get_config()['NO_FRONT_PAGE_CATEGORIES']
+        categories = dict(filter(
+            lambda (key, val): key not in to_ignore,
+            categories.iteritems()
+        ))
+
     return categories
 
 
