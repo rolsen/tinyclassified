@@ -50,10 +50,9 @@ def show_user_ui():
         base_url=tiny_classified.get_config()['BASE_URL']
     )
 
-
 def is_admin():
+    # TODO: Implement
     return True
-
 
 @blueprint.route('/content/<email>')
 @util.require_login()

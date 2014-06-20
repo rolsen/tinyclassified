@@ -64,7 +64,10 @@ class AuthorContactControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        response = self.app.post('/author/content/contact', data=TEST_FORM)
+        response = self.app.post(
+            '/author/content/' + TEST_EMAIL + '/contact',
+            data=TEST_FORM
+        )
         self.assertEqual(200, response.status_code)
         self.assertTrue(test_listing['contact_infos'])
         self.assertEqual(1, len(test_listing['contact_infos']))
@@ -88,7 +91,7 @@ class AuthorContactControllerTests(mox.MoxTestBase):
         )
         self.mox.ReplayAll()
 
-        response = self.app.get('/author/content/contact')
+        response = self.app.get('/author/content/' + TEST_EMAIL + '/contact')
         contact_infos = json.loads(response.data)['contact_infos']
         self.assertEqual(1, len(contact_infos))
         self.assertTrue(test_util.check_dict(
@@ -104,7 +107,7 @@ class AuthorContactControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        response = self.app.get('/author/content/contact/1')
+        response = self.app.get('/author/content/' + TEST_EMAIL + '/contact/1')
         self.assertEqual(response.status_code, 404)
 
     def test_read_missing_id(self):
@@ -118,7 +121,7 @@ class AuthorContactControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        response = self.app.get('/author/content/contact/3')
+        response = self.app.get('/author/content/' + TEST_EMAIL + '/contact/3')
         self.assertEqual(response.status_code, 404)
 
     def test_read(self):
@@ -132,7 +135,7 @@ class AuthorContactControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        response = self.app.get('/author/content/contact/0')
+        response = self.app.get('/author/content/' + TEST_EMAIL + '/contact/0')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(test_util.check_dict(
             TEST_CONTACT,
@@ -158,7 +161,9 @@ class AuthorContactControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        response = self.app.delete('/author/content/contact/0')
+        response = self.app.delete(
+            '/author/content/' + TEST_EMAIL + '/contact/0'
+        )
         self.assertTrue(200, response.status_code)
 
     def test_index(self):
@@ -171,7 +176,7 @@ class AuthorContactControllerTests(mox.MoxTestBase):
         )
         self.mox.ReplayAll()
 
-        response = self.app.get('/author/content/contact')
+        response = self.app.get('/author/content/' + TEST_EMAIL + '/contact')
         self.assertEqual(
             [TEST_CONTACT],
             json.loads(response.data)

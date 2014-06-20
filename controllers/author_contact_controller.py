@@ -26,6 +26,8 @@ blueprint = flask.Blueprint(
 def create(author_email):
     """Creates a new listing contact through the JSON-REST API.
 
+    @param author_email: The email address that the listing belongs to.
+    @type author_email: str
     @return: JSON-encoded document describing the contact just created.
     @rtype: str
     """
@@ -44,9 +46,13 @@ def create(author_email):
         listing['contact_id_next'] = 0
 
     if not listing.get('contact_id_next'):
-        listing['contact_id_next'] = max(
-            map(lambda x: x['_id'], listing['contact_infos'])
-        ) + 1
+        contacts = listing['contact_infos']
+        if len(contacts) == 0:
+            listing['contact_id_next'] = 0
+        else:
+            listing['contact_id_next'] = max(
+                map(lambda x: x['_id'], )
+            ) + 1
 
     contact_dict = {
         'type': contact_type,
@@ -69,6 +75,8 @@ def create(author_email):
 def read(author_email, contact_id):
     """Get information on a contact listing through the JSON-REST API.
 
+    @param author_email: The email address that the listing belongs to.
+    @type author_email: str
     @param contact_id: The integer ID of the contact record to read.
     @type contact_id: str or int
     @return: JSON-encoded document describing the requested contact.
@@ -95,8 +103,8 @@ def read(author_email, contact_id):
 def index(author_email):
     """Get the listing contacts for an author through the JSON-REST API.
 
-    @param author_email:
-    @type author_email:
+    @param author_email: The email address that the listing belongs to.
+    @type author_email: str
     @return: JSON-encoded document describing the requested contact infos.
     @rtype: str
     """
@@ -113,6 +121,8 @@ def index(author_email):
 def delete(author_email, contact_id):
     """Delete a listing contact through the JSON-REST API.
 
+    @param author_email: The email address that the listing belongs to.
+    @type author_email: str
     @param contact_id: The integer ID of the contact record to delete.
     @type contact_id: str or int
     @return: Confirmation message that the listing contact was deleted
