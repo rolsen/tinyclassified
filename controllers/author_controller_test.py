@@ -66,7 +66,7 @@ class AuthorControllerTests(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         response = self.app.put(
-            '/author/content',
+            '/author/content/type_for_some_reason',
             data=TEST_LISTING_FORM
         )
         self.assertEqual(200, response.status_code)
