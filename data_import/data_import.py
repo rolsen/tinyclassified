@@ -1,4 +1,4 @@
-"""Parses and filters CSV data into JSON.
+"""Parses and filters CSV data into the tiny_classified listings collection.
 """
 import csv
 import os
@@ -8,29 +8,26 @@ from bs4 import BeautifulSoup
 import pymongo
 
 sys.path.append('..')
-
-# might need:
-# from tinyclassified import tiny_classified
 import tiny_classified
 
 import services
 
-# DEFAULT_EMAIL = 'admin@insurance-forums.net'
 INCREMENT = "increment"
 
 DATA_SEP = ','
 
 DATA_DIR = 'data'
 
-FILES = {
-    'Associations_2014-06-11.csv': 'Associations',
-    'EducationDevelopment_2014-06-11.csv': 'Education / Development',
-    'InsuranceJobs_2014-06-11.csv': 'Insurance Jobs',
-    'LifeandHealthIMOFMOMGA_2014-06-11.csv': 'Life and Health IMO/FMO/MGA',
-    'OfficeAdministration_2014-06-11.csv': 'Office / Administration',
-    'PCAggregators-Alliances-Clusters_2014-06-11.csv': 'P&C Aggregators-Clusters-Alliances',
-    'ProfessionalServices_2014-06-11.csv': 'Professional Services',
-    'SalesandMarketing_2014-06-11.csv': 'Sales and Marketing',
+FILE_AND_TAG_ASSOCIATIONS = {
+    # 'Category / Tag Name': 'ExpectedFileNameBase'
+    'Associations': 'Associations',
+    'Education / Development': 'EducationDevelopment',
+    'Insurance Jobs': 'InsuranceJobs',
+    'Life and Health IMO/FMO/MGA': 'LifeandHealthIMOFMOMGA',
+    'Office / Administration': 'OfficeAdministration',
+    'P&C Aggregators-Clusters-Alliances': 'PCAggregators-Alliances-Clusters',
+    'Professional Services': 'ProfessionalServices',
+    'Sales and Marketing': 'SalesandMarketing',
 }
 
 EXPLODE_ON_UNRECOGNIZED_FIELD = True
@@ -43,14 +40,15 @@ DATA_IMPORT_DATA = {
 
 def get_database():
     if not DATA_IMPORT_DATA['mongo_db']:
-        DATA_IMPORT_DATA['mongo_db'] = tiny_classified.get_db_adapter().get_database()
-        DATA_IMPORT_DATA['mongo_listing_collection'] = DATA_IMPORT_DATA['mongo_db']
+        DATA_IMPORT_DATA['mongo_db'] = \
+            tiny_classified.get_db_adapter().get_database()
 
     return DATA_IMPORT_DATA['mongo_db']
 
 def get_listing_collection():
     if not DATA_IMPORT_DATA['mongo_listing_collection']:
-        DATA_IMPORT_DATA['mongo_listing_collection'] = tiny_classified.get_db_adapter().get_listings_collection()
+        DATA_IMPORT_DATA['mongo_listing_collection'] = \
+            tiny_classified.get_db_adapter().get_listings_collection()
 
     return DATA_IMPORT_DATA['mongo_listing_collection']
 
@@ -282,6 +280,11 @@ def parse_data(fname):
 
 
 def process_row(file_data, row, field_strategies):
+    """Filters the rows of a file.
+
+    Deletes a row if manditory attributes are not present and calls strategy /
+    closure function(s) for each field of the row.
+    """
     fields = row['fields']
     if not fields['company'] and \
         not fields['contactname'] and \
@@ -304,6 +307,17 @@ def process_row(file_data, row, field_strategies):
 
 
 def freak_out_if_null_value(data, keys):
+    """Prints out a warning or sets a value in some cases.
+
+    Prints out a warning if any of the given keys for all rows is 'empty'. If
+    the key is of the output is 'about', this function will set that 'about'
+    attribute to an empty string if it does not already exist.
+
+    @param data: The data dict returned by parse_data_files
+    @type data: dict
+    @param keys: The keys to check for
+    @type keys: list
+    """
 
     # So horrendous
     for file_key, file_data in data.iteritems():
@@ -318,22 +332,22 @@ def freak_out_if_null_value(data, keys):
                         data[file_key]['rows'][index]['output']['about'] = ''
 
                     else:
-                        print "Oh noes! %s is not a key!" % key
+                        print "Warning: %s is not a key!" % key
 
                     continue
 
                 keyed_value = row['output'][key]
                 if keyed_value == '':
                     if key != 'about':
-                        print "Oh noes! %s is ''" % key
+                        print "Warning: %s is ''" % key
                     continue
 
                 if keyed_value == {}:
-                    print "Oh noes! %s is {}" % key
+                    print "Warning: %s is {}" % key
                     continue
 
                 if keyed_value == []:
-                    print "Oh noes! %s is []" % key
+                    print "Warning: %s is []" % key
                     continue
 
                 keyed_value = row['output'][key]
@@ -357,6 +371,11 @@ def get_and_mark_duplicate(data, row):
 
 
 def compress_duplicates(data):
+    """Compresses all duplicate listings in data.
+
+    @param data: The data dict returned by parse_data_files
+    @type data: dict
+    """
     for file_key, file_data in data.iteritems():
         for row in file_data['rows']:
             dup = get_and_mark_duplicate(data, row)
@@ -365,14 +384,6 @@ def compress_duplicates(data):
 
                 # So hideous
                 RowDeleter.delete_all(data)
-
-
-def add_row_to_mongo(row):
-    print "++++++++++++++++"
-    # print row['output']
-    # get_listing_collection().save(row['output'])
-    print "================"
-    print
 
 
 class IncrementingNumber():
@@ -396,6 +407,7 @@ class RowDeleter():
 
     @classmethod
     def delete_all(cls, data):
+        """Deletes all marked rows in data."""
         for file_key, file_data in data.iteritems():
             for row in file_data['rows']:
                 if row.get('delete_me'):
@@ -403,12 +415,65 @@ class RowDeleter():
                     del data[file_key]['rows'][rows_index]
 
 
-def gogogo(data_dir=DATA_DIR, files=FILES):
+def get_data_files(dir, ext='.csv'):
+    """Gets the data files in a directory. Ignores subdirectories."""
+    return filter(lambda file: file.endswith(ext), os.listdir(dir))
+
+
+def parse_data_files(data_dir=DATA_DIR, file_tags=FILE_AND_TAG_ASSOCIATIONS):
+    """Parses csv data into a dict and compresses duplicate listings.
+
+    Returns a list of the form: {
+        'filenamebase': {
+            'category': 'tag / category',
+            'file_name': 'data_dir/filename.csv',
+            'rows': [
+                {
+                    'fields': {
+                        'field from data file': 'raw value',
+                        ...
+                    },
+                    'output': {
+                        'field created while applying FIELD_STRATEGIES': 'value',
+                        ...
+                    }
+                    'contact_id_next': <integer>
+                },
+                ...
+            ]
+        },
+        ...
+    }
+
+    @return: All data from the data files
+    @rtype: dict
+    """
     data = {}
-    for fbase, file_tag in files.iteritems():
-        fname = os.sep.join([data_dir, fbase])
-        data[fbase] = parse_data(fname)
-        data[fbase]['category'] = file_tag
+
+    files = get_data_files(data_dir)
+    print "Data files: ", files
+
+    unknown_data_file = False
+    for data_file in files:
+        fname = os.sep.join([data_dir, data_file])
+
+        found_fbase = False
+        for file_tag, fbase in file_tags.iteritems():
+            if fbase in data_file:
+                found_fbase = True
+                data[fbase] = parse_data(fname)
+                data[fbase]['category'] = file_tag
+                break
+
+        if not found_fbase:
+            print
+            print "Unknown file: %s" % fname
+            print """    You will need to create a category / file base name
+    association via FILE_AND_TAG_ASSOCIATIONS in %s""" % __file__
+            unknown_data_file = True
+
+    if unknown_data_file:
+        sys.exit(1)
 
     for file_key, file_data in data.iteritems():
         for row in file_data['rows']:
@@ -450,12 +515,20 @@ def create_listing(listing):
     services.listing_service.create(listing)
 
 
-def load_data_import():
+def main():
+    """Main function that imports all data.
+
+    Main function to orchestrate:
+        - clearing the collection,
+        - parsing csv files,
+        - adding listings to the collection,
+        - saving meta data
+    """
     print "Parsing CSVs..."
-    data = gogogo(data_dir='data')
+    data = parse_data_files()
 
     mongo_listing_collection = get_listing_collection()
-    mongo_listing_collection.remove( { } ) # Clear collection!
+    mongo_listing_collection.remove({})
     print "Clearing the collection:", mongo_listing_collection.count()
 
     print "Adding listings..."
@@ -467,7 +540,7 @@ def load_data_import():
             create_listing(listing)
 
 
-    print "Saving ['meta'].save({'name': '_tinyclassified', 'next_author_id..."
+    print "Saving ['meta'] : {'name': '_tinyclassified', 'next_author_id'}..."
     get_database()['meta'].save({'name': '_tinyclassified', 'next_author_id': IncrementingNumber.get()})
 
     print "Success"
@@ -475,4 +548,4 @@ def load_data_import():
 
 if __name__ == "__main__":
     tiny_classified.initialize_standalone()
-    load_data_import()
+    main()
