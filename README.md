@@ -35,6 +35,17 @@ Ensure Python 2.7.*, PIP, and MongoDB.
  - MongoDB: [All platforms](http://www.mongodb.org/downloads)
 
 
+Local config setup
+------------------
+If you are using TinyClassified as a standalone app, make sure you have
+flask_config.cfg set up. For example:
+```$ cp flask_config.cfg.start flask_config.cfg```
+
+If you are using TinyClassified as part of Occam, the config attributes in
+flask_config.cfg.start still need to be defined in the flask_config.json of
+Occam.
+
+
 Local virtual environment setup
 -------------------------------
 Install VirtualEnv

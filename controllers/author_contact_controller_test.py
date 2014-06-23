@@ -7,9 +7,12 @@ import copy
 import json
 import mox
 
-import tiny_classified
-
-import services
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import services
+except:
+    import tiny_classified
+    import services
 
 import author_contact_controller
 import test_util
@@ -44,8 +47,8 @@ class AuthorContactControllerTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        tiny_classified.app.debug = True
-        self.app = tiny_classified.app.test_client()
+        tiny_classified.get_app().debug = True
+        self.app = tiny_classified.get_app().test_client()
         with self.app.session_transaction() as sess:
             sess[util.SESS_EMAIL] = TEST_EMAIL
 
@@ -177,6 +180,7 @@ class AuthorContactControllerTests(mox.MoxTestBase):
         self.mox.ReplayAll()
 
         response = self.app.get('/author/content/' + TEST_EMAIL + '/contact')
+        self.assertEqual(200, response.status_code)
         self.assertEqual(
             [TEST_CONTACT],
             json.loads(response.data)

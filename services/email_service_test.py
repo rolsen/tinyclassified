@@ -9,7 +9,10 @@ import unittest
 import mox
 import sendgrid
 
-import tiny_classified
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
 
 import email_service
 

@@ -1,0 +1,13 @@
+MONGO_DATABASE_NAME='tiny_classified'
+MONGO_URI='mongodb://localhost'
+SECRET_KEY='supersecret'
+FAKE_EMAIL=True
+EMAIL_USERNAME='Test Email Username'
+EMAIL_PASSWORD='Test Email Password'
+EMAIL_USE_SECURE=True
+EMAIL_FROM_ADDR='TestTinyClassifiedFromAddress@example.com'
+LISTING_URL_BASE='http://127.0.0.1:5000'
+BASE_URL='http://127.0.0.1:5000'
+BLUEPRINT_BASE_URL=''
+NO_FRONT_PAGE_CATEGORIES=''
+MODULE=False

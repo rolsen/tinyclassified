@@ -7,9 +7,13 @@ import copy
 import mox
 import pymongo
 
-import tiny_classified
 
-import controllers
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import controllers
+except:
+    import tiny_classified
+    import controllers
 
 import db_service
 import listing_service

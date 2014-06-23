@@ -5,7 +5,10 @@
 """
 import mox
 
-import tiny_classified
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
 
 import util
 
@@ -31,8 +34,9 @@ class UtilTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        tiny_classified.app.debug = True
-        self.app = tiny_classified.app.test_client()
+        app = tiny_classified.get_app()
+        app.debug = True
+        self.app = app.test_client()
 
     def test_require_login_not_logged_in(self):
         self.mox.StubOutWithMock(util, 'check_active_requirement')

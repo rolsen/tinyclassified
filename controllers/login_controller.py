@@ -10,8 +10,13 @@ import flask
 import werkzeug
 from werkzeug import security
 
-import tinyclassified.tiny_classified as tiny_classified
-from .. import services
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import services
+except:
+    import tiny_classified
+    import services
+
 import util
 
 PASSWORD_RESET_MESSAGE = 'Password reset. Please check your email inbox.'

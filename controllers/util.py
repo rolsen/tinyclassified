@@ -7,6 +7,12 @@ from functools import wraps
 
 import flask
 
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
+
+
 SESS_EMAIL = 'auth_user'
 SESS_IS_ADMIN = 'is_admin'
 SESS_PASSWORD = 'password'
@@ -129,6 +135,20 @@ def prepare_subcategory(listing_url_base, category, subcategory):
     return {
         'url': '/'.join((listing_url_base, category, subcategory)),
         'name': subcategory
+    }
+
+
+def get_blueprint_folders(module=True):
+    if module:
+        template_folder = '../templates'
+        static_folder = '../static'
+    else:
+        template_folder = 'templates'
+        static_folder = 'static'
+
+    return {
+        'template_folder': template_folder,
+        'static_folder': static_folder
     }
 
 # def after_this_request(func):

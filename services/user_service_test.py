@@ -7,7 +7,10 @@ import copy
 
 import mox
 
-import tiny_classified
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
 
 import db_service
 import email_service
@@ -40,7 +43,7 @@ class UserServiceTests(mox.MoxTestBase):
 
         test_db_adapter = mox.Mox().CreateMock(db_service.DBAdapter)
         test_db_adapter.upsert_user(TEST_USER)
-        tiny_classified.db_adapter = test_db_adapter
+        tiny_classified.set_db_adapter(test_db_adapter)
 
         self.mox.ReplayAll()
 

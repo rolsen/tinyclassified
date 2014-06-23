@@ -6,9 +6,12 @@
 import copy
 import mox
 
-import tiny_classified
-
-import services
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import services
+except:
+    import tiny_classified
+    import services
 
 import public_controller
 import test_util
@@ -66,8 +69,10 @@ class PublicControllerTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        tiny_classified.app.debug = True
-        self.app = tiny_classified.app.test_client()
+        app = tiny_classified.get_app()
+        app.debug = True
+        self.orig_app = app
+        self.app = app.test_client()
 
     def test_index_listings(self):
         expected_htmls = ['testhtml', 'otherone']
@@ -76,8 +81,10 @@ class PublicControllerTests(mox.MoxTestBase):
         services.listing_service.index_tags().AndReturn(TEST_TAGLIST)
 
         self.mox.StubOutWithMock(services.listing_service, 'collect_index_dict')
-        services.listing_service.collect_index_dict(TEST_TAGLIST).AndReturn(
-            TEST_INDEX_CATEGORIES)
+        services.listing_service.collect_index_dict(
+            TEST_TAGLIST,
+            home_only=True
+        ).AndReturn(TEST_INDEX_CATEGORIES)
 
         self.mox.StubOutWithMock(public_controller, 'render_html_category')
         public_controller.render_html_category(
@@ -94,7 +101,8 @@ class PublicControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        result = self.app.get('/public/listings')
+        result = self.app.get('/')
+
         self.assertEqual(200, result.status_code)
         self.assertTrue('testhmtl' in result.data)
         self.assertTrue('otherone' in result.data)
@@ -104,11 +112,13 @@ class PublicControllerTests(mox.MoxTestBase):
         test_category = 'category'
         test_subcategories = ['altsubcat1', 'altsubcat2', 'altsubcat3']
 
-        result = public_controller.render_html_category(
-            test_base_url,
-            test_category,
-            test_subcategories
-        )
+        with self.orig_app.test_request_context('/'):
+            result = public_controller.render_html_category(
+                test_base_url,
+                test_category,
+                test_subcategories
+            )
+
         self.assertTrue('href="test_base_url.com/category"' in result)
         self.assertTrue(
             'href="test_base_url.com/category/altsubcat1"' in result)
@@ -138,13 +148,14 @@ class PublicControllerTests(mox.MoxTestBase):
         )
 
         self.mox.StubOutWithMock(services.listing_service, 'collect_index_dict')
-        services.listing_service.collect_index_dict(TEST_TAGS).AndReturn(
-            TEST_COLLECTED_TAGS_CATEGORY
-        )
+        services.listing_service.collect_index_dict(
+            TEST_TAGS,
+            home_only=True
+        ).AndReturn(TEST_COLLECTED_TAGS_CATEGORY)
 
         self.mox.ReplayAll()
 
-        result = self.app.get('/public/listings/cat1')
+        result = self.app.get('/cat1')
         self.assertEqual(200, result.status_code)
         self.assertEqual('tags', test_cursor.distinct_param)
 
@@ -176,13 +187,14 @@ class PublicControllerTests(mox.MoxTestBase):
         )
 
         self.mox.StubOutWithMock(services.listing_service, 'collect_index_dict')
-        services.listing_service.collect_index_dict(TEST_TAGS).AndReturn(
-            TEST_COLLECTED_TAGS_CATEGORY
-        )
+        services.listing_service.collect_index_dict(
+            TEST_TAGS,
+            home_only=True
+        ).AndReturn(TEST_COLLECTED_TAGS_CATEGORY)
 
         self.mox.ReplayAll()
 
-        result = self.app.get('/public/listings/' + url)
+        result = self.app.get('/' + url)
         self.assertEqual(200, result.status_code)
         self.assertEqual('tags', test_cursor.distinct_param)
 
@@ -205,5 +217,5 @@ class PublicControllerTests(mox.MoxTestBase):
 
         self.mox.ReplayAll()
 
-        result = self.app.get('/public/listings/' + url)
+        result = self.app.get('/' + url)
         self.assertEqual(200, result.status_code)

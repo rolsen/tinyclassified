@@ -10,18 +10,26 @@ import flask
 import jinja2
 import markdown
 
-import tinyclassified.tiny_classified as tiny_classified
+# Optimally, it would be nice to have "is_module" controlled by the configs, but
+# they may not be available when this module is imported.
+is_module = True
 
-import tinyclassified.tiny_classified as tiny_classified
-from .. import services
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import services
+except:
+    import tiny_classified
+    import services
+    is_module = False
+
 import util
+
 
 # Create a Flask blueprint to split the Flask routes amoung multiple files.
 blueprint = flask.Blueprint(
     'public',
     __name__,
-    template_folder='../templates',
-    static_folder='../static'
+    **util.get_blueprint_folders(is_module)
 )
 
 
@@ -96,7 +104,6 @@ def render_html_category(listing_url_base, category, subcategories):
 
 
 def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
-    print slug
     listings = services.listing_service.list_by_slug(slug)
     is_qualified = services.listing_service.check_is_qualified_slug(slug)
 

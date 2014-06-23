@@ -6,9 +6,12 @@ import copy
 import mox
 import werkzeug
 
-import tiny_classified
-
-import services
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import services
+except:
+    import tiny_classified
+    import services
 
 import login_controller
 import util
@@ -25,13 +28,15 @@ class LoginControllerTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        tiny_classified.app.debug = True
-        self.app = tiny_classified.app.test_client()
+        app = tiny_classified.get_app()
+        app.debug = True
+        self.app = app.test_client()
         self.user = copy.deepcopy(TEST_USER)
 
     def test_render_login(self):
         result = self.app.get('/login')
         self.assertTrue('Login' in result.data)
+        self.assertEqual(200, result.status_code)
 
     def test_login_found(self):
         self.mox.StubOutWithMock(services.user_service, 'read')
@@ -40,12 +45,12 @@ class LoginControllerTests(mox.MoxTestBase):
 
         result = self.app.post(
             '/login',
-            data={'email': WEIRD_CASE_EMAIL, 'password': 'password'}
+            data={util.SESS_EMAIL: WEIRD_CASE_EMAIL, 'password': 'password'}
         )
 
         self.assertEqual(result.status_code, 302)
         with self.app.session_transaction() as sess:
-            self.assertEqual(sess['email'], self.user['email'])
+            self.assertEqual(sess[util.SESS_EMAIL], self.user['email'])
             self.assertEqual(sess['is_admin'], self.user['is_admin'])
 
     def test_login_not_found(self):
@@ -55,12 +60,12 @@ class LoginControllerTests(mox.MoxTestBase):
 
         result = self.app.post(
             '/login',
-            data={'email': self.user['email'], 'password': 'password'}
+            data={util.SESS_EMAIL: WEIRD_CASE_EMAIL, 'password': 'password'}
         )
 
         self.assertEqual(result.status_code, 302)
         with self.app.session_transaction() as sess:
-            self.assertFalse('email' in sess)
+            self.assertFalse(util.SESS_EMAIL in sess)
             self.assertTrue(util.SESS_VALIDATION_ERROR in sess)
             self.assertTrue(util.SESS_VALIDATION_SHOW_RESET in sess)
 
@@ -71,12 +76,12 @@ class LoginControllerTests(mox.MoxTestBase):
 
         result = self.app.post(
             '/login',
-            data={'email': self.user['email'], 'password': 'wrong'}
+            data={util.SESS_EMAIL: self.user['email'], 'password': 'wrong'}
         )
 
         self.assertEqual(result.status_code, 302)
         with self.app.session_transaction() as sess:
-            self.assertFalse('email' in sess)
+            self.assertFalse(util.SESS_EMAIL in sess)
             self.assertTrue(util.SESS_VALIDATION_ERROR in sess)
             self.assertTrue(util.SESS_VALIDATION_SHOW_RESET in sess)
 
@@ -95,6 +100,7 @@ class LoginControllerTests(mox.MoxTestBase):
     def test_render_forgot_password(self):
         result = self.app.get('/forgot_password')
         self.assertTrue('Reset' in result.data)
+        self.assertEqual(200, result.status_code)
 
     def test_forgot_password(self):
         self.mox.StubOutWithMock(services.user_service, 'read')
@@ -112,7 +118,7 @@ class LoginControllerTests(mox.MoxTestBase):
 
         self.app.post(
             '/forgot_password',
-            data={'email': WEIRD_CASE_EMAIL}
+            data={util.SESS_EMAIL: WEIRD_CASE_EMAIL}
         )
 
         result = self.app.get('/logout')
@@ -128,7 +134,7 @@ class LoginControllerTests(mox.MoxTestBase):
 
         self.app.post(
             '/forgot_password',
-            data={'email': self.user['email']}
+            data={util.SESS_EMAIL: self.user['email']}
         )
 
         result = self.app.get('/logout')

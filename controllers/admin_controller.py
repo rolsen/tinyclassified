@@ -9,7 +9,10 @@ application settings, and viewing application stats.
 """
 import flask
 
-from .. import services
+try:
+    from tinyclassified import services
+except:
+    import services
 
 # Create a Flask blueprint to split the Flask routes amoung multiple files.
 blueprint = flask.Blueprint(

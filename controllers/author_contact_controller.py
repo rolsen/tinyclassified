@@ -7,9 +7,12 @@ import json
 
 import flask
 
-import tinyclassified.tiny_classified as tiny_classified
-
-from .. import services
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import services
+except:
+    import tiny_classified
+    import services
 
 import util
 

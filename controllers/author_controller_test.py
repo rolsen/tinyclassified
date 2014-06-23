@@ -7,9 +7,12 @@ import copy
 import json
 import mox
 
-import tiny_classified
-
-import services
+try:
+    from tinyclassified import tiny_classified
+    from tinyclassified import services
+except:
+    import tiny_classified
+    import services
 
 import author_controller
 import util
@@ -31,8 +34,9 @@ class AuthorControllerTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        tiny_classified.app.debug = True
-        self.app = tiny_classified.app.test_client()
+        app = tiny_classified.get_app()
+        app.debug = True
+        self.app = app.test_client()
         with self.app.session_transaction() as sess:
             sess[util.SESS_EMAIL] = TEST_EMAIL
 
@@ -58,7 +62,9 @@ class AuthorControllerTests(mox.MoxTestBase):
     def test_update(self):
         self.setup_logged_in()
         test_listing = copy.deepcopy(TEST_LISTING)
-        test_listing['is_published'] = True
+
+        # This should happen if user is admin:
+        # test_listing['is_published'] = True
 
         self.mox.StubOutWithMock(services.listing_service, 'update')
         services.listing_service.update(test_listing)

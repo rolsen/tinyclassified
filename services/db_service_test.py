@@ -7,7 +7,10 @@ import copy
 
 import mox
 
-import tiny_classified
+try:
+    from tinyclassified import tiny_classified
+except:
+    import tiny_classified
 
 import db_service
 
@@ -59,7 +62,7 @@ class DBAdapterTests(mox.MoxTestBase):
 
     def setUp(self):
         mox.MoxTestBase.setUp(self)
-        self.db_adapter = db_service.DBAdapter(tiny_classified.app)
+        self.db_adapter = db_service.DBAdapter()
 
     def test_get_listings_collection_ensures_unique_names(self):
 
@@ -123,11 +126,14 @@ class DBAdapterTests(mox.MoxTestBase):
     def test_upsert_listing(self):
         test_collection = TestCollection()
 
-        self.mox.StubOutWithMock(self.db_adapter, 'ensure_required_fields')
-        self.db_adapter.ensure_required_fields(
-            TEST_LISTING,
-            db_service.MINIMUM_REQUIRED_LISTING_FIELDS
-        )
+        # This is something that we don't care about for now, but may want to
+        # enforce later:
+        # self.mox.StubOutWithMock(self.db_adapter, 'ensure_required_fields')
+        # self.db_adapter.ensure_required_fields(
+        #     TEST_LISTING,
+        #     db_service.MINIMUM_REQUIRED_LISTING_FIELDS
+        # )
+
         self.mox.StubOutWithMock(self.db_adapter, 'ensure_limited_fields')
         self.db_adapter.ensure_limited_fields(
             TEST_LISTING,

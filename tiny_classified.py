@@ -7,23 +7,26 @@ import flask
 import flask_sslify
 from flask.ext.pymongo import PyMongo
 
-
-OVERWRITE_CONFIG = {
-    'config': None,
-    'db_adapter': None,
-    'get_common_template_vals': lambda: {}
-}
+import config_cache
 
 
 def setup_template_functions(target):
+    """Attach template functions to an app.
+
+    @param target: The Flask app to attach TinyClassified blueprints to.
+    @type target: flask.app.Flask
+    """
     import services
     target.jinja_env.globals.update(get_slug=services.listing_service.get_slug)
 
 def attach_blueprints(target):
+    """Attach Flask blueprints to an app.
+
+    @param target: The Flask app to attach TinyClassified blueprints to.
+    @type target: flask.app.Flask
+    """
     import controllers
     base_url_prefix = get_config()['BLUEPRINT_BASE_URL']
-
-    print base_url_prefix
 
     target.register_blueprint(
         controllers.public_controller.blueprint,
@@ -56,17 +59,28 @@ def attach_blueprints(target):
 #    return response
 
 def get_db_adapter():
-    if not OVERWRITE_CONFIG['db_adapter']:
+    config = config_cache.get_config()
+    if not config['db_adapter']:
         import services
-        OVERWRITE_CONFIG['db_adapter'] = services.db_service.DBAdapter()
-    return OVERWRITE_CONFIG['db_adapter']
+        config['db_adapter'] = services.db_service.DBAdapter()
+    return config['db_adapter']
+
+def set_db_adapter(new_adapter):
+    config_cache.get_config()['db_adapter'] = new_adapter
 
 def set_overwrite_config(config):
-    OVERWRITE_CONFIG['config'] = config
+    config_cache.get_config()['config'] = config
 
 
 def get_config():
-    return OVERWRITE_CONFIG['config']
+    return config_cache.get_config()['config']
+
+
+def set_app(app):
+    config_cache.get_config()['app'] = app
+
+def get_app():
+    return config_cache.get_config()['app']
 
 
 def initialize_standalone():
@@ -75,25 +89,26 @@ def initialize_standalone():
     sslify = flask_sslify.SSLify(app)
 
     app.config.from_pyfile('flask_config.cfg', silent=False)
-    OVERWRITE_CONFIG['config'] = app.config
 
-    # Load configuration settings
-    app.config.from_pyfile('flask_config.cfg', silent=False)
+    set_overwrite_config(app.config)
+
+    set_app(app)
+
+    attach_blueprints(app)
+    setup_template_functions(app)
 
 
 def set_render_common_template_vals(func):
-    OVERWRITE_CONFIG['get_common_template_vals'] = func
+    config_cache.get_config()['get_common_template_vals'] = func
 
 
 def render_common_template_vals():
-    return OVERWRITE_CONFIG['get_common_template_vals']()
+    return config_cache.get_config()['get_common_template_vals']()
 
 
 if __name__ == '__main__':
     initialize_standalone()
 
+    app = get_app()
     app.config['DEBUG'] = True
-    attach_blueprints()
-    setup_template_functions(app)
-    mongo = PyMongo(app)
     app.run()
