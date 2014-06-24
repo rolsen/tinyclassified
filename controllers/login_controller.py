@@ -65,6 +65,10 @@ def login():
     config = tiny_classified.get_config()
 
     temp_vals = tiny_classified.render_common_template_vals()
+    parent_template = config.get(
+        'PARENT_TEMPLATE',
+        'tinyclassified_base.html'
+    )
 
     return flask.render_template(
         'login/login.html',
@@ -72,7 +76,7 @@ def login():
         confirm=confirm,
         show_reset_password=show_reset_password,
         base_url=config['BASE_URL'],
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template=parent_template,
         **temp_vals
     )
 
@@ -133,10 +137,14 @@ def forgot_password():
     @rtype: str
     """
     config = tiny_classified.get_config()
+    parent_template = config.get(
+        'PARENT_TEMPLATE',
+        'tinyclassified_base.html'
+    )
     return flask.render_template(
         'login/forgot_password.html',
         base_url=config['BASE_URL'],
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html')
+        parent_template=parent_template
     )
 
 

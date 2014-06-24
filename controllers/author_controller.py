@@ -37,26 +37,30 @@ def show_user_ui():
     """
     config = tiny_classified.get_config()
     temp_vals = tiny_classified.render_common_template_vals()
+    parent_template = config.get(
+        'PARENT_TEMPLATE',
+        'tinyclassified_base.html'
+    )
 
     listing_view_templates = flask.render_template(
         'author/listing_view.html',
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template=parent_template,
         base_url=config['BASE_URL']
     )
     contacts_view_templates = flask.render_template(
         'author/contacts_view.html',
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template=parent_template,
         base_url=config['BASE_URL']
     )
     listing_about_templates = flask.render_template(
         'author/listing_about.html',
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template=parent_template,
         base_url=config['BASE_URL']
     )
 
     return flask.render_template(
         'author/author_chrome.html',
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template=parent_template,
         listing_view_templates=listing_view_templates,
         contacts_view_templates=contacts_view_templates,
         listing_about_templates=listing_about_templates,

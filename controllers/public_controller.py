@@ -37,11 +37,15 @@ blueprint = flask.Blueprint(
 def confirm_delete():
     config = tiny_classified.get_config()
     temp_vals = tiny_classified.render_common_template_vals()
+    parent_template = config.get(
+        'PARENT_TEMPLATE',
+        'tinyclassified_base.html'
+    )
 
     return flask.render_template(
         'public/deleted_confirmation.html',
         base_url=config['BASE_URL'],
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template=parent_template,
         **temp_vals
     )
 
@@ -67,11 +71,15 @@ def index():
         for cat, subcats in categories.iteritems()]
 
     temp_vals = tiny_classified.render_common_template_vals()
+    parent_template = config.get(
+        'PARENT_TEMPLATE',
+        'tinyclassified_base.html'
+    )
 
     return flask.render_template(
         'public/public_index_chrome.html',
         base_url=config['BASE_URL'],
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template=parent_template,
         html_categories=html_categories,
         **temp_vals
     )
@@ -171,9 +179,14 @@ def index_listings_by_slug(slug):
     config = tiny_classified.get_config()
     temp_vals = tiny_classified.render_common_template_vals()
 
+    parent_template = config.get(
+        'PARENT_TEMPLATE',
+        'tinyclassified_base.html'
+    )
+
     result = index_listings_by_slug_programmatic(
         slug,
-        config.get('PARENT_TEMPLATE', 'base.html'),
+        parent_template,
         temp_vals,
         True
     )

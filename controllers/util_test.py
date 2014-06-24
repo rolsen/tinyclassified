@@ -16,10 +16,15 @@ TEST_TAG0 = {'foo': ['stuff'], '_id': 0}
 TEST_TAG1 = {'bar': ['stuff'], '_id': 1}
 
 def function_undecorated():
+    parent_template = config.get(
+        'PARENT_TEMPLATE',
+        'tinyclassified_base.html'
+    )
+
     return flask.render_template(
         'util_test.html',
         base_url=config['BASE_URL'],
-        parent_template=config.get('PARENT_TEMPLATE', 'base.html')
+        parent_template=parent_template
     )
 
 @util.require_login()
