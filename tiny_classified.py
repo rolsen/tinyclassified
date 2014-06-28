@@ -86,7 +86,7 @@ def get_app():
 def initialize_standalone():
     # Create application
     app = flask.Flask(__name__)
-    sslify = flask_sslify.SSLify(app)
+    #sslify = flask_sslify.SSLify(app)
 
     app.config.from_pyfile('flask_config.cfg', silent=False)
 
