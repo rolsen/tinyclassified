@@ -4,7 +4,7 @@
 @license: GNU GPLv3
 """
 import flask
-import flask_sslify
+#import flask_sslify
 from flask.ext.pymongo import PyMongo
 
 import config_cache
