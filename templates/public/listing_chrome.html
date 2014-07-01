@@ -6,6 +6,8 @@
 
 {% block title %}{{ category.replace('_slash_', '/') }}{% endblock %}
 
+{% block description %}Information about {{ listing.name }}: {{about}}{% endblock %}
+
 {% block tiny_classified_content %}
 <div class="row">
     <div class="col-xs-6">
