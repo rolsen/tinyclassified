@@ -102,7 +102,7 @@ def set_render_common_template_vals(func):
     config_cache.get_config()['get_common_template_vals'] = func
 
 
-def render_common_template_vals(slug):
+def render_common_template_vals(slug=None):
     return config_cache.get_config()['get_common_template_vals'](slug)
 
 
