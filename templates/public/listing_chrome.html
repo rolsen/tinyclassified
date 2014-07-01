@@ -4,6 +4,8 @@
 <link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/public_listing.css">
 {% endblock %}
 
+{% block title %}{{ category.replace('_slash_', '/') }}{% endblock %}
+
 {% block tiny_classified_content %}
 <div class="row">
     <div class="col-xs-6">

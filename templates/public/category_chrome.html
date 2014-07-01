@@ -22,6 +22,8 @@ $(document).ready(function() {
 <link rel="stylesheet" type="text/css" href="{{ base_url }}/static/css/dataTables.bootstrap.css">
 {% endblock %}
 
+{% block title %}{{ category|replace('_slash_', '/') }}{% endblock %}
+
 {% block tiny_classified_content %}
 
 <div class="row">
