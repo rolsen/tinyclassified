@@ -102,8 +102,8 @@ def set_render_common_template_vals(func):
     config_cache.get_config()['get_common_template_vals'] = func
 
 
-def render_common_template_vals():
-    return config_cache.get_config()['get_common_template_vals']()
+def render_common_template_vals(slug):
+    return config_cache.get_config()['get_common_template_vals'](slug)
 
 
 if __name__ == '__main__':

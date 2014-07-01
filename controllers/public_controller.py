@@ -185,7 +185,9 @@ def index_listings_by_slug(slug):
     @rtype: str
     """
     config = tiny_classified.get_config()
-    temp_vals = tiny_classified.render_common_template_vals()
+    temp_vals = tiny_classified.render_common_template_vals(
+        'resources/' + slug
+    )
 
     parent_template = config.get(
         'PARENT_TEMPLATE',

@@ -28,6 +28,9 @@ FILE_AND_TAG_ASSOCIATIONS = {
     'P&C Aggregators-Clusters-Alliances': 'PCAggregators-Alliances-Clusters',
     'Professional Services': 'ProfessionalServices',
     'Sales and Marketing': 'SalesandMarketing',
+    'Practice Building': 'PracticeBuilding',
+    'Practice Building': 'PracticeBuilding',
+    'Insurance Products Markets': 'InsuranceProductsMarkets',
 }
 
 EXPLODE_ON_UNRECOGNIZED_FIELD = True
@@ -181,7 +184,7 @@ def set_as_is_published(file_data, row, field_key, field_value):
 
 @strip_field_value
 def set_as_is_featured(file_data, row, field_key, field_value):
-    row['output']['featured'] = True if field_value != ''
+    row['output']['featured'] = field_value != ''
 
 
 FIELD_STRATEGIES = {
@@ -365,6 +368,11 @@ def freak_out_if_null_value(data, keys):
 def get_and_mark_duplicate(data, row):
     for file_key, file_data in data.iteritems():
         for other_row in file_data['rows']:
+            if not 'name' in other_row['output']:
+                other_row['output']['name'] = other_row['output']['contact_infos'][0]['value']
+            if not 'name' in row['output']:
+                row['output']['name'] = row['output']['contact_infos'][0]['value']
+
             if (
                 row['output']['name'] == other_row['output']['name'] and
                 row['output'] != other_row['output']
