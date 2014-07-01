@@ -178,6 +178,12 @@ def add_tags(file_data, row, field_key, field_value):
 def set_as_is_published(file_data, row, field_key, field_value):
     row['output']['is_published'] = True if field_value == 't' else False
 
+
+@strip_field_value
+def set_as_is_featured(file_data, row, field_key, field_value):
+    row['output']['featured'] = True if field_value != ''
+
+
 FIELD_STRATEGIES = {
     'company': add_as_string_to('name', get='text'),
     'address': set_as_address_subfield('street'),
@@ -219,7 +225,7 @@ FIELD_STRATEGIES = {
     'image1desc': complain_if_found,
     'image2desc': complain_if_found,
     'image3desc': complain_if_found,
-    'datefeatured': ignore,
+    'datefeatured': set_as_is_featured,
     'paymentstatus': ignore,
     'paymenttype': ignore,
     'category': add_tags,

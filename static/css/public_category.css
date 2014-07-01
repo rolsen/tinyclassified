@@ -1,3 +1,34 @@
+.featured {
+    border-bottom: solid 1px #d0bf68;
+    background-color: #f0e7bd;
+    background-image: -moz-linear-gradient(top,#f2eac6,#ede3b1);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#f2eac6),to(#ede3b1));
+    background-image: -webkit-linear-gradient(top,#f2eac6,#ede3b1);
+    background-image: -o-linear-gradient(top,#f2eac6,#ede3b1);
+    background-image: linear-gradient(to bottom,#f2eac6,#ede3b1);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00f1eac5', endColorstr='#00ede3b1', GradientType=0);
+}
+
+
+.featured-listing-side {
+    border-left: 1px solid #C0C0C0;
+    border-right: 1px solid #C0C0C0;
+    border-bottom: 1px solid #C0C0C0;
+    padding: 10px;
+}
+
+
+.featured-listing-side:first-of-type {
+    border-top: 1px solid #C0C0C0;
+}
+
+
+#featured-listings-display {
+    margin-bottom: 20px;
+}
+
+
 #filters-ctrl .btn {
     white-space: normal;
 }

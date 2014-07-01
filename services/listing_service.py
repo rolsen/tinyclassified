@@ -118,6 +118,10 @@ def ensure_qualified_slug(slug):
         raise ValueError('%s is not a fully qualified slug' % slug)
 
 
+def check_is_qualified(entry, slug):
+    return slug in entry.get('slugs', [])
+
+
 def check_is_qualified_slug(slug):
     """Check if a listing slug is fully qualified or not.
 

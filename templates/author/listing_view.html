@@ -1,6 +1,6 @@
 
 <script type="text/template" id="listing-details-template">
-    <h3>Name <small>Set the title of your listing (this can be your company/organization name)</small></h3>
+    <h3>General <small>Set the title and featured status of your listing (this can be your company/organization name)</small></h3>
     <div id="name-view"/>
     <hr class="author-section-divider"/>
 
@@ -23,12 +23,52 @@
 <script type="text/template" id="listing-name-template">
     <form role="form" id="listing-name-form" parsley-validate>
         <div class="form-group">
+            <label for="listing-name">Name:</label>
             <input type="text" name="listing-name" class="form-control" id="listing-name" placeholder="ex: Listing Name" value="<%= name %>" required>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" id="save-name-button">Save Name</button>
+            <label>
+                <input type="checkbox" name="featured" id="featured-check" <% if (featured) { %>checked<% } %>>Featured / Upgraded
+            </label>
+            <br>
+        </div>
+        <div class="form-group">
+            <label for="thumbnail">Thumbnail URL</label>
+            <input name="thumbnail" id="thumbnail-url-entry" class="form-control" type="text" value="<%= thumbnail_url %>">
+            or <a href="#" id="upload-image-link">upload image</a>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" id="save-name-button">Save General Properties</button>
         </div>
     </form>
+    <iframe id="form_target" name="form_target" style="display:none"></iframe>
+    <form id="upload_form" action="/admin/upload/" target="form_target" method="post" enctype="multipart/form-data" style="width:0px;height:0;overflow:hidden"><input name="file" type="file" id="global-file-input" onchange="$('#upload_form').submit();this.value='';"></form>
+
+    <script>
+        var currentUploadCallback = null;
+
+        var onUploadThumbnail = function(url) {
+            $('#thumbnail-url-entry').val('https://s3.amazonaws.com/ifn-production/' + url);
+            $('#upload-image-link').html('upload again');
+        };
+
+        $('#upload_form').submit(function (event) {
+            event.preventDefault();
+            new S3Upload({
+                file_dom_selector: 'global-file-input',
+                s3_sign_put_url: '/admin/article/sign_upload',
+                acl: 'public-read',
+                onFinishS3Put: currentUploadCallback
+            });
+        });
+
+        $('#upload-image-link').click(function (event) {
+            event.preventDefault();
+            currentUploadCallback = onUploadThumbnail;
+            $('#upload-image-link').html('Please wait...');
+            $('#upload_form input').click();
+        });
+    </script>
 </script>
 
 <script type="text/template" id="listing-tags-template">

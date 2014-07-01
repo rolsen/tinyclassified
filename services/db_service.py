@@ -36,7 +36,9 @@ ALLOWED_LISTING_FIELDS = [
     'longitude',
     'datecreated',
     'datemodified',
-    'listingtype'
+    'listingtype',
+    'featured',
+    'thumbnail_url'
 ]
 
 MINIMUM_REQUIRED_USER_FIELDS = ['email', 'password_hash', 'is_admin']

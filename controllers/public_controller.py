@@ -113,7 +113,6 @@ def render_html_category(listing_url_base, category, subcategories):
 
 def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
     listings = services.listing_service.list_by_slug(slug)
-    is_qualified = services.listing_service.check_is_qualified_slug(slug)
 
     slug_split = slug.split('/')
     category = slug_split[0]
@@ -124,6 +123,8 @@ def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
         return None
 
     listing = listings[0]
+    is_qualified = services.listing_service.check_is_qualified(listing, slug)
+
     about = listing.get('about', None)
     if about:
         about = markdown.markdown(about)
@@ -153,6 +154,12 @@ def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
 
         url_base = config['LISTING_URL_BASE']
 
+        listings = list(listings)
+        featured_listings = sorted(filter(
+            lambda x: x.get('featured', False),
+            listings
+        ), key=lambda x: x['name'])
+
         prep = util.prepare_subcategory
         return flask.render_template(
             'public/category_chrome.html',
@@ -160,6 +167,7 @@ def index_listings_by_slug_programmatic(slug, parent_template, temp_vals, home):
             parent_template=parent_template,
             category=category,
             listings=listings,
+            featured_listings=featured_listings,
             subcategories=[prep(url_base, category, x) for x in subcategories],
             selected_subcategory=selected_subcategory,
             listing_url_base=url_base,

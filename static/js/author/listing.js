@@ -25,7 +25,9 @@ window.Listing = Backbone.Model.extend({
             'state': '',
             'zip': '',
             'country': '',
-        }
+        },
+        'featured': false,
+        'thumbnail_url': ''
     },
     idAttribute: "_id"
 });
@@ -107,8 +109,11 @@ window.ListingNameView = Backbone.View.extend({
     },
 
     saveName:function () {
+        // TODO: This both saves the name and the featured status
         this.model.set({
-            name: $(this.el).find('#listing-name').val()
+            name: $(this.el).find('#listing-name').val(),
+            featured: $(this.el).find('#featured-check').is(':checked'),
+            thumbnail_url: $(this.el).find('#thumbnail-url-entry').val()
         });
         tinyClassifiedUtil.flashUser();
         this.model.save();
