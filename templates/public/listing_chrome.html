@@ -6,9 +6,27 @@
 
 {% block title %}{{ category.replace('_slash_', '/') }}{% endblock %}
 
-{% block description %}Information about {{ listing.name }}: {{about}}{% endblock %}
+{% block description %}
+Information about {{ listing.name }}.
+{% if listing.address.address %}
+{{ listing.address.address }}{% endif %}
+{{ listing.address.street }}{% if listing.address.street2 %}
+{{ listing.address.street2 }}{% endif %}
+{{ listing.address.city }}, {{ listing.address.state }} {{ listing.address.zip }}{% if listing.address.country %}
+{{ listing.address.country }}{% endif %}
+
+{% for contact in listing.contact_infos %}{{ contact.type|capitalize }}: {{ contact.value }}
+{% endfor %}
+{% endblock %}
 
 {% block tiny_classified_content %}
+<div class="row" id="top-banner-holder">
+    <div id="top-banner"></div>
+    <script type='text/javascript'>
+    googletag.cmd.push(function() { googletag.display('top-banner'); });
+    </script>
+</div>
+
 <div class="row">
     <div class="col-xs-6">
         <h1>{{ category.replace('_slash_', '/') }}</h1>

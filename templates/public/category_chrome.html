@@ -26,6 +26,13 @@ $(document).ready(function() {
 
 {% block tiny_classified_content %}
 
+<div class="row" id="top-banner-holder">
+    <div id="top-banner"></div>
+    <script type='text/javascript'>
+    googletag.cmd.push(function() { googletag.display('top-banner'); });
+    </script>
+</div>
+
 <div class="row">
     <div class="col-xs-12">
         <h3>{{ category|replace('_slash_', '/') }}</h3>
@@ -45,7 +52,6 @@ $(document).ready(function() {
                 <tr><td>
                     <form method="link" action="{{ [listing_url_base, category]|join('/') }}">
                         <button type="submit" class="form-control btn btn-primary" id="clear-category-button">
-                            <span class="glyphicon glyphicon-remove"></span>
                             {{ selected_subcategory.name }}
                         </button>
                         <!-- Thank you, http://glyphicons.com/ -->
@@ -111,10 +117,11 @@ $(document).ready(function() {
             <div class="featured-listing-side">
                 <a href="{{ [listing_url_base, get_slug(listing, category)]|join('/') }}">
                     {{ listing.name }}
-                    {% if listing.thumbnail_url %}
-                    <br><img src="{{listing.thumbnail_url}}">
-                    {% endif %}
                 </a>
+                    {% if listing.thumbnail_url %}
+                    <br><img src="{{listing.thumbnail_url}}"><br>
+                    {% endif %}
+                    <p class="listing-detail">{{ listing.get('about', None).strip()|safe }}</p>
             </div>
             {% endfor %}
         </div>

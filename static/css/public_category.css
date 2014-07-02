@@ -18,9 +18,20 @@
     padding: 10px;
 }
 
+.featured-listing-side a {
+    text-decoration: underline;
+}
+
 
 .featured-listing-side:first-of-type {
     border-top: 1px solid #C0C0C0;
+}
+
+
+.listing-detail {
+    color: #505050;
+    font-size: 12px;
+    margin-top: 5px;
 }
 
 
