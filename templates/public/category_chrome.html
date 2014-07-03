@@ -121,7 +121,6 @@ $(document).ready(function() {
                     {% if listing.thumbnail_url %}
                     <br><img src="{{listing.thumbnail_url}}"><br>
                     {% endif %}
-                    <p class="listing-detail">{{ listing.get('about', None).strip()|safe }}</p>
             </div>
             {% endfor %}
         </div>
