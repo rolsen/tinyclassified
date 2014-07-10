@@ -5,11 +5,11 @@
 <script>
 $(document).ready(function() {
     $('#listings-table').dataTable( {
+    	"aaSorting": [[3, "desc"]],
         "columnDefs": [
             {
                 "targets": [2],
                 "visible": false,
-                "aaSorting": [[3, "desc"]]
             }
         ]
     } );
