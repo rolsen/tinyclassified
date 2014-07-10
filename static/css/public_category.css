@@ -28,6 +28,10 @@
 }
 
 
+.hidden-featured-col {
+	display: none;	
+}
+
 .listing-detail {
     color: #505050;
     font-size: 12px;

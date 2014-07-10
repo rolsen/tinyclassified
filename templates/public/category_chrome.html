@@ -8,7 +8,8 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "targets": [2],
-                "visible": false
+                "visible": false,
+                "aaSorting": [[4, "desc"]]
             }
         ]
     } );
@@ -80,6 +81,7 @@ $(document).ready(function() {
                     <td>Name</td>
                     <td>Categories</td>
                     <td>About</td>
+                    <td class="hidden-featured-col"> Featured </td>
                 </tr>
             </thead>
             <tbody>
@@ -104,6 +106,11 @@ $(document).ready(function() {
                     <td>
                         {{ listing.about }}
                     </td>
+                    {% if listing['featured'] %}
+                    <td class="1"> </td>
+                    {% else %}
+                    <td class="2"> </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
