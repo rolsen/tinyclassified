@@ -9,7 +9,7 @@ $(document).ready(function() {
             {
                 "targets": [2],
                 "visible": false,
-                "aaSorting": [[4, "desc"]]
+                "aaSorting": [[3, "desc"]]
             }
         ]
     } );
@@ -107,9 +107,9 @@ $(document).ready(function() {
                         {{ listing.about }}
                     </td>
                     {% if listing['featured'] %}
-                    <td class="1"> 1 </td>
+                    <td class="1 hidden-featured-cell"> 1 </td>
                     {% else %}
-                    <td class="2"> 2 </td>
+                    <td class="2 hidden-featured-cell"> 2 </td>
                     {% endif %}
                 </tr>
             {% endfor %}

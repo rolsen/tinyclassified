@@ -32,6 +32,10 @@
 	display: none;	
 }
 
+.hidden-featured-cell {
+	display: none;
+}
+
 .listing-detail {
     color: #505050;
     font-size: 12px;
