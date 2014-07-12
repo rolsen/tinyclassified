@@ -48,6 +48,11 @@
 }
 
 
+#listings-table img {
+	width: 170px !important;
+	height: 50px !important;	
+}
+
 #filters-ctrl .btn {
     white-space: normal;
 }
