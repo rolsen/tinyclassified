@@ -29,7 +29,7 @@
 
 
 .hidden-featured-col {
-	display: none;	
+	display: none;
 }
 
 .hidden-featured-cell {
@@ -50,7 +50,7 @@
 
 #listings-table img {
 	width: 170px !important;
-	height: 50px !important;	
+	height: 50px !important;
 }
 
 #filters-ctrl .btn {
@@ -81,6 +81,7 @@
 
 #subcategories-table .btn {
     white-space: normal;
+    text-align: left;
 }
 
 #subcategories-table form {
