@@ -31,7 +31,7 @@ window.ListingAboutView = Backbone.View.extend({
     },
 
     afterRender: function (self) {
-        tinymce.init({selector: "textarea.mceEditor"});
+        tinymce.init({selector: "textarea.mceEditor", plugins: "code"});
     },
 
     saveAbout: function () {

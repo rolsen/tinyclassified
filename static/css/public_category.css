@@ -22,6 +22,10 @@
     text-decoration: underline;
 }
 
+.featured-listing-side img {
+	height: 50px !important;
+	width: 170px !important;	
+}
 
 .featured-listing-side:first-of-type {
     border-top: 1px solid #C0C0C0;
@@ -92,6 +96,7 @@
     color: #FFF;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+    text-align: center;
 }
 
 .btn-link:hover {
