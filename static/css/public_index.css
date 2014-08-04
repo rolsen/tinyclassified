@@ -9,3 +9,7 @@
 .category-link:hover {
     color: white;
 }
+
+#home-link {
+	margin-left: 10px;
+}
