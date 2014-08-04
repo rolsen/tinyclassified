@@ -25,7 +25,7 @@ except:
 import util
 
 
-# Create a Flask blueprint to split the Flask routes amoung multiple files.
+# Create a Flask blueprint to split the Flask routes among multiple files.
 blueprint = flask.Blueprint(
     'public',
     __name__,
