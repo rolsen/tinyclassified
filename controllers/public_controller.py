@@ -71,6 +71,8 @@ def index():
         for cat, subcats in categories.iteritems()]
 
     temp_vals = tiny_classified.render_common_template_vals()
+    temp_vals.update({"top_ad_target": "Resources", "side_ad_1_target": "Resources", "side_ad_2_target": "Resources"})
+
     parent_template = config.get(
         'PARENT_TEMPLATE',
         'tinyclassified_base.html'

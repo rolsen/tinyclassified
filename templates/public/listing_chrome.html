@@ -27,9 +27,10 @@ Information about {{ listing.name }}.
     </script>
 </div>
 
+
 <div class="row">
-	<a id="home-link" href="http://ifn.insurance-forums.net"> &lt;&lt; Home </a>
-	<a id="resource-directory-link" href="http://ifn.insurance-forums.net/resources/"> &lt;&lt; Resource Directory Index </a>
+	<a id="home-link" href="http://ifn.insurance-forums.net">Home</a> >>
+	<a id="resource-directory-link" href="http://ifn.insurance-forums.net/resources/">Resource Directory Index</a>
     <div class="col-xs-6">
         <h1>{{ category.replace('_slash_', '/') }}</h1>
     </div>
@@ -40,6 +41,7 @@ Information about {{ listing.name }}.
     </div>
 </div>
 <hr>
+
 <div class="row">
     <div id="public-listing" class="col-xs-10">
         <h2 id="listing-title">{{ listing.name }} {% if admin %}[<a href="{{ base_url }}/author?target={{ listing.author_email }}">edit</a> / <a href="#" id="delete-link">delete</a> ]{% endif %}</h2>
