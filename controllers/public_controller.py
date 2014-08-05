@@ -40,6 +40,7 @@ def confirm_delete():
     config = tiny_classified.get_config()
     temp_vals = tiny_classified.render_common_template_vals()
     temp_vals.update(temp_vals_extra)
+
     parent_template = config.get(
         'PARENT_TEMPLATE',
         'tinyclassified_base.html'
@@ -107,7 +108,7 @@ def render_html_category(listing_url_base, category, subcategories):
 
     temp_vals = tiny_classified.render_common_template_vals()
     temp_vals.update(temp_vals_extra)
-    
+
     return flask.render_template(
         'public/index_category_inner.html',
         category=category,
