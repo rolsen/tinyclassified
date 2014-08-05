@@ -14,6 +14,8 @@ import markdown
 # they may not be available when this module is imported.
 is_module = True
 
+temp_vals_extra = {"top_ad_target": "Resources", "side_ad_1_target": "Resources", "side_ad_2_target": "Resources", "side_ad_2": "/11439428/300x250-IFN-Site-Rectangle-2"}
+
 try:
     from tinyclassified import tiny_classified
     from tinyclassified import services
@@ -71,7 +73,6 @@ def index():
         for cat, subcats in categories.iteritems()]
 
     temp_vals = tiny_classified.render_common_template_vals()
-    temp_vals.update({"top_ad_target": "Resources", "side_ad_1_target": "Resources", "side_ad_2_target": "Resources"})
 
     parent_template = config.get(
         'PARENT_TEMPLATE',
