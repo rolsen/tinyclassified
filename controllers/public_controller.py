@@ -73,6 +73,7 @@ def index():
         for cat, subcats in categories.iteritems()]
 
     temp_vals = tiny_classified.render_common_template_vals()
+    temp_vals.update(temp_vals_extra)
 
     parent_template = config.get(
         'PARENT_TEMPLATE',
