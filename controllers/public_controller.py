@@ -14,7 +14,7 @@ import markdown
 # they may not be available when this module is imported.
 is_module = True
 
-temp_vals_extra = {"top_ad_target": "Resources", "side_ad_1_target": "Resources", "side_ad_2_target": "Resources", "side_ad_2": "/11439428/300x250-IFN-Site-Rectangle-2"}
+temp_vals_extra = {"top_ad_target": "Resource Directory", "side_ad_1_target": "Resource Directory", "side_ad_2_target": "Resource Directory", "side_ad_2": "/11439428/300x250-IFN-Site-Rectangle-2"}
 
 try:
     from tinyclassified import tiny_classified
@@ -39,6 +39,7 @@ blueprint = flask.Blueprint(
 def confirm_delete():
     config = tiny_classified.get_config()
     temp_vals = tiny_classified.render_common_template_vals()
+    temp_vals.update(temp_vals_extra)
     parent_template = config.get(
         'PARENT_TEMPLATE',
         'tinyclassified_base.html'
@@ -105,7 +106,8 @@ def render_html_category(listing_url_base, category, subcategories):
     prep_subcats = [prep(listing_url_base, category, x) for x in subcategories]
 
     temp_vals = tiny_classified.render_common_template_vals()
-
+    temp_vals.update(temp_vals_extra)
+    
     return flask.render_template(
         'public/index_category_inner.html',
         category=category,
@@ -192,6 +194,7 @@ def index_listings_by_slug(slug):
     temp_vals = tiny_classified.render_common_template_vals(
         'resources/' + slug
     )
+    temp_vals.update(temp_vals_extra)
 
     parent_template = config.get(
         'PARENT_TEMPLATE',
