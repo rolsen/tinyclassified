@@ -76,19 +76,7 @@ Information about {{ listing.name }}.
                     </p>
                 </address>
             </div>
-            {% endif %}
-            <div id="listing-subcategories-list" class="col-xs-4">
-                <strong>Categories:</strong>
-                {% for subcategory in listing.tags.get(category, []) %}
-                <div class="row">
-                    <div class="col-xs-4">
-                        <a id="select-category-button" class="subcategory-link btn btn-sm" href="{{ [listing_url_base, category, subcategory]|join('/') }}">
-                            {{ subcategory|replace('_slash_', '/') }}
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            {% endif %} 
         </div>
         {% if listing.get('about', None).strip() %}
         <div id="about-row" class="row">
