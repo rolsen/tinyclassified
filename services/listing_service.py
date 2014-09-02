@@ -28,7 +28,7 @@ def make_tag_safe(tag):
     @return: The safe version of the tag.
     @rtype: str
     """
-    return (tag.replace('/', ESCAPED_SLASH)).replace(' ', '-')
+    return tag.replace('/', ESCAPED_SLASH)
 
 
 def sanitize_tags(listing):
